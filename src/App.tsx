@@ -1,26 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
+import HomePage from './pages/HomePage';
+import PromptDetailPage from './pages/PromptDetailPage';
+import CreatePromptPage from './pages/CreatePromptPage';
+import ProfilePage from './pages/ProfilePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+//import { AuthProvider } from './hooks/UseAuth';
+//import ProtectedRoute from './components/common/ProtectedRoute';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    //<AuthProvider>
+      <Router>
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/prompts/:id" element={<PromptDetailPage />} />
+              <Route
+                path="/create"
+                element={
+                  //<ProtectedRoute>
+                    <CreatePromptPage />
+                  //</ProtectedRoute>
+                }
+              />
+              <Route path="/profile/:id" element={<ProfilePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    //</AuthProvider>
   );
-}
+};
 
 export default App;
