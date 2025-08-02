@@ -1,15 +1,130 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getPromptById, upvotePrompt } from '../services/PromptService';
-import { getComments, addComment } from '../services/CommentService';
-import { Prompt, Comment } from '../models';
-import Button from '../components/common/Button';
-import { formatDate } from '../utils/Formatters';
-import Card from '../components/common/Card';
-import LoadingSpinner from '../components/common/LoadingSpinner';
+import React, { useState, useEffect } from 'react';
+import {
+  Container,
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  CardActions,
+  CircularProgress,
+  Box,
+  Chip,
+  TextField,
+  Avatar,
+  Stack,
+  Alert
+} from '@mui/material';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
-const PromptDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+// --- Mock Data and Services ---
+// In a real application, these would be in separate files (e.g., models.ts, services.ts)
+
+// Data Models
+interface User {
+  id: string;
+  username: string;
+}
+
+interface Comment {
+  id: string;
+  content: string;
+  author: User;
+  createdAt: string;
+}
+
+interface Prompt {
+  id: string;
+  title: string;
+  description: string;
+  content: string;
+  author: User;
+  tags: string[];
+  upvotes: number;
+  views: number;
+  createdAt: string;
+  upvoted?: boolean; // Simulates if the current user has upvoted
+}
+
+
+// Mock Service Functions
+const mockUser1: User = { id: 'user-1', username: 'promptmaster' };
+const mockUser2: User = { id: 'user-2', username: 'commentwiz' };
+const mockUser3: User = { id: 'user-3', username: 'JaneDev' };
+
+
+const mockPrompt: Prompt = {
+  id: '123',
+  title: 'Advanced React Patterns',
+  description: 'A deep dive into hooks, context, and performance optimization for complex applications.',
+  content: `
+// Example: Custom Hook for fetching data
+function useData(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(url)
+      .then(res => res.json())
+      .then(setData)
+      .finally(() => setLoading(false));
+  }, [url]);
+
+  return { data, loading };
+}`,
+  author: mockUser1,
+  tags: ['react', 'hooks', 'performance', 'typescript'],
+  upvotes: 128,
+  views: 2450,
+  createdAt: new Date(Date.now() - 86400000 * 3).toISOString(), // 3 days ago
+  upvoted: false,
+};
+
+const mockComments: Comment[] = [
+  { id: 'c1', content: 'This is a fantastic prompt! Really helped me understand custom hooks.', author: mockUser2, createdAt: new Date(Date.now() - 86400000 * 2).toISOString() },
+  { id: 'c2', content: 'Great explanation. Could you add an example with useReducer?', author: mockUser3, createdAt: new Date(Date.now() - 86400000 * 1).toISOString() },
+];
+
+const getPromptById = (id: string): Promise<Prompt> => {
+  console.log(`Fetching prompt with id: ${id}`);
+  return new Promise(resolve => setTimeout(() => resolve(mockPrompt), 500));
+};
+
+const getComments = (promptId: string): Promise<Comment[]> => {
+    console.log(`Fetching comments for promptId: ${promptId}`);
+  return new Promise(resolve => setTimeout(() => resolve(mockComments), 500));
+};
+
+const upvotePrompt = (id: string): Promise<Prompt> => {
+  console.log(`Upvoting prompt with id: ${id}`);
+  mockPrompt.upvoted = !mockPrompt.upvoted;
+  mockPrompt.upvotes += mockPrompt.upvoted ? 1 : -1;
+  return new Promise(resolve => setTimeout(() => resolve({ ...mockPrompt }), 200));
+};
+
+const addComment = (promptId: string, content: string): Promise<Comment> => {
+    console.log(`Adding comment to promptId: ${promptId}`);
+  const newComment: Comment = {
+    id: `c${Date.now()}`,
+    content,
+    author: { id: 'user-current', username: 'You' },
+    createdAt: new Date().toISOString(),
+  };
+  return new Promise(resolve => setTimeout(() => resolve(newComment), 300));
+};
+
+// Utility to format dates
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
+
+
+// --- React Component ---
+
+const PromptDetailPage: React.FC<{ id: string }> = ({ id }) => {
   const [prompt, setPrompt] = useState<Prompt | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
@@ -18,22 +133,27 @@ const PromptDetailPage: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
+        // Fetch prompt and comments in parallel
         const [promptData, commentsData] = await Promise.all([
-          getPromptById(id!),
-          getComments(id!),
+          getPromptById(id),
+          getComments(id),
         ]);
         setPrompt(promptData);
         setComments(commentsData);
       } catch (err) {
-        setError('Failed to fetch prompt data');
+        setError('Failed to fetch prompt data. Please try again later.');
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    if (id) {
+      fetchData();
+    }
   }, [id]);
 
   const handleUpvote = async () => {
@@ -43,6 +163,7 @@ const PromptDetailPage: React.FC = () => {
       setPrompt(updatedPrompt);
     } catch (err) {
       console.error('Failed to upvote:', err);
+      // Optionally set an error state to show in the UI
     }
   };
 
@@ -50,104 +171,139 @@ const PromptDetailPage: React.FC = () => {
     if (!newComment.trim() || !prompt) return;
     try {
       const comment = await addComment(prompt.id, newComment);
-      setComments([...comments, comment]);
+      setComments(prevComments => [...prevComments, comment]);
       setNewComment('');
     } catch (err) {
       console.error('Failed to add comment:', err);
+      // Optionally set an error state to show in the UI
     }
   };
 
-  if (loading) return <LoadingSpinner />;
-  if (error) return <div className="text-red-500">{error}</div>;
-  if (!prompt) return <div>Prompt not found</div>;
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+        <Container maxWidth="md" sx={{ py: 4 }}>
+            <Alert severity="error">{error}</Alert>
+        </Container>
+    );
+  }
+
+  if (!prompt) {
+     return (
+        <Container maxWidth="md" sx={{ py: 4 }}>
+            <Alert severity="warning">Prompt not found.</Alert>
+        </Container>
+    );
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <Card className="mb-8">
-          <div className="flex justify-between items-start mb-4">
-            <h1 className="text-2xl font-bold">{prompt.title}</h1>
+    <Container maxWidth="md" sx={{ py: 4 }}>
+      {/* Prompt Details Card */}
+      <Card sx={{ mb: 4 }}>
+        <CardContent>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+              {prompt.title}
+            </Typography>
             <Button
-              variant={prompt.upvoted ? 'primary' : 'outline'}
-              size="sm"
+              variant={prompt.upvoted ? 'contained' : 'outlined'}
+              size="large"
+              startIcon={<ArrowUpwardIcon />}
               onClick={handleUpvote}
             >
-              ▲ {prompt.upvotes}
+              {prompt.upvotes}
             </Button>
-          </div>
+          </Box>
 
-          <div className="mb-6">
-            <p className="text-gray-700 mb-4">{prompt.description}</p>
-            <div className="bg-gray-50 p-4 rounded-md">
-              <pre className="whitespace-pre-wrap font-mono text-sm">
-                {prompt.content}
-              </pre>
-            </div>
-          </div>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+            {prompt.description}
+          </Typography>
 
-          <div className="flex flex-wrap gap-2 mb-6">
-            {prompt.tags.map((tag : any) => (
-              <span
-                key={tag}
-                className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full"
-              >
-                {tag}
-              </span>
+          <Box sx={{ bgcolor: 'grey.100', p: 2, borderRadius: 2, mb: 3, overflowX: 'auto' }}>
+            <Typography component="pre" sx={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '0.875rem' }}>
+              {prompt.content}
+            </Typography>
+          </Box>
+
+          <Stack direction="row" spacing={1} sx={{ mb: 3, flexWrap: 'wrap' }}>
+            {prompt.tags.map(tag => (
+              <Chip key={tag} label={tag} color="primary" variant="outlined" size="small" />
             ))}
-          </div>
+          </Stack>
+        </CardContent>
+        <CardActions sx={{ display: 'flex', justifyContent: 'space-between', px: 2, pb: 2, bgcolor: 'grey.50' }}>
+            <Typography variant="body2" color="text.secondary">
+                Created by <strong>{prompt.author.username}</strong> on {formatDate(prompt.createdAt)}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+                {prompt.views} views
+            </Typography>
+        </CardActions>
+      </Card>
 
-          <div className="flex items-center justify-between text-sm text-gray-500">
-            <div>
-              Created by{' '}
-              <span className="font-medium text-gray-700">
-                {prompt.author.username}
-              </span>{' '}
-              on {formatDate(prompt.createdAt)}
-            </div>
-            <div>{prompt.views} views</div>
-          </div>
-        </Card>
-
-        <h2 className="text-xl font-semibold mb-4">Comments</h2>
-        <div className="space-y-4 mb-6">
-          {comments.map((comment) => (
-            <Card key={comment.id}>
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  {comment.author.username.charAt(0).toUpperCase()}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{comment.author.username}</span>
-                    <span className="text-xs text-gray-500">
-                      {formatDate(comment.createdAt)}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-gray-700">{comment.content}</p>
-                </div>
-              </div>
+      {/* Comments Section */}
+      <Typography variant="h5" component="h2" gutterBottom>
+        Comments ({comments.length})
+      </Typography>
+      <Stack spacing={2} sx={{ mb: 4 }}>
+        {comments.length > 0 ? (
+          comments.map(comment => (
+            <Card key={comment.id} variant="outlined">
+              <CardContent>
+                <Stack direction="row" spacing={2} alignItems="flex-start">
+                  <Avatar sx={{ bgcolor: 'secondary.main' }}>
+                    {comment.author.username.charAt(0).toUpperCase()}
+                  </Avatar>
+                  <Box>
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                      <Typography variant="subtitle2" component="strong">{comment.author.username}</Typography>
+                      <Typography variant="caption" color="text.secondary">{formatDate(comment.createdAt)}</Typography>
+                    </Stack>
+                    <Typography variant="body2" sx={{ mt: 1 }}>{comment.content}</Typography>
+                  </Box>
+                </Stack>
+              </CardContent>
             </Card>
-          ))}
-          {comments.length === 0 && (
-            <p className="text-gray-500">No comments yet</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <textarea
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Add a comment..."
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-            rows={3}
-          />
-          <Button onClick={handleAddComment} disabled={!newComment.trim()}>
-            Post Comment
-          </Button>
-        </div>
-      </div>
-    </div>
+          ))
+        ) : (
+          <Typography color="text.secondary">Be the first to comment!</Typography>
+        )}
+      </Stack>
+      
+      {/* Add Comment Form */}
+      <Box component="form" noValidate autoComplete="off">
+        <TextField
+          fullWidth
+          multiline
+          rows={4}
+          label="Add a comment"
+          variant="outlined"
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        <Button 
+          variant="contained" 
+          onClick={handleAddComment}
+          disabled={!newComment.trim()}
+        >
+          Post Comment
+        </Button>
+      </Box>
+    </Container>
   );
 };
 
-export default PromptDetailPage;
+// Main App component to render the detail page
+export default function App() {
+    // In a real app, the ID would come from react-router-dom's useParams()
+    const promptId = "123"; 
+    return <PromptDetailPage id={promptId} />;
+}

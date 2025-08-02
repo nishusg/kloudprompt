@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Container, Card, CardContent, Typography, Box } from '@mui/material';
 import PromptForm from '../components/prompts/PromptForm';
 import { createPrompt } from '../services/PromptService';
 import { useAuth } from '../hooks/UseAuth';
-import Card from '../components/common/Card';
 import { CreatePromptDto } from '../models/Prompt';
 
 const CreatePromptPage: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
-  if (!isAuthenticated) {
-    navigate('/login');
-    return null;
-  }
+  // useEffect is a better place for side-effects like navigation
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (data: CreatePromptDto) => {
     try {
@@ -21,18 +23,28 @@ const CreatePromptPage: React.FC = () => {
       navigate('/');
     } catch (error) {
       console.error('Failed to create prompt:', error);
+      // Optionally, add user-facing error handling here (e.g., a snackbar)
     }
   };
 
+  // Render null or a loader while checking auth to prevent flashing content
+  if (!isAuthenticated) {
+    return null;
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-3xl mx-auto">
+    <Container maxWidth="md" sx={{ py: 4 }}>
+      <Box sx={{ my: 4 }}>
         <Card>
-          <h1 className="text-2xl font-bold mb-6">Create New Prompt</h1>
-          <PromptForm onSubmit={handleSubmit} />
+          <CardContent>
+            <Typography variant="h4" component="h1" gutterBottom>
+              Create New Prompt
+            </Typography>
+            <PromptForm onSubmit={handleSubmit} />
+          </CardContent>
         </Card>
-      </div>
-    </div>
+      </Box>
+    </Container>
   );
 };
 

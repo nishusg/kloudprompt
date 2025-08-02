@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../hooks/UseAuth';
-import Button from '../components/common/Button';
-import Card from '../components/common/Card';
 import { validateEmail, validatePassword, validateUsername } from '../utils/Validators';
+import {
+  Container,
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Button,
+  Stack,
+  Alert,
+  Link,
+  CircularProgress,
+  Box
+} from '@mui/material';
 
 const RegisterPage: React.FC = () => {
   const { register } = useAuth();
@@ -53,7 +64,7 @@ const RegisterPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsLoading(true);
@@ -70,112 +81,99 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
-        <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-6">
-          Create your account
-        </h2>
-        {errors.form && (
-          <div className="mb-4 text-red-600 text-sm">{errors.form}</div>
-        )}
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-              Username
-            </label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              autoComplete="username"
-              required
-              value={formData.username}
-              onChange={handleChange}
-              className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                errors.username ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            {errors.username && <p className="mt-1 text-sm text-red-600">{errors.username}</p>}
-          </div>
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Card sx={{ width: '100%', p: 2 }}>
+          <CardContent>
+            <Typography component="h1" variant="h5" align="center" gutterBottom>
+              Create your account
+            </Typography>
 
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="new-password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-              className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-              Confirm Password
-            </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              required
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            {errors.confirmPassword && (
-              <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+            {errors.form && (
+              <Alert severity="error" sx={{ mb: 2 }}>{errors.form}</Alert>
             )}
-          </div>
 
-          <div>
-            <Button
-              type="submit"
-              variant="primary"
-              className="w-full justify-center"
-              isLoading={isLoading}
-            >
-              Register
-            </Button>
-          </div>
-        </form>
-        <div className="mt-4 text-center text-sm">
-          Already have an account?{' '}
-          <a href="/login" className="font-medium text-blue-600 hover:text-blue-500">
-            Sign in
-          </a>
-        </div>
-      </Card>
-    </div>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+              <Stack spacing={2}>
+                <TextField
+                  id="username"
+                  name="username"
+                  label="Username"
+                  autoComplete="username"
+                  required
+                  fullWidth
+                  value={formData.username}
+                  onChange={handleChange}
+                  error={!!errors.username}
+                  helperText={errors.username}
+                />
+                <TextField
+                  id="email"
+                  name="email"
+                  label="Email Address"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  fullWidth
+                  value={formData.email}
+                  onChange={handleChange}
+                  error={!!errors.email}
+                  helperText={errors.email}
+                />
+                <TextField
+                  id="password"
+                  name="password"
+                  label="Password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  fullWidth
+                  value={formData.password}
+                  onChange={handleChange}
+                  error={!!errors.password}
+                  helperText={errors.password}
+                />
+                <TextField
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  fullWidth
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  error={!!errors.confirmPassword}
+                  helperText={errors.confirmPassword}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  disabled={isLoading}
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Register'}
+                </Button>
+              </Stack>
+            </Box>
+            <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+              Already have an account?{' '}
+              <Link component={RouterLink} to="/login" variant="body2">
+                Sign in
+              </Link>
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+    </Container>
   );
 };
 
