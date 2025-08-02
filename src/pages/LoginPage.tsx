@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../hooks/UseAuth';
-import Button from '../components/common/Button';
-import Card from '../components/common/Card';
 import { validateEmail } from '../utils/Validators';
+
+// MUI Imports
+import {
+  Container,
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Button,
+  CircularProgress,
+  FormControlLabel,
+  Checkbox,
+  Link,
+  Alert,
+  Stack
+} from '@mui/material';
 
 const LoginPage: React.FC = () => {
   const { login } = useAuth();
@@ -54,92 +69,88 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
-        <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-6">
-          Sign in to your account
-        </h2>
-        {errors.form && (
-          <div className="mb-4 text-red-600 text-sm">{errors.form}</div>
-        )}
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-              className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Card sx={{ width: '100%', p: 2 }}>
+          <CardContent>
+            <Typography component="h1" variant="h5" align="center" gutterBottom>
+              Sign in to your account
+            </Typography>
+            
+            {errors.form && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {errors.form}
+              </Alert>
+            )}
+            
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                value={formData.email}
+                onChange={handleChange}
+                error={!!errors.email}
+                helperText={errors.email}
+                disabled={isLoading}
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <a href="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
-                Forgot your password?
-              </a>
-            </div>
-          </div>
-
-          <div>
-            <Button
-              type="submit"
-              variant="primary"
-              className="w-full justify-center"
-              isLoading={isLoading}
-            >
-              Sign in
-            </Button>
-          </div>
-        </form>
-        <div className="mt-4 text-center text-sm">
-          Don't have an account?{' '}
-          <a href="/register" className="font-medium text-blue-600 hover:text-blue-500">
-            Register here
-          </a>
-        </div>
-      </Card>
-    </div>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={formData.password}
+                onChange={handleChange}
+                error={!!errors.password}
+                helperText={errors.password}
+                disabled={isLoading}
+              />
+              <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 1, mb: 2 }}>
+                  <FormControlLabel
+                    control={<Checkbox value="remember" color="primary" />}
+                    label="Remember me"
+                    disabled={isLoading}
+                  />
+                   <Link component={RouterLink} to="/forgot-password" variant="body2">
+                    Forgot password?
+                  </Link>
+              </Stack>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                disabled={isLoading}
+                sx={{ py: 1.5 }}
+              >
+                {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
+              </Button>
+            </Box>
+             <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+                Don't have an account?{' '}
+                <Link component={RouterLink} to="/register" variant="body2">
+                   Register here
+                </Link>
+             </Typography>
+          </CardContent>
+        </Card>
+      </Box>
+    </Container>
   );
 };
 

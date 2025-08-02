@@ -1,52 +1,81 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Button from '../common/Button';
 import { useAuth } from '../../hooks/UseAuth';
+
+// Import Material-UI components
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
 
   return (
-    <header className="bg-white shadow-sm">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold text-blue-600">
+    <AppBar position="static" color="default" elevation={1}>
+      <Toolbar>
+        {/* App Title */}
+        <Typography
+          variant="h6"
+          component={Link}
+          to="/"
+          sx={{
+            flexGrow: 1, // Pushes the navigation links to the right
+            fontWeight: 'bold',
+            textDecoration: 'none',
+            color: 'primary.main',
+          }}
+        >
           PromptShare
-        </Link>
-        <nav className="flex items-center space-x-4">
-          <Link to="/" className="text-gray-700 hover:text-blue-600">
-            Home
-          </Link>
-          <Link to="/explore" className="text-gray-700 hover:text-blue-600">
-            Explore
-          </Link>
-          {user ? (
-            <>
-              <Link to="/create" className="text-gray-700 hover:text-blue-600">
-                Create
-              </Link>
-              <Link
-                to={`/profile/${user.id}`}
-                className="text-gray-700 hover:text-blue-600"
-              >
-                Profile
-              </Link>
-              <Button variant="outline" onClick={logout}>
-                Logout
-              </Button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="text-gray-700 hover:text-blue-600">
-                Login
-              </Link>
-              <Link to="/register">
-                <Button variant="primary">Sign Up</Button>
-              </Link>
-            </>
-          )}
+        </Typography>
+
+        <nav>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {/* Common Links */}
+            <Button color="inherit" component={Link} to="/">
+              Home
+            </Button>
+            <Button color="inherit" component={Link} to="/explore">
+              Explore
+            </Button>
+
+            {/* Conditional links based on auth state */}
+            {user ? (
+              <>
+                <Button color="inherit" component={Link} to="/create">
+                  Create
+                </Button>
+                <Button
+                  color="inherit"
+                  component={Link}
+                  to={`/profile/${user.id}`}
+                >
+                  Profile
+                </Button>
+                <Button variant="outlined" onClick={logout} sx={{ ml: 1 }}>
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button color="inherit" component={Link} to="/login">
+                  Login
+                </Button>
+                <Button
+                  variant="contained"
+                  component={Link}
+                  to="/register"
+                  sx={{ ml: 1 }}
+                >
+                  Sign Up
+                </Button>
+              </>
+            )}
+          </Box>
         </nav>
-      </div>
-    </header>
+      </Toolbar>
+    </AppBar>
   );
 };
 

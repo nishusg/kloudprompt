@@ -8,36 +8,34 @@ import CreatePromptPage from './pages/CreatePromptPage';
 import ProfilePage from './pages/ProfilePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-//import { AuthProvider } from './hooks/UseAuth';
-//import ProtectedRoute from './components/common/ProtectedRoute';
+import NotFoundPage from './pages/NotFoundPage';
+import ExplorePage from './pages/ExplorePage';
 
 const App: React.FC = () => {
   return (
-    //<AuthProvider>
-      <Router>
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/prompts/:id" element={<PromptDetailPage />} />
-              <Route
-                path="/create"
-                element={
-                  //<ProtectedRoute>
-                    <CreatePromptPage />
-                  //</ProtectedRoute>
-                }
-              />
-              <Route path="/profile/:id" element={<ProfilePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
-    //</AuthProvider>
+    <Router>
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/prompts/:id" element={<PromptDetailPage />} />
+            <Route
+              path="/create"
+              element={
+                <CreatePromptPage />
+              }
+            />
+            <Route path="/profile/:id" element={<ProfilePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
   );
 };
 
