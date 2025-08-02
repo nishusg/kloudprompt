@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Typography, Button, Stack, Divider, Link } from '@mui/material';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 const NotFoundPage: React.FC = () => {
   return (

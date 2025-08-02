@@ -8,7 +8,8 @@ The project follows a standard feature-based structure to keep the codebase orga
 
 -   `public/`: Static assets.
 -   `src/`: Application source code.
-    -   `api/`: Services for interacting with the backend API.
+    -   `services/`: Services for interacting with the backend API.
+    -   `data/`: Custom set of data
     -   `components/`: Reusable React components.
     -   `hooks/`: Custom React hooks.
     -   `models/`: TypeScript interfaces for data structures.
