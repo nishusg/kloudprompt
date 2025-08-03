@@ -1,7 +1,7 @@
 import apiClient from './ApiClient';
-import { Comment } from '../models/Comment';
+import { PromptComment } from '../models/Comment';
 
-export const getComments = async (promptId: string): Promise<Comment[]> => {
+export const getComments = async (promptId: string): Promise<PromptComment[]> => {
   const response = await apiClient.get(`/prompts/${promptId}/comments`);
   return response.data;
 };
@@ -9,7 +9,7 @@ export const getComments = async (promptId: string): Promise<Comment[]> => {
 export const addComment = async (
   promptId: string,
   content: string
-): Promise<Comment> => {
+): Promise<PromptComment> => {
   const response = await apiClient.post(`/prompts/${promptId}/comments`, { content });
   return response.data;
 };

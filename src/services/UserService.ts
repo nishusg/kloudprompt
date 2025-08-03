@@ -20,7 +20,7 @@ export const loginUser = async (credentials: {
 };
 
 export const getCurrentUser = async (): Promise<User> => {
-  const response = await apiClient.get('/users/me');
+  const response = await apiClient.get('/auth/me');
   return response.data;
 };
 

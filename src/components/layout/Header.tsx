@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../hooks/UseAuth';
+import { useAuth } from '../../context/AuthContext'; // Make sure this path is correct for your structure
 
 // Import Material-UI components
 import AppBar from '@mui/material/AppBar';
@@ -8,9 +8,11 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress'; // Import a loading spinner
 
 const Header: React.FC = () => {
-  const { user, logout } = useAuth();
+  // Destructure isLoading from the useAuth hook
+  const { user, logout, loading } = useAuth();
 
   return (
     <AppBar position="static" color="default" elevation={1}>
@@ -21,7 +23,7 @@ const Header: React.FC = () => {
           component={Link}
           to="/"
           sx={{
-            flexGrow: 1, // Pushes the navigation links to the right
+            flexGrow: 1,
             fontWeight: 'bold',
             textDecoration: 'none',
             color: 'primary.main',
@@ -41,7 +43,13 @@ const Header: React.FC = () => {
             </Button>
 
             {/* Conditional links based on auth state */}
-            {user ? (
+            {loading ? (
+              // While checking auth, show a small loader
+              <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+                <CircularProgress size={24} />
+              </Box>
+            ) : user ? (
+              // If user is logged in, show profile/create/logout
               <>
                 <Button color="inherit" component={Link} to="/create">
                   Create
@@ -49,7 +57,9 @@ const Header: React.FC = () => {
                 <Button
                   color="inherit"
                   component={Link}
-                  to={`/profile/${user.id}`}
+                  // IMPORTANT: Changed to user._id, which is common for MongoDB.
+                  // Verify this matches your User model.
+                  to={`/profile/${user._id}`}
                 >
                   Profile
                 </Button>
@@ -58,6 +68,7 @@ const Header: React.FC = () => {
                 </Button>
               </>
             ) : (
+              // If no user, show login/signup
               <>
                 <Button color="inherit" component={Link} to="/login">
                   Login

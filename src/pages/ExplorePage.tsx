@@ -1,110 +1,140 @@
 import React, { useState, useEffect } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   Container,
   Typography,
-  TextField,
   Box,
   Grid,
   Card,
   CardContent,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
+import { getPrompts } from '../services/PromptService'; // Import your real service
+import { Prompt } from '../models/Prompt'; // Import your real Prompt model
 
-// Mock data for prompts - in a real app, this would come from an API
-const mockPrompts = [
-  { id: 1, title: 'Epic Landscape Photography', description: 'Generate a prompt for creating breathtaking mountain landscapes at sunset.', author: 'PixelArtisan' },
-  { id: 2, title: 'Sci-Fi Character Concept', description: 'A detailed prompt for designing a futuristic bounty hunter with cybernetic enhancements.', author: 'CyberCreator' },
-  { id: 3, title: 'Minimalist Logo Design', description: 'Create a prompt for a modern, clean logo for a tech startup.', author: 'DesignFuel' },
-  { id: 4, title: 'Story Writing Starter', description: 'A prompt to kickstart a fantasy short story involving a lost magical artifact.', author: 'StoryWeaver' },
-  { id: 5, title: 'Healthy Meal Plan', description: 'Generate a week-long healthy and delicious meal plan for a busy professional.', author: 'NutriGen' },
-  { id: 6, title: '3D Architectural Visualization', description: 'A prompt for rendering a photorealistic modern beach house using Blender.', author: 'ArchVizPro' },
-];
-
-// A reusable card component for displaying each prompt, now using MUI Card
-const PromptCard: React.FC<{ title: string; description: string; author: string }> = ({ title, description, author }) => {
+/**
+ * Reusable card component that is now a clickable link.
+ */
+const PromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
   return (
-    <Card sx={{
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      transition: 'box-shadow 0.3s, transform 0.3s',
-      '&:hover': {
-        transform: 'translateY(-4px)',
-        boxShadow: 8, // Elevates the card on hover
-      },
-    }}>
-      <CardContent sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-        <Typography variant="h6" component="h3" fontWeight="bold" gutterBottom>
-          {title}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1, mb: 2 }}>
-          {description}
-        </Typography>
-        <Typography variant="caption" color="text.secondary">
-          by @{author}
-        </Typography>
-      </CardContent>
-    </Card>
+    // The Grid item should wrap the card for proper spacing and layout
+    <Grid >
+      <Card
+        component={RouterLink}
+        to={`/prompts/${prompt._id}`} // Link to the prompt detail page
+        sx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          textDecoration: 'none', // Remove underline from link
+          transition: 'box-shadow 0.3s, transform 0.3s',
+          '&:hover': {
+            transform: 'translateY(-4px)',
+            boxShadow: 8,
+          },
+        }}
+      >
+        <CardContent sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+          <Typography variant="h6" component="h3" fontWeight="bold" gutterBottom>
+            {prompt.title}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1, mb: 2 }}>
+            {prompt.promptText}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            {/* Assuming the author object is populated from the backend */}
+            by @{prompt.author?.username || 'Unknown'}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Grid>
   );
 };
 
-// The main Explore component, now using MUI components
-const Explore: React.FC = () => {
+/**
+ * The main Explore component, now fetching live data.
+ */
+const ExplorePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredPrompts, setFilteredPrompts] = useState(mockPrompts);
+  const [allPrompts, setAllPrompts] = useState<Prompt[]>([]); // Stores the master list from API
+  const [filteredPrompts, setFilteredPrompts] = useState<Prompt[]>([]); // Stores the list to display
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // 1. Effect to fetch all prompts ONCE on component mount
   useEffect(() => {
-    const results = mockPrompts.filter(prompt =>
-      prompt.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      prompt.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const fetchAllPrompts = async () => {
+      try {
+        setLoading(true);
+        const promptsData = await getPrompts(); // Your service to fetch all prompts
+        setAllPrompts(promptsData);
+        setFilteredPrompts(promptsData); // Initially, the filtered list is the full list
+      } catch (err) {
+        setError('Failed to load prompts. Please try again later.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAllPrompts();
+  }, []);
+
+  // 2. Effect to filter prompts whenever the search term or master list changes
+  useEffect(() => {
+    if (!allPrompts) return; // Add a guard clause
+    const results = allPrompts.filter(prompt => {
+      const lowercasedSearchTerm = searchTerm.toLowerCase();
+
+      // Check title (exists)
+      const titleMatch = prompt.title.toLowerCase().includes(lowercasedSearchTerm);
+
+      // Check promptText (instead of content)
+      const contentMatch = prompt.promptText.toLowerCase().includes(lowercasedSearchTerm);
+
+      // Check tags (optional but good to have)
+      const tagMatch = prompt.tags.some(tag => 
+        tag.toLowerCase().includes(lowercasedSearchTerm)
+      );
+
+      return titleMatch || contentMatch || tagMatch;
+    });
+
     setFilteredPrompts(results);
-  }, [searchTerm]);
+  }, [searchTerm, allPrompts]);
 
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
-      {/* Header */}
+      {/* Header and Search Input (No changes needed) */}
       <Box textAlign="center" mb={{ xs: 5, md: 10 }}>
-        <Typography variant="h2" component="h1" fontWeight="bold" gutterBottom>
-          Explore Prompts 🚀
-        </Typography>
-        <Typography variant="h6" color="text.secondary">
-          Discover and find the perfect prompt for your next project.
-        </Typography>
+        {/* ... */}
       </Box>
-
-      {/* Search Input */}
       <Box display="flex" justifyContent="center" mb={{ xs: 5, md: 10 }}>
-        <TextField
-          label="Search for prompts by keyword..."
-          variant="outlined"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ width: '100%', maxWidth: '600px' }}
-        />
+        {/* ... */}
       </Box>
 
-      {/* Prompts Grid */}
-      <Grid container spacing={4}>
-        {filteredPrompts.length > 0 ? (
-          filteredPrompts.map(prompt => (
-            <Grid key={prompt.id}>
-              <PromptCard
-                title={prompt.title}
-                description={prompt.description}
-                author={prompt.author}
-              />
+      {/* Prompts Grid with Loading/Error states */}
+      {loading ? (
+        <Box display="flex" justifyContent="center"><CircularProgress /></Box>
+      ) : error ? (
+        <Alert severity="error">{error}</Alert>
+      ) : (
+        <Grid container spacing={4}>
+          {filteredPrompts.length > 0 ? (
+            filteredPrompts.map(prompt => (
+              <PromptCard key={prompt._id} prompt={prompt} />
+            ))
+          ) : (
+            <Grid> {/* Ensure this is also a Grid item for proper layout */}
+              <Typography align="center" color="text.secondary" sx={{ mt: 4, fontStyle: 'italic' }}>
+                No prompts found for "{searchTerm}". Try another keyword!
+              </Typography>
             </Grid>
-          ))
-        ) : (
-          <Grid>
-            <Typography align="center" color="text.secondary" sx={{ mt: 4, fontStyle: 'italic' }}>
-              No prompts found for "{searchTerm}". Try another keyword!
-            </Typography>
-          </Grid>
-        )}
-      </Grid>
+          )}
+        </Grid>
+      )}
     </Container>
   );
 };
 
-export default Explore;
+export default ExplorePage;

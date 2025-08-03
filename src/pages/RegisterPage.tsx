@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { useAuth } from '../hooks/UseAuth';
+import { useAuth } from '../context/AuthContext';
 import { validateEmail, validatePassword, validateUsername } from '../utils/Validators';
 import {
   Container,

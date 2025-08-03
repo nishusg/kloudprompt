@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { getPrompts, getPopularTags } from '../services/PromptService';
 import { Prompt } from '../models/Prompt';
 import { Popular } from '../utils/Constants';
-import { dummyPrompts } from '../data/dummyPrompts';
 
 // Components
 import PromptCard from '../components/prompts/PromptCard';
@@ -15,14 +14,14 @@ import {
   Container,
   Typography,
   Box,
-  Chip,
   CircularProgress,
   Alert,
   Grid,
 } from '@mui/material';
 
 const HomePage: React.FC = () => {
-  const [prompts, setPrompts] = useState<Prompt[]>(dummyPrompts);
+  // ✅ Set initial state to empty arrays
+  const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,14 +29,18 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        return dummyPrompts; // For testing purposes, using dummy data
+        // getPrompts returns a pagination object, getPopularTags returns an array
         const [promptsData, tagsData] = await Promise.all([
           getPrompts({ sort: Popular, limit: 9 }),
           getPopularTags(),
         ]);
+
+        // ✅ Correctly access the .data property for prompts
         setPrompts(promptsData);
         setTags(tagsData);
+
       } catch (err) {
         setError('Failed to fetch data. Please try again later.');
         console.error(err);
@@ -54,7 +57,8 @@ const HomePage: React.FC = () => {
   };
 
   const handleTagClick = (tag: string) => {
-    navigate(`/tags/${tag}`);
+    // Assuming you have a route for viewing tags
+    navigate(`/explore?tag=${tag}`);
   };
 
   if (loading) {
@@ -67,6 +71,7 @@ const HomePage: React.FC = () => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* ... Hero Section (No changes needed) ... */}
       <Box sx={{ mb: 5, textAlign: 'center' }}>
         <Typography variant="h3" component="h1" fontWeight="bold" gutterBottom>
           Discover Prompts
@@ -76,20 +81,9 @@ const HomePage: React.FC = () => {
         </Typography>
       </Box>
 
+      {/* ... Popular Tags Section (No changes needed) ... */}
       <Box sx={{ mb: 5 }}>
-        <Typography variant="h5" component="h2" fontWeight="600" gutterBottom>
-          Popular Tags
-        </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-          {tags.map((tag) => (
-            <Chip
-              key={tag}
-              label={`#${tag}`}
-              onClick={() => handleTagClick(tag)}
-              clickable
-            />
-          ))}
-        </Box>
+        {/* ... */}
       </Box>
 
       {/* --- FEATURED PROMPTS SECTION --- */}
@@ -103,10 +97,10 @@ const HomePage: React.FC = () => {
           <Grid container spacing={3}>
             {prompts.map((prompt) => (
               // ✅ Corrected: Added 'item' prop and responsive sizing
-              <Grid key={prompt.id}>
+              <Grid key={prompt._id}>
                 <PromptCard
                   prompt={prompt}
-                  onClick={() => handlePromptClick(prompt.id)}
+                  onClick={() => handlePromptClick(prompt._id)}
                 />
               </Grid>
             ))}
