@@ -1,11 +1,11 @@
 import { User } from './User';
 
-export interface Comment {
-  id: string;
-  content: string;
-  author: User;
-  createdAt: string;
-  updatedAt: string;
-  replies?: Comment[];
-  parentId?: string | null;
+export interface PromptComment {
+  readonly _id: string;
+  text: string;
+  readonly author: User;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+  readonly parentId?: string | null;
+  replies?: PromptComment[];
 }

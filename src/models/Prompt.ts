@@ -1,21 +1,24 @@
+import { PromptComment } from './Comment';
 import { User } from './User';
 
 export interface Prompt {
-  id: string;
+  readonly _id: string;
   title: string;
-  content: string;
+  promptText: string; // Corrected from 'content'
   description: string;
   tags: string[];
-  author: User;
-  upvotes: number;
-  upvoted: boolean;
-  views: number;
-  createdAt: string;
-  updatedAt: string;
+  readonly author: User;
+  readonly upvotes: number;
+  isUpvotedByCurrentUser: boolean;
+  readonly views: number;
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+  comments: PromptComment[];
   examples?: Example[];
   parameters?: Parameter[];
 }
 
+// No changes needed, this is well-defined
 export interface CreatePromptDto {
   title: string;
   content: string;
@@ -25,16 +28,17 @@ export interface CreatePromptDto {
   parameters?: Parameter[];
 }
 
+// No changes needed, this is an excellent use of TypeScript's Partial
 export interface UpdatePromptDto extends Partial<CreatePromptDto> {}
 
 export interface Example {
-  input: string;
-  output: string;
+  readonly input: string;
+  readonly output: string;
 }
 
 export interface Parameter {
-  name: string;
-  description: string;
-  defaultValue: string;
-  required: boolean;
+  readonly name: string;
+  readonly description: string;
+  readonly defaultValue: string;
+  readonly required: boolean;
 }

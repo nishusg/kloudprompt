@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Card, CardContent, Typography, Box } from '@mui/material';
 import PromptForm from '../components/prompts/PromptForm';
 import { createPrompt } from '../services/PromptService';
-import { useAuth } from '../hooks/UseAuth';
+import { useAuth } from '../context/AuthContext';
 import { CreatePromptDto } from '../models/Prompt';
 
 const CreatePromptPage: React.FC = () => {

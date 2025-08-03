@@ -19,11 +19,11 @@ const PromptCard: React.FC<PromptCardProps> = ({
 }) => {
   return (
     <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-      <div onClick={() => onClick?.(prompt.id)}>
+      <div onClick={() => onClick?.(prompt._id)}>
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-lg font-semibold">{prompt.title}</h3>
           <span className="text-sm text-gray-500">
-            {formatDate(prompt.createdAt)}
+            {formatDate(prompt.createdAt.toString())}
           </span>
         </div>
         <p className="text-gray-600 mb-4 line-clamp-3">{prompt.description}</p>
@@ -41,9 +41,9 @@ const PromptCard: React.FC<PromptCardProps> = ({
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <Button
-            variant={prompt.upvoted ? 'primary' : 'outline'}
+            variant={prompt.upvotes ? 'primary' : 'outline'}
             size="sm"
-            onClick={() => onUpvote?.(prompt.id)}
+            onClick={() => onUpvote?.(prompt._id)}
           >
             ▲ {prompt.upvotes}
           </Button>
@@ -54,7 +54,7 @@ const PromptCard: React.FC<PromptCardProps> = ({
         <Button
           variant="secondary"
           size="sm"
-          onClick={() => onBookmark?.(prompt.id)}
+          onClick={() => onBookmark?.(prompt._id)}
         >
           Bookmark
         </Button>

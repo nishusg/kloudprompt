@@ -1,4 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // Use our global auth hook
+import { getUserPrompts, deletePrompt } from '../services/PromptService'; // Import your real services
+import { User, Prompt } from '../models'; // Assuming models are in src/models
+
+// MUI Imports
 import {
   Container,
   Box,
@@ -14,60 +20,13 @@ import {
   CardActions,
 } from '@mui/material';
 
-// --- INTERFACES ---
-// User interface as provided
-export interface User {
-  id: string;
-  username: string;
-  email?: string;
-  avatar?: string;
-  bio?: string;
-  followersCount?: number;
-  followingCount?: number;
-  isFollowing?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-// A simple interface for prompts
-export interface Prompt {
-  id: string;
-  title: string;
-  description: string;
-  likes: number;
-}
-
-
-// --- DUMMY DATA ---
-// A sample user object based on the User interface
-const dummyUser: User = {
-  id: 'user-123',
-  username: 'Alex_Stark',
-  email: 'alex.stark@example.com',
-  avatar: 'https://i.pravatar.cc/150?u=alexstark', // Using a placeholder image service
-  bio: 'Creative writer & AI enthusiast exploring the future of storytelling. Follow for unique prompts and creative inspiration.',
-  followersCount: 1450,
-  followingCount: 210,
-  isFollowing: false,
-  createdAt: '2024-05-10T10:00:00Z',
-  updatedAt: '2024-08-01T15:30:00Z',
-};
-
-// A sample array of prompts created by the user
-const dummyPrompts: Prompt[] = [
-  { id: 'prompt-01', title: 'The Last Sunset on Mars', description: 'Describe the final moments of a lone astronaut watching the last sunset before returning to Earth.', likes: 152 },
-  { id: 'prompt-02', title: 'A City Powered by Dreams', description: 'In a world where dreams are the primary energy source, what happens when people start having nightmares?', likes: 278 },
-  { id: 'prompt-03', title: 'The Sentient Forest', description: 'A lost hiker discovers that the ancient forest they are in is a single, conscious entity. How do they communicate?', likes: 98 },
-  { id: 'prompt-04', title: 'Detective in a Time Loop', description: 'A detective has to solve a murder but is stuck in a 24-hour time loop that resets every time they fail.', likes: 410 },
-];
-
-
-// --- COMPONENTS ---
-
-/**
- * A simple card component to display a prompt.
- */
-const PromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
+// --- PROMPT CARD COMPONENT (with Edit/Delete) ---
+// We've updated this component to accept edit and delete handlers
+const PromptCard: React.FC<{
+  prompt: Prompt;
+  onEdit: () => void;
+  onDelete: () => void;
+}> = ({ prompt, onEdit, onDelete }) => {
   return (
     <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardContent sx={{ flexGrow: 1 }}>
@@ -75,42 +34,66 @@ const PromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
           {prompt.title}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {prompt.description}
+          {prompt.promptText} {/* Assuming the field is 'content' */}
         </Typography>
       </CardContent>
-      <CardActions sx={{ pl: 2, pb: 2 }}>
-        <Typography variant="body2" fontWeight="medium">
-          {prompt.likes} Likes
-        </Typography>
+      <CardActions sx={{ pl: 2, pb: 2, justifyContent: 'space-between' }}>
+        {/* We can add buttons for edit and delete here */}
+        <Button size="small" onClick={onEdit}>Edit</Button>
+        <Button size="small" color="error" onClick={onDelete}>Delete</Button>
       </CardActions>
     </Card>
   );
 };
 
-/**
- * The main profile page component that fetches and displays user data.
- */
-const App: React.FC = () => {
-  // State to hold the user and their prompts
-  const [user, setUser] = useState<User | null>(null);
+// --- PROFILE PAGE COMPONENT ---
+const ProfilePage: React.FC = () => {
+  const { user: loggedInUser, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+
   const [prompts, setPrompts] = useState<Prompt[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingPrompts, setLoadingPrompts] = useState(true);
 
-  // useEffect to simulate fetching data when the component mounts
   useEffect(() => {
-    // Simulate an API call with a timeout
-    const timer = setTimeout(() => {
-      // Set the dummy data into the state
-      setUser(dummyUser);
-      setPrompts(dummyPrompts);
-      setLoading(false); // Set loading to false after data is "fetched"
-    }, 1500); // 1.5-second delay
+    // Fetch the user's prompts when the component mounts and the user is logged in
+    const fetchUserPrompts = async () => {
+      if (loggedInUser?._id) {
+        try {
+          setLoadingPrompts(true);
+          const userPrompts = await getUserPrompts(loggedInUser._id);
+          setPrompts(userPrompts);
+        } catch (error) {
+          console.error("Failed to fetch user prompts:", error);
+        } finally {
+          setLoadingPrompts(false);
+        }
+      }
+    };
 
-    // Cleanup function to clear the timer if the component unmounts
-    return () => clearTimeout(timer);
-  }, []); // Empty dependency array means this runs only once on mount
+    if (!authLoading) {
+        fetchUserPrompts();
+    }
+  }, [loggedInUser, authLoading]); // Re-run if the user logs in or out
 
-  if (loading) {
+  const handleEdit = (promptId: string) => {
+    navigate(`/update-prompt/${promptId}`);
+  };
+
+  const handleDelete = async (promptId: string) => {
+    const hasConfirmed = window.confirm("Are you sure you want to delete this prompt?");
+    if (hasConfirmed) {
+      try {
+        await deletePrompt(promptId);
+        // Update the state to remove the prompt from the UI instantly
+        setPrompts((prevPrompts) => prevPrompts.filter((p) => p._id !== promptId));
+      } catch (error) {
+        console.error("Failed to delete prompt:", error);
+      }
+    }
+  };
+
+  // Show a loading spinner while authenticating or fetching prompts
+  if (authLoading || loadingPrompts) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
         <CircularProgress />
@@ -119,8 +102,9 @@ const App: React.FC = () => {
     );
   }
 
-  if (!user) {
-    return <Typography variant="h6" align="center" sx={{ mt: 4 }}>User not found.</Typography>;
+  // If not loading and no user is logged in, prompt to log in
+  if (!loggedInUser) {
+    return <Typography variant="h6" align="center" sx={{ mt: 4 }}>Please log in to view your profile.</Typography>;
   }
 
   return (
@@ -132,51 +116,44 @@ const App: React.FC = () => {
           alignItems={{ xs: 'center', md: 'flex-start' }}
         >
           <Avatar
-            src={user.avatar}
-            alt={user.username}
-            sx={{ width: 96, height: 96, fontSize: '2.5rem', border: '2px solid white' }}
-          >
-            {user.username.charAt(0).toUpperCase()}
-          </Avatar>
-          
+            src={loggedInUser.avatar}
+            alt={loggedInUser.username}
+            sx={{ width: 96, height: 96 }}
+          />
           <Box sx={{ flexGrow: 1, textAlign: { xs: 'center', md: 'left'} }}>
             <Typography variant="h4" component="h1" fontWeight="bold">
-              {user.username}
+              {loggedInUser.username}
             </Typography>
-            {user.bio && (
-              <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
-                {user.bio}
-              </Typography>
-            )}
-            <Stack direction="row" spacing={3} sx={{ mt: 2, justifyContent: { xs: 'center', md: 'flex-start'} }}>
-              <Typography variant="body2">
-                <Box component="span" fontWeight="fontWeightMedium">{user.followersCount}</Box> Followers
-              </Typography>
-              <Typography variant="body2">
-                <Box component="span" fontWeight="fontWeightMedium">{user.followingCount}</Box> Following
-              </Typography>
-            </Stack>
+            {/* Show an "Edit Profile" button instead of Follow */}
+            <Button variant="outlined" size="medium" sx={{ mt: 2, width: { xs: '100%', sm: 'auto' }}}>
+              Edit Profile
+            </Button>
           </Box>
-          
-          <Button variant="contained" size="medium" sx={{ mt: { xs: 2, md: 0 }, width: { xs: '100%', sm: 'auto' }}}>
-            {user.isFollowing ? 'Following' : 'Follow'}
-          </Button>
         </Stack>
       </Paper>
 
       <Typography variant="h5" component="h2" fontWeight="bold" sx={{ mb: 3 }}>
-        Prompts
+        My Prompts
       </Typography>
 
       <Grid container spacing={3}>
-        {prompts.map((prompt) => (
-          <Grid key={prompt.id}>
-            <PromptCard prompt={prompt} />
-          </Grid>
-        ))}
+        {prompts.length > 0 ? (
+          prompts.map((prompt) => (
+            // ✅ Corrected Grid layout and key prop
+            <Grid key={prompt._id}>
+              <PromptCard
+                prompt={prompt}
+                onEdit={() => handleEdit(prompt._id)}
+                onDelete={() => handleDelete(prompt._id)}
+              />
+            </Grid>
+          ))
+        ) : (
+          <Typography sx={{ ml: 3, mt: 2, color: 'text.secondary' }}>You haven't created any prompts yet.</Typography>
+        )}
       </Grid>
     </Container>
   );
 };
 
-export default App;
+export default ProfilePage;
