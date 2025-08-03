@@ -1,18 +1,49 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext'; // Make sure this path is correct for your structure
+// src/components/layout/Header.tsx
 
-// Import Material-UI components
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress'; // Import a loading spinner
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box,
+  CircularProgress,
+  Avatar,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Divider,
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 const Header: React.FC = () => {
-  // Destructure isLoading from the useAuth hook
   const { user, logout, loading } = useAuth();
+  const navigate = useNavigate();
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleNavigate = (path: string) => {
+    handleClose();
+    navigate(path);
+  };
+  
+  const handleLogout = () => {
+    handleClose();
+    logout();
+  };
 
   return (
     <AppBar position="static" color="default" elevation={1}>
@@ -22,69 +53,78 @@ const Header: React.FC = () => {
           variant="h6"
           component={Link}
           to="/"
-          sx={{
-            flexGrow: 1,
-            fontWeight: 'bold',
-            textDecoration: 'none',
-            color: 'primary.main',
-          }}
+          sx={{ flexGrow: 1, fontWeight: 'bold', textDecoration: 'none', color: 'inherit' }}
         >
           PromptShare
         </Typography>
 
-        <nav>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {/* Common Links */}
-            <Button color="inherit" component={Link} to="/">
-              Home
-            </Button>
-            <Button color="inherit" component={Link} to="/explore">
-              Explore
-            </Button>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Button color="inherit" component={Link} to="/explore">
+            Explore
+          </Button>
 
-            {/* Conditional links based on auth state */}
-            {loading ? (
-              // While checking auth, show a small loader
-              <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
-                <CircularProgress size={24} />
-              </Box>
-            ) : user ? (
-              // If user is logged in, show profile/create/logout
-              <>
-                <Button color="inherit" component={Link} to="/create">
-                  Create
-                </Button>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  // IMPORTANT: Changed to user._id, which is common for MongoDB.
-                  // Verify this matches your User model.
-                  to={`/profile/${user._id}`}
+          {loading ? (
+            <CircularProgress size={24} sx={{ ml: 2 }} />
+          ) : user ? (
+            <>
+              {/* Main 'Create' button - hidden on mobile */}
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={() => navigate('/create')}
+                sx={{ display: { xs: 'none', sm: 'flex' } }}
+              >
+                Create
+              </Button>
+              
+              <Tooltip title="Account settings">
+                <IconButton onClick={handleMenu} size="small" sx={{ ml: 2 }}>
+                  <Avatar sx={{ width: 32, height: 32 }} src={user.avatar}>
+                    {user.username?.charAt(0).toUpperCase() || 'A'}
+                  </Avatar>
+                </IconButton>
+              </Tooltip>
+
+              <Menu
+                anchorEl={anchorEl}
+                id="account-menu"
+                open={open}
+                onClose={handleClose}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              >
+                {/* ✨ 1. 'Create' button for mobile, hidden on larger screens */}
+                <MenuItem
+                  onClick={() => handleNavigate('/create')}
+                  sx={{ display: { xs: 'flex', sm: 'none' } }}
                 >
+                  Create Prompt
+                </MenuItem>
+                {/* ✨ Add a divider if the mobile 'Create' button is shown */}
+                <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+                   <Divider />
+                </Box>
+                
+                <MenuItem onClick={() => handleNavigate(`/profile/${user._id}`)}>
                   Profile
-                </Button>
-                <Button variant="outlined" onClick={logout} sx={{ ml: 1 }}>
+                </MenuItem>
+                <Divider />
+                <MenuItem onClick={handleLogout}>
                   Logout
-                </Button>
-              </>
-            ) : (
-              // If no user, show login/signup
-              <>
-                <Button color="inherit" component={Link} to="/login">
-                  Login
-                </Button>
-                <Button
-                  variant="contained"
-                  component={Link}
-                  to="/register"
-                  sx={{ ml: 1 }}
-                >
-                  Sign Up
-                </Button>
-              </>
-            )}
-          </Box>
-        </nav>
+                </MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <>
+              <Button color="inherit" component={Link} to="/login">
+                Login
+              </Button>
+              <Button variant="contained" component={Link} to="/register" sx={{ ml: 1 }}>
+                Sign Up
+              </Button>
+            </>
+          )}
+        </Box>
       </Toolbar>
     </AppBar>
   );

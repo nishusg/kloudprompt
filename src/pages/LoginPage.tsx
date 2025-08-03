@@ -1,25 +1,26 @@
+// src/pages/LoginPage.tsx
+
 import React, { useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { validateEmail } from '../utils/Validators';
 
-// MUI Imports (no changes)
+// MUI Imports
 import {
   Container, Box, Card, CardContent, Typography, TextField, Button,
   CircularProgress, FormControlLabel, Checkbox, Link, Alert, Stack
 } from '@mui/material';
 
 const LoginPage: React.FC = () => {
-  // ✨ Get the global `error` and `clearError` from the context
-  const { login, error: authError } = useAuth();
-  const navigate = useNavigate(); // Still needed for other potential navigation
+  const { login, error: authError, clearError } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // ✨ Clear errors when the user starts typing again
     if (Object.keys(errors).length) setErrors({});
+    if (authError) clearError();
     
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -27,15 +28,12 @@ const LoginPage: React.FC = () => {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
     if (!validateEmail(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
-
     if (!formData.password) {
       newErrors.password = 'Password is required';
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -47,11 +45,8 @@ const LoginPage: React.FC = () => {
     setIsLoading(true);
     try {
       await login(formData.email, formData.password);
-      // ✨ No need for navigate('/') here, as AuthContext handles it
     } catch (error) {
-      // The error will now be set in the global AuthContext state,
-      // and the component will re-render to display it.
-      // We don't need a local error state for this.
+      // Error is handled by the global authError state
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +61,6 @@ const LoginPage: React.FC = () => {
               Sign in to your account
             </Typography>
             
-            {/* ✨ Display the error message from the AuthContext */}
             {authError && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 {authError}
@@ -74,7 +68,6 @@ const LoginPage: React.FC = () => {
             )}
             
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-              {/* --- The rest of your JSX is perfect and needs no changes --- */}
               <TextField
                 margin="normal"
                 required
@@ -82,6 +75,8 @@ const LoginPage: React.FC = () => {
                 id="email"
                 label="Email Address"
                 name="email"
+                autoComplete="email"
+                autoFocus
                 value={formData.email}
                 onChange={handleChange}
                 error={!!errors.email}
@@ -89,25 +84,51 @@ const LoginPage: React.FC = () => {
                 disabled={isLoading}
               />
               <TextField
-                 margin="normal"
-                 required
-                 fullWidth
-                 name="password"
-                 label="Password"
-                 type="password"
-                 id="password"
-                 value={formData.password}
-                 onChange={handleChange}
-                 error={!!errors.password}
-                 helperText={errors.password}
-                 disabled={isLoading}
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={formData.password}
+                onChange={handleChange}
+                error={!!errors.password}
+                helperText={errors.password}
+                disabled={isLoading}
               />
-              {/* ... other elements ... */}
-              <Button type="submit" fullWidth variant="contained" disabled={isLoading} sx={{ py: 1.5 }}>
+
+              {/* --- ✅ FORGOT PASSWORD LINK --- */}
+              <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 1, mb: 2 }}>
+                <FormControlLabel
+                  control={<Checkbox value="remember" color="primary" />}
+                  label="Remember me"
+                  disabled={isLoading}
+                />
+                <Link component={RouterLink} to="/forgot-password" variant="body2">
+                  Forgot password?
+                </Link>
+              </Stack>
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                disabled={isLoading}
+                sx={{ py: 1.5 }}
+              >
                 {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
               </Button>
             </Box>
-            {/* ... */}
+            
+            {/* --- ✅ REGISTER LINK --- */}
+            <Typography variant="body2" align="center" sx={{ mt: 3 }}>
+              Don't have an account?{' '}
+              <Link component={RouterLink} to="/register" variant="body2">
+                Register here
+              </Link>
+            </Typography>
           </CardContent>
         </Card>
       </Box>

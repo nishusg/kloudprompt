@@ -154,7 +154,36 @@ const PromptDetailPage: React.FC = () => {
       
       {/* Comments Section */}
       <Typography variant="h5" component="h2" gutterBottom>Comments ({comments.length})</Typography>
-      {/* ... mapping comments ... */}
+      {/* ✅ FIX: Added the missing mapping logic to render comments */}
+      
+      <Stack spacing={2} sx={{ mb: 4 }}>
+        {comments.length > 0 ? (
+          comments.map(comment => (
+            <Card key={comment._id} variant="outlined">
+              <CardContent>
+                <Stack direction="row" spacing={2} alignItems="flex-start">
+                  <Avatar sx={{ bgcolor: 'secondary.main' }}>
+                    {comment.author?.username?.charAt(0).toUpperCase() || 'A'}
+                  </Avatar>
+                  <Box>
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                      <Typography variant="subtitle2" component="strong">
+                        {comment.author?.username || 'Anonymous'}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {formatDate(comment.createdAt)}
+                      </Typography>
+                    </Stack>
+                    <Typography variant="body2" sx={{ mt: 1 }}>{comment.text}</Typography>
+                  </Box>
+                  </Stack>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <Typography color="text.secondary">Be the first to comment!</Typography>
+        )}
+      </Stack>
       
       {/* ✨ 3. Conditionally render the comment form */}
       {isAuthenticated ? (
