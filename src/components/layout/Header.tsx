@@ -170,7 +170,7 @@ const Header: React.FC = () => {
         </Box>
       </Toolbar>
       {/* Divider below header */}
-      <Divider sx={{ bgcolor: 'rgba(255,255,255,0.2)', mb: 3 }} />
+      <Divider sx={{ bgcolor: 'rgba(255,255,255,0.2)' }} />
     </AppBar>
   );
 };

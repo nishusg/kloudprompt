@@ -6,7 +6,6 @@ const Footer: React.FC = () => {
     <Box
       component="footer"
       sx={{
-        py: 4,
         px: 2,
         mt: 'auto',
         backgroundColor: '#000', // Black background
@@ -33,7 +32,7 @@ const Footer: React.FC = () => {
               sx={{
                 fontWeight: 500,
                 transition: 'color 0.3s',
-                '&:hover': { color: '#ff9800' }, // Orange hover
+                '&:hover': { color: '#1877F2' }, // Orange hover
               }}
             >
               {text}

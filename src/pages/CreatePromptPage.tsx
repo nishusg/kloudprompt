@@ -9,7 +9,7 @@ import {
   Grid,
   Paper,
   CircularProgress,
-  Alert,
+  Alert
 } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
 import PromptForm from '../components/prompts/PromptForm';
@@ -74,13 +74,13 @@ const CreatePromptPage: React.FC = () => {
           {/* Left Column */}
           <Grid item xs={12} md={8}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <CreateIcon sx={{ fontSize: 48, color: '#ff9800', mr: 2 }} />
+              <CreateIcon sx={{ fontSize: 48, color: '#1877F2', mr: 2 }} />
               <Typography
                 variant="h4"
                 component="h1"
                 fontWeight="bold"
                 sx={{
-                  background: 'linear-gradient(90deg, #ff9800, #ff5722)',
+                  background: 'linear-gradient(90deg, #1877F2, #0d47a1)', // FB blue to darker blue
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}

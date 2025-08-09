@@ -9,7 +9,9 @@ const MainLayout: React.FC = () => {
   return (
     <>
       <Header />
-      <Outlet />
+      <main className="flex-grow">
+        <Outlet />
+      </main>
       <Footer />
     </>
   );

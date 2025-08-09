@@ -108,9 +108,7 @@ const ExplorePage: React.FC = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
         background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
-        pb: 8,
       }}
     >
       {/* Header Section */}
