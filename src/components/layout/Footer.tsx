@@ -5,37 +5,44 @@ const Footer: React.FC = () => {
   return (
     <Box
       component="footer"
-      // ✨ Add padding and a background color for better visual separation
       sx={{
-        py: 3, // Vertical padding
-        px: 2, // Horizontal padding
-        mt: 'auto', // Pushes footer to the bottom of the viewport in a flex container
-        backgroundColor: (theme) =>
-          theme.palette.mode === 'light'
-            ? theme.palette.grey[200]
-            : theme.palette.grey[800],
+        py: 4,
+        px: 2,
+        mt: 'auto',
+        backgroundColor: '#000', // Black background
+        color: '#fff', // White text
       }}
     >
       <Container maxWidth="lg">
-        {/* ✨ Add some useful links */}
+        {/* Divider for separation */}
+        <Divider sx={{ bgcolor: 'rgba(255,255,255,0.2)', mb: 3 }} />
+
+        {/* Navigation Links */}
         <Stack
           direction="row"
           justifyContent="center"
-          spacing={2}
-          sx={{ mb: 3 }}
+          spacing={3}
+          sx={{ mb: 2 }}
         >
-          <Link href="/about" color="inherit" underline="hover">
-            About Us
-          </Link>
-          <Link href="/contact" color="inherit" underline="hover">
-            Contact
-          </Link>
-          <Link href="/privacy" color="inherit" underline="hover">
-            Privacy Policy
-          </Link>
+          {['About', 'Contact', 'Privacy Policy'].map((text, i) => (
+            <Link
+              key={i}
+              href={`/${text.toLowerCase().replace(/\s+/g, '')}`}
+              color="inherit"
+              underline="none"
+              sx={{
+                fontWeight: 500,
+                transition: 'color 0.3s',
+                '&:hover': { color: '#ff9800' }, // Orange hover
+              }}
+            >
+              {text}
+            </Link>
+          ))}
         </Stack>
 
-        <Typography variant="body2" color="text.secondary" align="center">
+        {/* Copyright */}
+        <Typography variant="body2" align="center" sx={{ opacity: 0.8 }}>
           © {new Date().getFullYear()} PromptShare. All rights reserved.
         </Typography>
       </Container>

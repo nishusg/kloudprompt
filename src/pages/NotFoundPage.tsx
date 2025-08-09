@@ -1,6 +1,15 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Box, Typography, Button, Stack, Divider, Link } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  Stack,
+  Divider,
+  Link,
+  Paper
+} from '@mui/material';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
 
 const NotFoundPage: React.FC = () => {
   return (
@@ -11,37 +20,67 @@ const NotFoundPage: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '100vh',
-        backgroundColor: 'grey.100',
+        background: 'linear-gradient(135deg, #000, #333)',
+        color: '#fff',
         p: 3,
       }}
     >
-      <Box sx={{ textAlign: 'center', maxWidth: 'md' }}>
+      <Paper
+        elevation={4}
+        sx={{
+          p: 5,
+          textAlign: 'center',
+          maxWidth: 500,
+          backgroundColor: 'rgba(255,255,255,0.05)',
+          borderRadius: 3,
+          backdropFilter: 'blur(6px)',
+        }}
+      >
+        {/* Icon */}
+        <SearchOffIcon sx={{ fontSize: 80, color: 'primary.main', mb: 2 }} />
+
+        {/* 404 Title */}
         <Typography
           variant="h1"
-          component="div"
           fontWeight="bold"
-          color="primary"
-          sx={{ fontSize: 'clamp(6rem, 20vw, 10rem)' }}
+          sx={{
+            fontSize: 'clamp(4rem, 15vw, 8rem)',
+            color: 'primary.main',
+            lineHeight: 1,
+          }}
         >
           404
         </Typography>
-        <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
+
+        {/* Subtitle */}
+        <Typography
+          variant="h4"
+          component="h1"
+          fontWeight="bold"
+          gutterBottom
+          sx={{ mt: 1 }}
+        >
           Page Not Found
         </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-          Oops! The page you're looking for doesn't exist or has been moved.
+
+        {/* Description */}
+        <Typography variant="body1" color="grey.300" sx={{ mb: 4 }}>
+          Oops! The page you’re looking for doesn’t exist or has been moved.
         </Typography>
 
+        {/* Buttons */}
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
           spacing={2}
           justifyContent="center"
+          sx={{ mb: 3 }}
         >
           <Button
             component={RouterLink}
             to="/"
             variant="contained"
             size="large"
+            sx={{ fontWeight: 'bold' }}
           >
             Go to Homepage
           </Button>
@@ -50,20 +89,27 @@ const NotFoundPage: React.FC = () => {
             to="/prompts"
             variant="outlined"
             size="large"
+            sx={{ color: '#fff', borderColor: '#fff' }}
           >
             Browse Prompts
           </Button>
         </Stack>
 
-        <Divider sx={{ my: 4, mx: 'auto', width: '50%' }} />
+        <Divider sx={{ my: 3, borderColor: 'rgba(255,255,255,0.2)' }} />
 
-        <Typography variant="body2" color="text.secondary">
+        {/* Contact link */}
+        <Typography variant="body2" color="grey.400">
           Need help?{' '}
-          <Link component={RouterLink} to="/contact" underline="hover">
+          <Link
+            component={RouterLink}
+            to="/contact"
+            underline="hover"
+            sx={{ color: 'primary.main', fontWeight: 'bold' }}
+          >
             Contact support
           </Link>
         </Typography>
-      </Box>
+      </Paper>
     </Box>
   );
 };
