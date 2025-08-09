@@ -9,7 +9,7 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex(prev => (prev + 1) % words.length);
-    }, 1000);
+    }, 1500);
     return () => clearInterval(interval);
   }, []);
 
@@ -40,7 +40,7 @@ const HomePage: React.FC = () => {
           },
         }}
       >
-        Prompt collection
+        Prompt Gallery
       </Typography>
 
       <Box
@@ -69,8 +69,8 @@ const HomePage: React.FC = () => {
 
         <Box
           sx={{
-            border: '2px solid white',
-            borderRadius: 1,
+            border: '1px solid white',
+            borderRadius: 3,
             px: 2,
             py: 0.5,
             fontWeight: 'bold',
