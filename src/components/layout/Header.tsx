@@ -1,131 +1,176 @@
-// src/components/layout/Header.tsx
-
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-
 import {
   AppBar,
   Toolbar,
   Typography,
-  Button,
-  Box,
-  CircularProgress,
-  Avatar,
   IconButton,
   Menu,
   MenuItem,
-  Tooltip,
+  Box,
   Divider,
+  ListItemIcon,
+  CircularProgress,
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import ExploreIcon from '@mui/icons-material/Explore';
+import WhatshotIcon from '@mui/icons-material/Whatshot';
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
+import CategoryIcon from '@mui/icons-material/Category';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import AddCircle from '@mui/icons-material/AddCircle';
 
 const Header: React.FC = () => {
   const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
   const handleNavigate = (path: string) => {
-    handleClose();
+    handleMenuClose();
     navigate(path);
   };
-  
+
   const handleLogout = () => {
-    handleClose();
+    handleMenuClose();
     logout();
   };
 
   return (
-    <AppBar position="static" color="default" elevation={1}>
-      <Toolbar>
-        {/* App Title */}
+    <AppBar position="static" sx={{ width: '100%', backgroundColor: '#000' }}>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        {/* Site Name Centered */}
         <Typography
           variant="h6"
-          component={Link}
-          to="/"
-          sx={{ flexGrow: 1, fontWeight: 'bold', textDecoration: 'none', color: 'inherit' }}
+          component="button"
+          onClick={() => navigate('/')}
+          sx={{
+            color: '#fff',
+            textDecoration: 'none',
+            fontWeight: 'bold',
+            flex: 1,
+            textAlign: 'center',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+          }}
         >
           PromptShare
         </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Button color="inherit" component={Link} to="/explore">
-            Explore
-          </Button>
-
+        {/* Hamburger Menu */}
+        <Box>
           {loading ? (
-            <CircularProgress size={24} sx={{ ml: 2 }} />
-          ) : user ? (
+            <CircularProgress size={24} sx={{ color: '#fff' }} />
+          ) : (
             <>
-              {/* Main 'Create' button - hidden on mobile */}
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={() => navigate('/create')}
-                sx={{ display: { xs: 'none', sm: 'flex' } }}
+              <IconButton
+                size="large"
+                edge="end"
+                color="inherit"
+                aria-label="menu"
+                onClick={handleMenuOpen}
               >
-                Create
-              </Button>
-              
-              <Tooltip title="Account settings">
-                <IconButton onClick={handleMenu} size="small" sx={{ ml: 2 }}>
-                  <Avatar sx={{ width: 32, height: 32 }} src={user.avatar}>
-                    {user.username?.charAt(0).toUpperCase() || 'A'}
-                  </Avatar>
-                </IconButton>
-              </Tooltip>
+                <MenuIcon />
+              </IconButton>
 
               <Menu
                 anchorEl={anchorEl}
-                id="account-menu"
-                open={open}
-                onClose={handleClose}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
               >
-                {/* ✨ 1. 'Create' button for mobile, hidden on larger screens */}
-                <MenuItem
-                  onClick={() => handleNavigate('/create')}
-                  sx={{ display: { xs: 'flex', sm: 'none' } }}
-                >
-                  Create Prompt
+                {/* Explore Section */}
+                <MenuItem onClick={() => handleNavigate('/explore')}>
+                  <ListItemIcon>
+                    <ExploreIcon fontSize="small" />
+                  </ListItemIcon>
+                  Explore
                 </MenuItem>
-                {/* ✨ Add a divider if the mobile 'Create' button is shown */}
-                <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-                   <Divider />
-                </Box>
-                
-                <MenuItem onClick={() => handleNavigate(`/profile/${user._id}`)}>
-                  Profile
+                <MenuItem onClick={() => handleNavigate('/trending')}>
+                  <ListItemIcon>
+                    <WhatshotIcon fontSize="small" />
+                  </ListItemIcon>
+                  Trending
+                </MenuItem>
+                <MenuItem onClick={() => handleNavigate('/latest')}>
+                  <ListItemIcon>
+                    <NewReleasesIcon fontSize="small" />
+                  </ListItemIcon>
+                  Latest
+                </MenuItem>
+                <MenuItem onClick={() => handleNavigate('/categories')}>
+                  <ListItemIcon>
+                    <CategoryIcon fontSize="small" />
+                  </ListItemIcon>
+                  Categories
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={handleLogout}>
-                  Logout
-                </MenuItem>
+
+                {/* Account Section */}
+                {user ? (
+                  <>
+                    <MenuItem onClick={() => handleNavigate('/create')}>
+                      <ListItemIcon>
+                        <AddCircle fontSize="small" />
+                      </ListItemIcon>
+                      Add Prompt
+                    </MenuItem>
+                    <MenuItem onClick={() => handleNavigate('/profile/' + user._id)}>
+                      <ListItemIcon>
+                        <AccountCircle fontSize="small" />
+                      </ListItemIcon>
+                      Account Settings
+                    </MenuItem>
+                    <MenuItem onClick={handleLogout}>
+                      <ListItemIcon>
+                        <LogoutIcon fontSize="small" />
+                      </ListItemIcon>
+                      Logout
+                    </MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => handleNavigate('/login')}>
+                      <ListItemIcon>
+                        <LoginIcon fontSize="small" />
+                      </ListItemIcon>
+                      Login
+                    </MenuItem>
+                    <MenuItem onClick={() => handleNavigate('/register')}>
+                      <ListItemIcon>
+                        <PersonAddIcon fontSize="small" />
+                      </ListItemIcon>
+                      Register
+                    </MenuItem>
+                  </>
+                )}
               </Menu>
-            </>
-          ) : (
-            <>
-              <Button color="inherit" component={Link} to="/login">
-                Login
-              </Button>
-              <Button variant="contained" component={Link} to="/register" sx={{ ml: 1 }}>
-                Sign Up
-              </Button>
             </>
           )}
         </Box>
       </Toolbar>
+      {/* Divider below header */}
+      <Divider sx={{ bgcolor: 'rgba(255,255,255,0.2)' }} />
     </AppBar>
   );
 };

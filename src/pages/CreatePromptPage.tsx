@@ -11,8 +11,7 @@ import {
   CircularProgress,
   Alert
 } from '@mui/material';
-import CreateIcon from '@mui/icons-material/Create'; // Import an icon
-
+import CreateIcon from '@mui/icons-material/Create';
 import PromptForm from '../components/prompts/PromptForm';
 import { createPrompt } from '../services/PromptService';
 import { useAuth } from '../context/AuthContext';
@@ -24,7 +23,7 @@ const CreatePromptPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Redirect if not authenticated after auth check is complete
+  // Redirect if not authenticated after auth check
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       navigate('/login');
@@ -35,60 +34,83 @@ const CreatePromptPage: React.FC = () => {
     setIsSubmitting(true);
     setSubmitError(null);
     try {
-      // On success, navigate to the newly created prompt's detail page
       const newPrompt = await createPrompt(data);
       navigate(`/prompts/${newPrompt._id}`);
     } catch (error) {
       console.error('Failed to create prompt:', error);
-      setSubmitError(error instanceof Error ? error.message : 'An unknown error occurred. Please try again.');
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : 'An unknown error occurred. Please try again.'
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Show a loader while checking auth status
   if (authLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
-        <CircularProgress />
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 10, bgcolor: '#000' }}>
+        <CircularProgress sx={{ color: '#fff' }} />
       </Box>
     );
   }
-  
-  // This check prevents flashing the form before redirecting
+
   if (!isAuthenticated) {
     return null;
   }
 
   return (
-    <Box sx={{ bgcolor: 'grey.50', minHeight: 'calc(100vh - 64px)' }}>
-      <Container maxWidth="lg" sx={{ py: 5 }}>
-        <Grid container spacing={4}>
-          {/* --- Left Column: Title and Instructions --- */}
-          <Grid >
+    <Box
+      sx={{
+        bgcolor: '#000',
+        minHeight: 'calc(100vh - 64px)',
+        py: 6,
+        color: '#fff',
+      }}
+    >
+      <Container maxWidth="md">
+        <Grid container spacing={4} justifyContent="center">
+          {/* Left Column */}
+          <Grid item xs={12} md={8}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <CreateIcon color="primary" sx={{ fontSize: 40, mr: 2 }} />
-              <Typography variant="h4" component="h1" fontWeight="bold">
+              <CreateIcon sx={{ fontSize: 48, color: '#1877F2', mr: 2 }} />
+              <Typography
+                variant="h4"
+                component="h1"
+                fontWeight="bold"
+                sx={{
+                  background: 'linear-gradient(90deg, #1877F2, #0d47a1)', // FB blue to darker blue
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
                 Create Prompt
               </Typography>
             </Box>
-            <Typography variant="body1" color="text.secondary">
-              Craft a detailed and effective prompt. Provide a clear title, a concise description, and specific content to guide the AI. Use tags to help others discover your creation.
+            <Typography
+              variant="body1"
+              sx={{ color: 'grey.400', mb: 4 }}
+            >
+              Craft a detailed and effective prompt. Provide a clear title, a
+              concise description, and specific content to guide the AI. Use
+              tags to help others discover your creation.
             </Typography>
-          </Grid>
 
-          {/* --- Right Column: The Form --- */}
-          <Grid >
-            <Paper elevation={3} sx={{ p: { xs: 2, sm: 4 }, borderRadius: 2 }}>
+            <Paper
+              elevation={6}
+              sx={{
+                p: { xs: 2, sm: 4 },
+                borderRadius: 3,
+                bgcolor: '#121212',
+              }}
+            >
               {submitError && (
                 <Alert severity="error" sx={{ mb: 3 }}>
                   {submitError}
                 </Alert>
               )}
-              <PromptForm
-                onSubmit={handleSubmit}
-                isLoading={isSubmitting}
-              />
+              <PromptForm onSubmit={handleSubmit} isLoading={isSubmitting} />
             </Paper>
           </Grid>
         </Grid>

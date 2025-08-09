@@ -7,13 +7,13 @@ import Footer from './Footer';
 
 const MainLayout: React.FC = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
       <Header />
       <main className="flex-grow">
-        <Outlet /> {/* Child routes will be rendered here */}
+        <Outlet />
       </main>
       <Footer />
-    </div>
+    </>
   );
 };
 

@@ -1,3 +1,5 @@
+// src/pages/RegisterPage.tsx
+
 import React, { useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -36,24 +38,20 @@ const RegisterPage: React.FC = () => {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    // Validate username
     const usernameValidation = validateUsername(formData.username);
     if (!usernameValidation.valid) {
       newErrors.username = usernameValidation.message || '';
     }
 
-    // Validate email
     if (!validateEmail(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    // Validate password
     const passwordValidation = validatePassword(formData.password);
     if (!passwordValidation.valid) {
       newErrors.password = passwordValidation.message || '';
     }
 
-    // Validate password match
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
@@ -64,7 +62,6 @@ const RegisterPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     setIsLoading(true);
@@ -81,32 +78,47 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Card sx={{ width: '100%', p: 2 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        bgcolor: '#121212',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: 2
+      }}
+    >
+      <Container component="main" maxWidth="xs">
+        <Card
+          sx={{
+            backgroundColor: 'rgba(30, 30, 30, 0.95)',
+            color: '#fff',
+            backdropFilter: 'blur(8px)',
+            borderRadius: 3,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+            p: 2
+          }}
+        >
           <CardContent>
-            <Typography component="h1" variant="h5" align="center" gutterBottom>
+            <Typography component="h1" variant="h5" align="center" gutterBottom sx={{ fontWeight: 'bold' }}>
               Create your account
             </Typography>
 
             {errors.form && (
-              <Alert severity="error" sx={{ mb: 2 }}>{errors.form}</Alert>
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {errors.form}
+              </Alert>
             )}
 
             <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
               <Stack spacing={2}>
                 <TextField
+                  variant="filled"
+                  InputProps={{ style: { color: '#fff', backgroundColor: '#1e1e1e' } }}
+                  InputLabelProps={{ style: { color: '#bbb' } }}
                   id="username"
                   name="username"
                   label="Username"
-                  autoComplete="username"
                   required
                   fullWidth
                   value={formData.username}
@@ -115,11 +127,13 @@ const RegisterPage: React.FC = () => {
                   helperText={errors.username}
                 />
                 <TextField
+                  variant="filled"
+                  InputProps={{ style: { color: '#fff', backgroundColor: '#1e1e1e' } }}
+                  InputLabelProps={{ style: { color: '#bbb' } }}
                   id="email"
                   name="email"
                   label="Email Address"
                   type="email"
-                  autoComplete="email"
                   required
                   fullWidth
                   value={formData.email}
@@ -128,11 +142,13 @@ const RegisterPage: React.FC = () => {
                   helperText={errors.email}
                 />
                 <TextField
+                  variant="filled"
+                  InputProps={{ style: { color: '#fff', backgroundColor: '#1e1e1e' } }}
+                  InputLabelProps={{ style: { color: '#bbb' } }}
                   id="password"
                   name="password"
                   label="Password"
                   type="password"
-                  autoComplete="new-password"
                   required
                   fullWidth
                   value={formData.password}
@@ -141,11 +157,13 @@ const RegisterPage: React.FC = () => {
                   helperText={errors.password}
                 />
                 <TextField
+                  variant="filled"
+                  InputProps={{ style: { color: '#fff', backgroundColor: '#1e1e1e' } }}
+                  InputLabelProps={{ style: { color: '#bbb' } }}
                   id="confirmPassword"
                   name="confirmPassword"
                   label="Confirm Password"
                   type="password"
-                  autoComplete="new-password"
                   required
                   fullWidth
                   value={formData.confirmPassword}
@@ -158,22 +176,31 @@ const RegisterPage: React.FC = () => {
                   fullWidth
                   variant="contained"
                   disabled={isLoading}
-                  sx={{ mt: 3, mb: 2 }}
+                  sx={{
+                    mt: 3,
+                    mb: 2,
+                    bgcolor: 'primary.main',
+                    color: '#fff',
+                    '&:hover': { bgcolor: 'primary.dark' },
+                    py: 1.5,
+                    fontWeight: 'bold'
+                  }}
                 >
                   {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Register'}
                 </Button>
               </Stack>
             </Box>
-            <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+
+            <Typography variant="body2" align="center" sx={{ mt: 2, color: '#bbb' }}>
               Already have an account?{' '}
-              <Link component={RouterLink} to="/login" variant="body2">
+              <Link component={RouterLink} to="/login" variant="body2" sx={{ color: 'primary.light' }}>
                 Sign in
               </Link>
             </Typography>
           </CardContent>
         </Card>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 
