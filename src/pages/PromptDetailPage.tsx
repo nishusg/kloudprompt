@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import ForumIcon from '@mui/icons-material/Forum';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import CopyIcon from '@mui/icons-material/CopyAll';
+import ShareIcon from '@mui/icons-material/Share';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 
@@ -73,7 +73,7 @@ const PromptDetailPage: React.FC = () => {
     }
   };
 
-  const handleCopy = async () => {
+  const handleShare = async () => {
     try {
       const shareUrl = `${window.location.origin}/prompts/${prompt?._id}`;
       await navigator.clipboard.writeText(shareUrl);
@@ -131,11 +131,11 @@ const PromptDetailPage: React.FC = () => {
             <Button
               variant="outlined"
               size="large"
-              startIcon={<CopyIcon />}
-              onClick={handleCopy}
+              startIcon={<ShareIcon />}
+              onClick={handleShare}
               sx={{ borderRadius: 3, color: '#fff', borderColor: '#fff' }}
             >
-              Copy
+              Share
             </Button>
             {isAuthenticated && (
               <Button
