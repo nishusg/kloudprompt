@@ -12,7 +12,7 @@ import { loginUser, registerUser, getCurrentUser } from '../services/UserService
 import { User } from '../models/User';
 
 interface AuthResponse {
-  user: User;
+  user?: User;
   token: string;
 }
 
@@ -43,13 +43,31 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const normalizeError = (err: unknown): string =>
     err instanceof Error ? err.message : 'Something went wrong. Please try again.';
 
+  const fetchCurrentUser = useCallback(async () => {
+    try {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+    } catch {
+      clearToken();
+      setUser(null);
+    }
+  }, []);
+
   const login = useCallback(async (email: string, password: string) => {
     setLoading(true);
     setError(null);
     try {
-      const { user: loggedInUser, token }: AuthResponse = await loginUser({ email, password });
-      setToken(token);
-      setUser(loggedInUser);
+      const res: AuthResponse = await loginUser({ email, password });
+      setToken(res.token);
+
+      if (res.user) {
+        // If backend returned the user directly
+        setUser(res.user);
+      } else {
+        // Fetch user if only token was returned
+        await fetchCurrentUser();
+      }
+
       return true;
     } catch (err) {
       setError(normalizeError(err));
@@ -57,19 +75,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [fetchCurrentUser]);
 
   const register = useCallback(async (username: string, email: string, password: string) => {
     setLoading(true);
     setError(null);
     try {
-      const { user: registeredUser, token }: AuthResponse = await registerUser({
-        username,
-        email,
-        password
-      });
-      setToken(token);
-      setUser(registeredUser);
+      const res: AuthResponse = await registerUser({ username, email, password });
+      setToken(res.token);
+
+      if (res.user) {
+        setUser(res.user);
+      } else {
+        await fetchCurrentUser();
+      }
+
       return true;
     } catch (err) {
       setError(normalizeError(err));
@@ -77,7 +97,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [fetchCurrentUser]);
 
   const logout = useCallback(() => {
     clearToken();
@@ -93,18 +113,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setLoading(false);
         return;
       }
-      try {
-        const currentUser = await getCurrentUser();
-        setUser(currentUser);
-      } catch {
-        clearToken();
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
+      await fetchCurrentUser();
+      setLoading(false);
     };
     initAuth();
-  }, []);
+  }, [fetchCurrentUser]);
 
   const value = useMemo(
     () => ({
