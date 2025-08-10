@@ -16,6 +16,7 @@ export interface Prompt {
   comments: PromptComment[];
   examples?: Example[];
   parameters?: Parameter[];
+  isBookmarkedByCurrentUser: any;
 }
 
 // No changes needed, this is well-defined

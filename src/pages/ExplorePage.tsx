@@ -13,6 +13,7 @@ import {
   InputAdornment,
   IconButton,
   Paper,
+  Chip,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -74,6 +75,8 @@ const ExplorePage: React.FC = () => {
   const [filteredPrompts, setFilteredPrompts] = useState<Prompt[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [allTags, setAllTags] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchAllPrompts = async () => {
@@ -81,6 +84,12 @@ const ExplorePage: React.FC = () => {
         setLoading(true);
         const promptsData = await getPrompts();
         setAllPrompts(promptsData);
+
+        // Extract unique tags
+        const tagsSet = new Set<string>();
+        promptsData.forEach(p => p.tags?.forEach(tag => tagsSet.add(tag)));
+        setAllTags(Array.from(tagsSet));
+
         setFilteredPrompts(promptsData);
       } catch (err) {
         setError('Failed to load prompts. Please try again later.');
@@ -94,34 +103,44 @@ const ExplorePage: React.FC = () => {
   useEffect(() => {
     if (!allPrompts) return;
     const lowerTerm = searchTerm.toLowerCase();
+
     const results = allPrompts.filter((prompt) => {
       const titleMatch = prompt.title.toLowerCase().includes(lowerTerm);
       const contentMatch = prompt.promptText.toLowerCase().includes(lowerTerm);
       const tagMatch = prompt.tags.some((tag) =>
         tag.toLowerCase().includes(lowerTerm)
       );
-      return titleMatch || contentMatch || tagMatch;
+
+      // Tag filter logic
+      const matchesSelectedTags =
+        selectedTags.length === 0 ||
+        selectedTags.every(tag => prompt.tags.includes(tag));
+
+      return (titleMatch || contentMatch || tagMatch) && matchesSelectedTags;
     });
+
     setFilteredPrompts(results);
-  }, [searchTerm, allPrompts]);
+  }, [searchTerm, allPrompts, selectedTags]);
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags(prev =>
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+    );
+  };
 
   return (
-    <Box
-      sx={{
-        background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
-      }}
-    >
-      {/* Header Section */}
-      <Box
-        sx={{
-          py: { xs: 6, md: 8 },
-          textAlign: 'center',
-          background:
-            'linear-gradient(135deg, #111111, #000000)',
-          color: '#fff',
-          borderBottom: '1px solid rgba(255,255,255,0.05)',
-        }}
-      >
+    <Box sx={{ 
+      background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
+      overflowX: 'hidden', // stops horizontal scroll
+      }}>
+      {/* Header */}
+      <Box sx={{
+        py: { xs: 6, md: 8 },
+        textAlign: 'center',
+        background: 'linear-gradient(135deg, #111111, #000000)',
+        color: '#fff',
+        borderBottom: '1px solid rgba(255,255,255,0.05)',
+      }}>
         <Typography variant="h3" fontWeight="bold" gutterBottom>
           Explore Prompts
         </Typography>
@@ -130,14 +149,14 @@ const ExplorePage: React.FC = () => {
         </Typography>
       </Box>
 
-      <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
-        {/* Search Bar */}
+      <Container maxWidth="xl" sx={{ py: { xs: 4, md: 8 } }}>
+        {/* Search */}
         <Paper
           elevation={3}
           sx={{
             maxWidth: 500,
             mx: 'auto',
-            mb: 6,
+            mb: 3,
             p: 1,
             borderRadius: 50,
             backgroundColor: 'rgba(40, 40, 40, 0.95)',
@@ -171,10 +190,50 @@ const ExplorePage: React.FC = () => {
               '& .MuiInputBase-input::placeholder': { color: '#fff', opacity: 1 }
             }}
           />
-
         </Paper>
 
-        {/* Content Grid */}
+        {/* Tag Filter */}
+        <Box
+          sx={{
+            display: 'flex',
+            overflowX: { xs: 'auto', md: 'visible' }, // Scroll on small, no scroll on large
+            whiteSpace: 'nowrap',
+            justifyContent: { xs: 'flex-start', md: 'center' }, // Align left on mobile, center on large
+            flexWrap: { xs: 'nowrap', md: 'wrap' }, // Wrap tags on large screens
+            p: 1,
+            mb: 4,
+            '&::-webkit-scrollbar': {
+              height: 6,
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'rgba(255,255,255,0.3)',
+              borderRadius: 3,
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              backgroundColor: '#1976d2',
+            },
+          }}
+        >
+          {allTags.map(tag => (
+            <Chip
+              key={tag}
+              label={tag}
+              onClick={() => toggleTag(tag)}
+              sx={{
+                mr: 1,
+                mb: { md: 1, xs: 0 },
+                cursor: 'pointer',
+                backgroundColor: selectedTags.includes(tag)
+                  ? '#1976d2'
+                  : 'rgba(255,255,255,0.1)',
+                color: '#fff',
+                '&:hover': { backgroundColor: '#1976d2' }
+              }}
+            />
+          ))}
+        </Box>
+        
+        {/* Results */}
         {loading ? (
           <Box display="flex" justifyContent="center">
             <CircularProgress sx={{ color: '#fff' }} />
@@ -194,7 +253,7 @@ const ExplorePage: React.FC = () => {
                   color="grey.500"
                   sx={{ mt: 4, fontStyle: 'italic' }}
                 >
-                  No prompts found for "{searchTerm}". Try another keyword!
+                  No prompts found. Try changing your search or tag filter!
                 </Typography>
               </Grid>
             )}

@@ -1,6 +1,7 @@
 # Prompt Sharing Platform
 
 This is a React application built with TypeScript and Vite that allows users to share and discover creative prompts.
+- in future we are using terms and privacy from (https://gitdocify.com/#faq)
 
 ## Project Structure
 

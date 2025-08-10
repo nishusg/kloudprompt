@@ -49,7 +49,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ width: '100%', backgroundColor: '#000' }}>
+    <AppBar position="fixed"   sx={{ width: '100%', backgroundColor: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         {/* Site Name Centered */}
         <Typography
@@ -133,7 +133,7 @@ const Header: React.FC = () => {
                       <ListItemIcon>
                         <AddCircle fontSize="small" />
                       </ListItemIcon>
-                      Add Prompt
+                      Create Prompt
                     </MenuItem>
                     <MenuItem onClick={() => handleNavigate('/profile/' + user._id)}>
                       <ListItemIcon>
