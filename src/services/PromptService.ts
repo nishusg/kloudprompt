@@ -1,7 +1,6 @@
 import apiClient from './ApiClient';
 import { Prompt, CreatePromptDto, UpdatePromptDto } from '../models/Prompt';
 
-// ✨ Define a type for the paginated API response
 export interface PaginatedPrompts {
   data: Prompt[];
   page: number;
@@ -16,19 +15,14 @@ export const getPrompts = async (params: {
   limit?: number;
   page?: number;
 } = {}): Promise<Prompt[]> => {
-
-  // ✨ Create a copy of params to modify
   const apiParams: any = { ...params };
 
-  // 1. Convert the tags array to a comma-separated string
   if (params.tags && params.tags.length > 0) {
     apiParams.tags = params.tags.join(',');
   }
 
   const response = await apiClient.get('/prompts', { params: apiParams });
-  
-  // 2. Return the entire data object from the response
-  return response.data.prompts; // Assuming the API returns a 'prompts' field with the array of prompts
+  return response.data.prompts;
 };
 
 export const getPromptById = async (id: string): Promise<Prompt> => {
@@ -36,7 +30,6 @@ export const getPromptById = async (id: string): Promise<Prompt> => {
   return response.data;
 };
 
-// ✅ ADD THIS NEW FUNCTION HERE
 export const getUserPrompts = async (userId: string): Promise<Prompt[]> => {
   const response = await apiClient.get(`/users/${userId}/prompts`);
   return response.data;
@@ -68,5 +61,10 @@ export const getPopularTags = async (): Promise<string[]> => {
 
 export const searchPrompts = async (query: string): Promise<Prompt[]> => {
   const response = await apiClient.get('/prompts/search', { params: { q: query } });
+  return response.data;
+};
+
+export const toggleBookmarkPrompt = async (id: string): Promise<Prompt> => {
+  const response = await apiClient.post(`/prompts/${id}/bookmark`);
   return response.data;
 };

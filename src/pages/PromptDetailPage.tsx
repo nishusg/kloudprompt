@@ -1,19 +1,21 @@
 // src/pages/PromptDetailPage.tsx
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getPromptById, upvotePrompt } from '../services/PromptService';
-import { getComments, addComment } from '../services/CommentService';
+import { getPromptById, toggleBookmarkPrompt } from '../services/PromptService';
+import { addComment } from '../services/CommentService';
 import { useAuth } from '../context/AuthContext';
 import { Prompt } from '../models/Prompt';
 import { PromptComment } from '../models/Comment';
 
 import {
-  Container, Typography, Button, Card, CardContent, CardActions,
-  CircularProgress, Box, Chip, TextField, Avatar, Stack, Alert, Divider, Paper
+  Container, Typography, Button, CircularProgress, Box, Chip, TextField,
+  Avatar, Stack, Alert, Divider, Paper, Snackbar
 } from '@mui/material';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ForumIcon from '@mui/icons-material/Forum';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import CopyIcon from '@mui/icons-material/CopyAll';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 
 const formatDate = (date: Date) =>
   new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -27,8 +29,9 @@ const PromptDetailPage: React.FC = () => {
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isUpvoting, setIsUpvoting] = useState(false);
   const [isCommenting, setIsCommenting] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [bookmarkLoading, setBookmarkLoading] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -47,14 +50,14 @@ const PromptDetailPage: React.FC = () => {
     fetchData();
   }, [id]);
 
-  const handleUpvote = async () => {
+  const handleBookmark = async () => {
     if (!prompt || !isAuthenticated) return;
     try {
-      setIsUpvoting(true);
-      const updatedPrompt = await upvotePrompt(prompt._id);
+      setBookmarkLoading(true);
+      const updatedPrompt = await toggleBookmarkPrompt(prompt._id);
       setPrompt(updatedPrompt);
     } finally {
-      setIsUpvoting(false);
+      setBookmarkLoading(false);
     }
   };
 
@@ -70,6 +73,16 @@ const PromptDetailPage: React.FC = () => {
     }
   };
 
+  const handleCopy = async () => {
+    try {
+      const shareUrl = `${window.location.origin}/prompts/${prompt?._id}`;
+      await navigator.clipboard.writeText(shareUrl);
+      setSnackbarOpen(true);
+    } catch (err) {
+      console.error('Failed to copy link', err);
+    }
+  };
+
   if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}><CircularProgress /></Box>;
   if (error) return <Container maxWidth="md" sx={{ py: 4 }}><Alert severity="error">{error}</Alert></Container>;
   if (!prompt) return <Container maxWidth="md" sx={{ py: 4 }}><Alert severity="warning">Prompt not found.</Alert></Container>;
@@ -79,21 +92,9 @@ const PromptDetailPage: React.FC = () => {
       <Container maxWidth="md">
         {/* Main Prompt Card */}
         <Paper elevation={3} sx={{ p: 3, mb: 4, borderRadius: 3, bgcolor: '#1c1c1c', color: '#fff' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-              {prompt.title}
-            </Typography>
-            <Button
-              variant={prompt.isUpvotedByCurrentUser ? 'contained' : 'outlined'}
-              size="large"
-              startIcon={isUpvoting ? <CircularProgress size={20} color="inherit" /> : <ArrowUpwardIcon />}
-              onClick={handleUpvote}
-              disabled={isUpvoting || !isAuthenticated}
-              sx={{ borderRadius: 3, color: '#fff', borderColor: '#fff' }}
-            >
-              {prompt.upvotes ?? 0}
-            </Button>
-          </Box>
+          <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2 }}>
+            {prompt.title}
+          </Typography>
 
           <Typography variant="body1" sx={{ mb: 3 }}>
             {prompt.description}
@@ -113,7 +114,7 @@ const PromptDetailPage: React.FC = () => {
 
           <Divider sx={{ my: 2, borderColor: '#333' }} />
 
-          <Stack direction="row" spacing={3} alignItems="center" sx={{ color: '#aaa' }}>
+          <Stack direction="row" spacing={3} alignItems="center" sx={{ color: '#aaa', mb: 3 }}>
             <Typography variant="body2">
               By <strong>{prompt.author.username}</strong> • {formatDate(prompt.createdAt)}
             </Typography>
@@ -124,6 +125,36 @@ const PromptDetailPage: React.FC = () => {
               <ForumIcon fontSize="small" /> <Typography variant="body2">{comments.length} comments</Typography>
             </Stack>
           </Stack>
+
+          {/* Centered Buttons */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 3 }}>
+            <Button
+              variant="outlined"
+              size="large"
+              startIcon={<CopyIcon />}
+              onClick={handleCopy}
+              sx={{ borderRadius: 3, color: '#fff', borderColor: '#fff' }}
+            >
+              Copy
+            </Button>
+            {isAuthenticated && (
+              <Button
+                variant="outlined"
+                size="large"
+                startIcon={
+                  bookmarkLoading
+                    ? <CircularProgress size={20} color="inherit" />
+                    : prompt.isBookmarkedByCurrentUser
+                      ? <BookmarkIcon />
+                      : <BookmarkBorderIcon />
+                }
+                onClick={handleBookmark}
+                sx={{ borderRadius: 3, color: '#fff', borderColor: '#fff' }}
+              >
+                {prompt.isBookmarkedByCurrentUser ? 'Saved' : 'Save'}
+              </Button>
+            )}
+          </Box>
         </Paper>
 
         {/* Comments */}
@@ -194,6 +225,15 @@ const PromptDetailPage: React.FC = () => {
           </Alert>
         )}
       </Container>
+
+      {/* Snackbar for Share Link */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        message="Link copied to clipboard!"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </Box>
   );
 };

@@ -9,7 +9,7 @@ const MainLayout: React.FC = () => {
   return (
     <>
       <Header />
-      <main className="flex-grow">
+      <main className="flex-grow" style={{ paddingTop: '55px' }}>
         <Outlet />
       </main>
       <Footer />
