@@ -4,12 +4,13 @@ import { User } from './User';
 export interface Prompt {
   readonly _id: string;
   title: string;
-  promptText: string; // Corrected from 'content'
+  content: string;
   description: string;
+  modelType: string;
+  generationType: string;
   tags: string[];
   readonly author: User;
   readonly upvotes: number;
-  isUpvotedByCurrentUser: boolean;
   readonly views: number;
   readonly createdAt: Date;
   readonly updatedAt: Date;
@@ -25,8 +26,8 @@ export interface CreatePromptDto {
   content: string;
   description: string;
   tags: string[];
-  examples?: Example[];
-  parameters?: Parameter[];
+  modelType: 'gemini' | 'chatgpt' | 'grok';
+  generationType: 'image' | 'video' | 'text' | 'audio';
 }
 
 // No changes needed, this is an excellent use of TypeScript's Partial

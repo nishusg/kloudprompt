@@ -6,7 +6,7 @@ export const getComments = async (promptId: string): Promise<PromptComment[]> =>
   return response.data;
 };
 
-export const addComment = async (
+export const addCommentToPrompt = async (
   promptId: string,
   content: string
 ): Promise<PromptComment> => {

@@ -8,6 +8,7 @@ import {
   Stack,
   Typography,
   Box,
+  MenuItem,
 } from "@mui/material";
 import { CreatePromptDto } from "../../models/Prompt";
 import { validatePrompt } from "../../utils/Validators";
@@ -19,7 +20,14 @@ interface PromptFormProps {
 }
 
 const PromptForm: React.FC<PromptFormProps> = ({
-  initialData = { title: "", content: "", description: "", tags: [] },
+  initialData = {
+    title: "",
+    content: "",
+    description: "",
+    modelType: "chatgpt",
+    generationType: "text",
+    tags: [],
+  },
   onSubmit,
   isLoading = false,
 }) => {
@@ -29,8 +37,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
 
   useEffect(() => {
     setFormData(initialData);
-  }, []); // run only once
-
+  }, []);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -95,12 +102,12 @@ const PromptForm: React.FC<PromptFormProps> = ({
         <Typography variant="h5" fontWeight="bold">
           Create a New Prompt
         </Typography>
-
+        
         {/* Title */}
         <TextField
           label="Title"
           name="title"
-          value={formData.title||""}
+          value={formData.title || ""}
           onChange={handleChange}
           error={!!errors.title}
           helperText={errors.title}
@@ -111,6 +118,41 @@ const PromptForm: React.FC<PromptFormProps> = ({
           }}
           InputLabelProps={{ sx: { color: "#ccc" } }}
         />
+
+        {/* Model Type */}
+        <TextField
+          select
+          fullWidth
+          label="Model Type"
+          name="modelType"
+          value={formData.modelType}
+          onChange={handleChange}
+          variant="outlined"
+          InputProps={{ sx: { color: "white" } }}
+          InputLabelProps={{ sx: { color: "#ccc" } }}
+        >
+          <MenuItem value="gemini">Gemini</MenuItem>
+          <MenuItem value="chatgpt">ChatGPT</MenuItem>
+          <MenuItem value="grok">Grok</MenuItem>
+        </TextField>
+
+        {/* Generation Type */}
+        <TextField
+          select
+          fullWidth
+          label="Generation Type"
+          name="generationType"
+          value={formData.generationType}
+          onChange={handleChange}
+          variant="outlined"
+          InputProps={{ sx: { color: "white" } }}
+          InputLabelProps={{ sx: { color: "#ccc" } }}
+        >
+          <MenuItem value="text">Text</MenuItem>
+          <MenuItem value="image">Image</MenuItem>
+          <MenuItem value="video">Video</MenuItem>
+          <MenuItem value="audio">Audio</MenuItem>
+        </TextField>
 
         {/* Description */}
         <TextField

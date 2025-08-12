@@ -7,5 +7,4 @@ export interface PromptComment {
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly parentId?: string | null;
-  replies?: PromptComment[];
 }

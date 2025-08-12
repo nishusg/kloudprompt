@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getPromptById, toggleBookmarkPrompt } from '../services/PromptService';
-import { addComment } from '../services/CommentService';
+import { addCommentToPrompt } from '../services/CommentService';
 import { useAuth } from '../context/AuthContext';
 import { Prompt } from '../models/Prompt';
 import { PromptComment } from '../models/Comment';
@@ -65,7 +65,7 @@ const PromptDetailPage: React.FC = () => {
     if (!newComment.trim() || !prompt || !isAuthenticated) return;
     try {
       setIsCommenting(true);
-      const createdComment = await addComment(prompt._id, newComment);
+      const createdComment = await addCommentToPrompt(prompt._id, newComment);
       setComments(prev => [...prev, { ...createdComment, author: user! }]);
       setNewComment('');
     } finally {
@@ -102,7 +102,7 @@ const PromptDetailPage: React.FC = () => {
 
           <Paper sx={{ bgcolor: '#121212', p: 2, borderRadius: 2, mb: 3, overflowX: 'auto', border: '1px solid #333' }}>
             <Typography component="pre" sx={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '0.9rem', color: '#ccc' }}>
-              {prompt.promptText}
+              {prompt.content}
             </Typography>
           </Paper>
 

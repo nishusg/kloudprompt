@@ -58,7 +58,7 @@ const PromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
               overflow: 'hidden',
             }}
           >
-            {prompt.promptText}
+            {prompt.content}
           </Typography>
           <Typography variant="caption" color="grey.500">
             by @{prompt.author?.username || 'Unknown'}
@@ -106,7 +106,7 @@ const ExplorePage: React.FC = () => {
 
     const results = allPrompts.filter((prompt) => {
       const titleMatch = prompt.title.toLowerCase().includes(lowerTerm);
-      const contentMatch = prompt.promptText.toLowerCase().includes(lowerTerm);
+      const contentMatch = prompt.content.toLowerCase().includes(lowerTerm);
       const tagMatch = prompt.tags.some((tag) =>
         tag.toLowerCase().includes(lowerTerm)
       );

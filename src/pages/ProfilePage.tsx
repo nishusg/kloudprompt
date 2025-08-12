@@ -44,7 +44,7 @@ const PromptCard: React.FC<{
         {prompt.title}
       </Typography>
       <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)' }}>
-        {prompt.promptText}
+        {prompt.content}
       </Typography>
     </CardContent>
     <CardActions sx={{ pl: 2, pb: 2, justifyContent: 'space-between' }}>
