@@ -26,7 +26,6 @@ export const getCurrentUser = async (): Promise<User> => {
 
 export const getUserById = async (id: string): Promise<User> => {
   const response = await apiClient.get(`/users/${id}`);
-  console.log('Fetched user:', response.data);
   return response.data;
 };
 

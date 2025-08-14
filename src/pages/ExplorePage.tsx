@@ -129,12 +129,17 @@ const ExplorePage: React.FC = () => {
   );
 
   return (
-    <Box
-      sx={{
-        background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
-        overflowX: 'hidden',
-      }}
-    >
+  <Box
+    sx={{
+      background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
+      overflowX: 'hidden',
+      minHeight: '90vh',          // ✅ Always fill viewport height
+      display: 'flex',
+      flexDirection: 'column',
+    }}
+  >
+    {/* Everything above footer is wrapped in flex:1 */}
+    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <Box
         sx={{
@@ -153,7 +158,8 @@ const ExplorePage: React.FC = () => {
         </Typography>
       </Box>
 
-      <Container maxWidth="xl" sx={{ py: { xs: 4, md: 8 } }}>
+      {/* Main Content */}
+      <Container maxWidth="xl" sx={{ py: { xs: 4, md: 8 }, flex: 1 }}>
         {/* Search */}
         <Paper
           elevation={3}
@@ -182,7 +188,11 @@ const ExplorePage: React.FC = () => {
               ),
               endAdornment: searchTerm && (
                 <InputAdornment position="end">
-                  <IconButton onClick={() => setSearchTerm('')} size="small" sx={{ color: '#fff' }}>
+                  <IconButton
+                    onClick={() => setSearchTerm('')}
+                    size="small"
+                    sx={{ color: '#fff' }}
+                  >
                     <ClearIcon />
                   </IconButton>
                 </InputAdornment>
@@ -192,7 +202,10 @@ const ExplorePage: React.FC = () => {
               px: 2,
               color: '#fff',
               '& .MuiInputBase-input': { color: '#fff' },
-              '& .MuiInputBase-input::placeholder': { color: '#fff', opacity: 0.8 }
+              '& .MuiInputBase-input::placeholder': {
+                color: '#fff',
+                opacity: 0.8,
+              },
             }}
           />
         </Paper>
@@ -210,7 +223,9 @@ const ExplorePage: React.FC = () => {
         >
           {/* Model Type Filter */}
           <FormControl sx={{ minWidth: 200 }} variant="outlined" size="small">
-            <InputLabel sx={{ color: '#ccc', fontWeight: 500 }}>Model Type</InputLabel>
+            <InputLabel sx={{ color: '#ccc', fontWeight: 500 }}>
+              Model Type
+            </InputLabel>
             <Select
               value={modelType || ''}
               onChange={(e) => setModelType(e.target.value || null)}
@@ -232,7 +247,9 @@ const ExplorePage: React.FC = () => {
 
           {/* Generation Type Filter */}
           <FormControl sx={{ minWidth: 200 }} variant="outlined" size="small">
-            <InputLabel sx={{ color: '#ccc', fontWeight: 500 }}>Generation Type</InputLabel>
+            <InputLabel sx={{ color: '#ccc', fontWeight: 500 }}>
+              Generation Type
+            </InputLabel>
             <Select
               value={generationType || ''}
               onChange={(e) => setGenerationType(e.target.value || null)}
@@ -293,7 +310,7 @@ const ExplorePage: React.FC = () => {
                     '& .MuiPaginationItem-root': {
                       color: '#fff',
                       borderColor: 'rgba(255,255,255,0.2)',
-                    }
+                    },
                   }}
                 />
               </Box>
@@ -302,7 +319,9 @@ const ExplorePage: React.FC = () => {
         )}
       </Container>
     </Box>
-  );
+  </Box>
+);
 };
+
 
 export default ExplorePage;
