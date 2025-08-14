@@ -9,6 +9,7 @@ import {
   Typography,
   Box,
   MenuItem,
+  Grid
 } from "@mui/material";
 import { CreatePromptDto } from "../../models/Prompt";
 import { validatePrompt } from "../../utils/Validators";
@@ -102,7 +103,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
         <Typography variant="h5" fontWeight="bold">
           Create a New Prompt
         </Typography>
-        
+
         {/* Title */}
         <TextField
           label="Title"
@@ -119,40 +120,47 @@ const PromptForm: React.FC<PromptFormProps> = ({
           InputLabelProps={{ sx: { color: "#ccc" } }}
         />
 
-        {/* Model Type */}
-        <TextField
-          select
-          fullWidth
-          label="Model Type"
-          name="modelType"
-          value={formData.modelType}
-          onChange={handleChange}
-          variant="outlined"
-          InputProps={{ sx: { color: "white" } }}
-          InputLabelProps={{ sx: { color: "#ccc" } }}
-        >
-          <MenuItem value="gemini">Gemini</MenuItem>
-          <MenuItem value="chatgpt">ChatGPT</MenuItem>
-          <MenuItem value="grok">Grok</MenuItem>
-        </TextField>
+        {/* Model & Generation in one row always */}
+        <Box>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                select
+                fullWidth
+                label="Model Type"
+                name="modelType"
+                value={formData.modelType}
+                onChange={handleChange}
+                variant="outlined"
+                InputProps={{ sx: { color: "white" } }}
+                InputLabelProps={{ sx: { color: "#ccc" } }}
+              >
+                <MenuItem value="gemini">Gemini</MenuItem>
+                <MenuItem value="chatgpt">ChatGPT</MenuItem>
+                <MenuItem value="grok">Grok</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                select
+                fullWidth
+                label="Generation Type"
+                name="generationType"
+                value={formData.generationType}
+                onChange={handleChange}
+                variant="outlined"
+                InputProps={{ sx: { color: "white" } }}
+                InputLabelProps={{ sx: { color: "#ccc" } }}
+              >
+                <MenuItem value="text">Text</MenuItem>
+                <MenuItem value="image">Image</MenuItem>
+                <MenuItem value="video">Video</MenuItem>
+                <MenuItem value="audio">Audio</MenuItem>
+              </TextField>
+            </Grid>
+          </Grid>
+        </Box>
 
-        {/* Generation Type */}
-        <TextField
-          select
-          fullWidth
-          label="Generation Type"
-          name="generationType"
-          value={formData.generationType}
-          onChange={handleChange}
-          variant="outlined"
-          InputProps={{ sx: { color: "white" } }}
-          InputLabelProps={{ sx: { color: "#ccc" } }}
-        >
-          <MenuItem value="text">Text</MenuItem>
-          <MenuItem value="image">Image</MenuItem>
-          <MenuItem value="video">Video</MenuItem>
-          <MenuItem value="audio">Audio</MenuItem>
-        </TextField>
 
         {/* Description */}
         <TextField
@@ -164,7 +172,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
           helperText={errors.description}
           fullWidth
           multiline
-          rows={3}
+          rows={2}
           variant="outlined"
           placeholder="Briefly describe your prompt..."
           InputProps={{
@@ -183,7 +191,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
           helperText={errors.content}
           fullWidth
           multiline
-          rows={8}
+          rows={5}
           variant="outlined"
           placeholder="Write the full prompt here..."
           InputProps={{
