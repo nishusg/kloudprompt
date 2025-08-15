@@ -102,7 +102,7 @@ const PromptDetailPage: React.FC = () => {
           text: newComment, // Ensure the UI has text
           createdAt: new Date(), // Immediate timestamp for display
           updatedAt: new Date(),
-          author: user!, // Current logged-in user object
+          user: user!, // Current logged-in user object
         } as PromptComment
       ]);
 
@@ -283,11 +283,11 @@ const PromptDetailPage: React.FC = () => {
               >
                 <Stack direction="row" spacing={2} alignItems="flex-start">
                   <Avatar sx={{ bgcolor: '#3080cfff', color: '#ffffffff' }}>
-                    {comment.author?.userName?.charAt(0).toUpperCase() || 'A'}
+                    {comment.user?.userName?.charAt(0).toUpperCase() || 'A'}
                   </Avatar>
                   <Box>
                     <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: '#ccc' }}>
-                      {comment.author?.userName || 'Anonymous'} - {formatDate(comment.createdAt)}
+                      {comment.user?.userName || 'Anonymous'} - {formatDate(comment.createdAt)}
                     </Typography>
                     <Typography variant="body2" sx={{ mt: 0.5, color: '#888' }}>{comment.text}</Typography>
                   </Box>

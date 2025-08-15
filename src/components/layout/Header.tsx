@@ -17,8 +17,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import ExploreIcon from '@mui/icons-material/Explore';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
-import NewReleasesIcon from '@mui/icons-material/NewReleases';
-import CategoryIcon from '@mui/icons-material/Category';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -119,19 +117,6 @@ const Header: React.FC = () => {
                   </ListItemIcon>
                   Trending
                 </MenuItem>
-                <MenuItem onClick={() => handleNavigate('/latest')}>
-                  <ListItemIcon>
-                    <NewReleasesIcon fontSize="small" />
-                  </ListItemIcon>
-                  Latest
-                </MenuItem>
-                <MenuItem onClick={() => handleNavigate('/categories')}>
-                  <ListItemIcon>
-                    <CategoryIcon fontSize="small" />
-                  </ListItemIcon>
-                  Categories
-                </MenuItem>
-                <Divider />
 
                 {/* Account Section */}
                 {user ? (
