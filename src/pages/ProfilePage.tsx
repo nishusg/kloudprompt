@@ -18,6 +18,7 @@ import {
   CardContent,
   CardActions,
 } from '@mui/material';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const PromptCard: React.FC<{
   prompt: Prompt;
@@ -31,14 +32,16 @@ const PromptCard: React.FC<{
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      bgcolor: '#1a1a1a',
-      border: '1px solid rgba(255,255,255,0.08)',
-      borderRadius: 3,
-      transition: 'all 0.25s ease',
+      bgcolor: 'rgba(28,28,30,0.95)',
+      backdropFilter: 'blur(6px)',
+      border: '1px solid rgba(144,202,249,0.15)',
+      borderRadius: 4,
+      transition: 'all 0.3s ease',
       cursor: 'pointer',
+      boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
       '&:hover': {
-        transform: 'translateY(-6px)',
-        boxShadow: '0 6px 24px rgba(144,202,249,0.25)',
+        transform: 'translateY(-8px) scale(1.01)',
+        boxShadow: '0 8px 24px rgba(144,202,249,0.3)',
         borderColor: '#90caf9',
       },
     }}
@@ -71,7 +74,10 @@ const PromptCard: React.FC<{
         {onEdit && (
           <Button
             size="small"
-            sx={{ color: '#90caf9' }}
+            sx={{
+              color: '#90caf9',
+              '&:hover': { color: '#64b5f6' },
+            }}
             onClick={(e) => {
               e.stopPropagation();
               onEdit();
@@ -83,7 +89,10 @@ const PromptCard: React.FC<{
         {onDelete && (
           <Button
             size="small"
-            sx={{ color: '#ef5350' }}
+            sx={{
+              color: '#ef5350',
+              '&:hover': { color: '#f6685e' },
+            }}
             onClick={(e) => {
               e.stopPropagation();
               onDelete();
@@ -104,6 +113,7 @@ const ProfilePage: React.FC = () => {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [bookmarkedPrompts, setBookmarkedPrompts] = useState<Prompt[]>([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [view, setView] = useState<'prompts' | 'bookmarks'>('prompts');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -112,7 +122,7 @@ const ProfilePage: React.FC = () => {
           setLoadingData(true);
           const [userPrompts, bookmarks] = await Promise.all([
             getUserPrompts(loggedInUser._id),
-            getUserBookmarks(loggedInUser._id), // assumes token auth to get bookmarks
+            getUserBookmarks(loggedInUser._id),
           ]);
           setPrompts(userPrompts);
           setBookmarkedPrompts(bookmarks);
@@ -151,7 +161,7 @@ const ProfilePage: React.FC = () => {
           justifyContent: 'center',
           alignItems: 'center',
           height: '100vh',
-          bgcolor: 'linear-gradient(145deg, #0d0d0d, #1c1c1c)',
+          background: 'linear-gradient(160deg, #0d0d0d, #1a1a1d)',
           color: 'white',
         }}
       >
@@ -163,7 +173,14 @@ const ProfilePage: React.FC = () => {
 
   if (!loggedInUser) {
     return (
-      <Box sx={{ bgcolor: '#0d0d0d', color: 'white', minHeight: '100vh', pt: 4 }}>
+      <Box
+        sx={{
+          background: 'linear-gradient(160deg, #0d0d0d, #1a1a1d)',
+          color: 'white',
+          minHeight: '100vh',
+          pt: 4,
+        }}
+      >
         <Typography variant="h6" align="center">
           Please log in to view your profile.
         </Typography>
@@ -173,6 +190,9 @@ const ProfilePage: React.FC = () => {
             sx={{
               bgcolor: '#90caf9',
               color: '#000',
+              fontWeight: 600,
+              borderRadius: '50px',
+              px: 3,
               '&:hover': { bgcolor: '#64b5f6' },
             }}
             onClick={() => navigate('/login')}
@@ -190,19 +210,20 @@ const ProfilePage: React.FC = () => {
         minHeight: '100vh',
         color: 'white',
         py: 4,
-        background: 'linear-gradient(145deg, #0d0d0d, #1a1a1a)',
+        background: 'linear-gradient(160deg, #0d0d0d 0%, #1a1a1d 40%, #101014 100%)',
       }}
     >
       <Container maxWidth="lg">
         {/* Profile Header */}
         <Paper
-          elevation={4}
+          elevation={6}
           sx={{
             p: { xs: 2, md: 4 },
             mb: 4,
-            borderRadius: '20px',
-            background: 'linear-gradient(145deg, #1f1f1f, #2b2b2b)',
+            borderRadius: '24px',
+            background: 'linear-gradient(145deg, #121212, #1e1e22)',
             border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
           }}
         >
           <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems="center">
@@ -210,10 +231,15 @@ const ProfilePage: React.FC = () => {
               src={'/default-avatar.png'}
               alt={loggedInUser.userName || 'User'}
               sx={{
-                width: { xs: 70, sm: 80, md: 96 },
-                height: { xs: 70, sm: 80, md: 96 },
+                width: { xs: 80, sm: 90, md: 100 },
+                height: { xs: 80, sm: 90, md: 100 },
                 border: '3px solid #90caf9',
-                boxShadow: '0 0 10px rgba(144,202,249,0.4)',
+                boxShadow: '0 0 20px rgba(144,202,249,0.5)',
+                transition: 'transform 0.25s ease',
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                  boxShadow: '0 0 30px rgba(144,202,249,0.7)',
+                },
                 flexShrink: 0,
               }}
             />
@@ -245,6 +271,8 @@ const ProfilePage: React.FC = () => {
                   borderColor: '#90caf9',
                   color: '#90caf9',
                   fontWeight: 600,
+                  borderRadius: '50px',
+                  px: 2,
                   '&:hover': {
                     borderColor: '#64b5f6',
                     backgroundColor: 'rgba(144,202,249,0.1)',
@@ -258,74 +286,115 @@ const ProfilePage: React.FC = () => {
           </Stack>
         </Paper>
 
-        {/* Prompts + Bookmarks Side by Side */}
-        <Grid container spacing={4}>
-          {/* My Prompts */}
-          <Grid item xs={12} md={6}>
-            <Typography
-              variant="h5"
-              fontWeight="bold"
-              sx={{
-                mb: 3,
-                color: '#90caf9',
-                borderBottom: '1px solid rgba(255,255,255,0.08)',
-                pb: 1,
-              }}
-            >
-              My Prompts
-            </Typography>
-            <Grid container spacing={3}>
-              {prompts.length > 0 ? (
-                prompts.map((prompt) => (
-                  <Grid item xs={12} key={prompt._id}>
-                    <PromptCard
-                      prompt={prompt}
-                      onView={() => navigate(`/prompts/${prompt._id}`)}
-                      onEdit={() => handleEdit(prompt._id)}
-                      onDelete={() => handleDelete(prompt._id)}
-                    />
-                  </Grid>
-                ))
-              ) : (
-                <Typography sx={{ ml: 1, mt: 2, color: 'rgba(255,255,255,0.6)' }}>
-                  You haven't created any prompts yet.
-                </Typography>
-              )}
-            </Grid>
-          </Grid>
+        {/* Toggle Buttons */}
+        <Stack direction="row" spacing={2} mb={3}>
+          <Button
+            variant={view === 'prompts' ? 'contained' : 'outlined'}
+            sx={{
+              borderRadius: '50px',
+              px: 3,
+              fontWeight: 600,
+              textTransform: 'none',
+              bgcolor: view === 'prompts' ? '#90caf9' : 'transparent',
+              color: view === 'prompts' ? '#000' : '#90caf9',
+              borderColor: '#90caf9',
+              boxShadow: view === 'prompts'
+                ? '0 4px 14px rgba(144,202,249,0.4)'
+                : 'none',
+              '&:hover': {
+                bgcolor: '#64b5f6',
+                color: '#000',
+                boxShadow: '0 6px 20px rgba(144,202,249,0.5)',
+              },
+            }}
+            onClick={() => setView('prompts')}
+          >
+            My Prompts
+          </Button>
+          <Button
+            variant={view === 'bookmarks' ? 'contained' : 'outlined'}
+            sx={{
+              borderRadius: '50px',
+              px: 3,
+              fontWeight: 600,
+              textTransform: 'none',
+              bgcolor: view === 'bookmarks' ? '#9e9e9e' : 'transparent', // Medium-light gray
+color: view === 'bookmarks' ? '#000' : '#e0e0e0',           // Light gray text
+borderColor: '#9e9e9e',
+boxShadow: view === 'bookmarks'
+  ? '0 4px 14px rgba(158,158,158,0.4)'
+  : 'none',
+'&:hover': {
+  bgcolor: '#d8d5d5ff',                                      // Slightly lighter on hover
+  color: '#000',
+  boxShadow: '0 6px 20px rgba(189,189,189,0.5)',
+},
 
-          {/* Bookmarked Prompts */}
-          <Grid item xs={12} md={6}>
-            <Typography
-              variant="h5"
-              fontWeight="bold"
-              sx={{
-                mb: 3,
-                color: '#ffb74d',
-                borderBottom: '1px solid rgba(255,255,255,0.08)',
-                pb: 1,
-              }}
+            }}
+            onClick={() => setView('bookmarks')}
+          >
+            Bookmarked Prompts
+          </Button>
+        </Stack>
+
+        {/* Animated Content */}
+        <AnimatePresence mode="wait">
+          {view === 'prompts' && (
+            <motion.div
+              key="prompts"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 50 }}
+              transition={{ duration: 0.3 }}
             >
-              Bookmarked Prompts
-            </Typography>
-            <Grid container spacing={3}>
-              {bookmarkedPrompts.length > 0 ? (
-                bookmarkedPrompts.map((prompt) => (
-                  <Grid item xs={12} key={prompt._id}>
-                    <PromptCard
-                      prompt={prompt}
-                      onView={() => navigate(`/prompts/${prompt._id}`)}
-                    />
-                  </Grid>
-                ))
-              ) : (
-                <Typography sx={{ ml: 1, mt: 2, color: 'rgba(255,255,255,0.6)' }}>
-                  You haven't bookmarked any prompts yet.
-                </Typography>
-              )}
-            </Grid>
-          </Grid>
-        </Grid>
+              <Grid container spacing={3}>
+                {prompts.length > 0 ? (
+                  prompts.map((prompt) => (
+                    <Grid item xs={12} key={prompt._id}>
+                      <PromptCard
+                        prompt={prompt}
+                        onView={() => navigate(`/prompts/${prompt._id}`)}
+                        onEdit={() => handleEdit(prompt._id)}
+                        onDelete={() => handleDelete(prompt._id)}
+                      />
+                    </Grid>
+                  ))
+                ) : (
+                  <Typography sx={{ ml: 1, mt: 2, color: 'rgba(255,255,255,0.6)' }}>
+                    You haven't created any prompts yet.
+                  </Typography>
+                )}
+              </Grid>
+            </motion.div>
+          )}
+
+          {view === 'bookmarks' && (
+            <motion.div
+              key="bookmarks"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Grid container spacing={3}>
+                {bookmarkedPrompts.length > 0 ? (
+                  bookmarkedPrompts.map((prompt) => (
+                    <Grid item xs={12} key={prompt._id}>
+                      <PromptCard
+                        prompt={prompt}
+                        onView={() => navigate(`/prompts/${prompt._id}`)}
+                      />
+                    </Grid>
+                  ))
+                ) : (
+                  <Typography sx={{ ml: 1, mt: 2, color: 'rgba(255,255,255,0.6)' }}>
+                    You haven't bookmarked any prompts yet.
+                  </Typography>
+                )}
+              </Grid>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Container>
     </Box>
   );
