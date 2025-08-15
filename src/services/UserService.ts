@@ -34,14 +34,6 @@ export const updateUser = async (id: string, data: UpdateUserDto): Promise<User>
   return response.data;
 };
 
-export const followUser = async (userId: string): Promise<void> => {
-  await apiClient.post(`/users/${userId}/follow`);
-};
-
-export const unfollowUser = async (userId: string): Promise<void> => {
-  await apiClient.delete(`/users/${userId}/follow`);
-};
-
 export const getUserPrompts = async (userId: string): Promise<Prompt[]> => {
   const response = await apiClient.get(`/users/${userId}/prompts`);
   return response.data;

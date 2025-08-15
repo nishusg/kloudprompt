@@ -49,7 +49,14 @@ const Header: React.FC = () => {
   };
 
   return (
-    <AppBar position="fixed"   sx={{ width: '100%', backgroundColor: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+    <AppBar
+      position="fixed"
+      sx={{
+        width: '100%',
+        backgroundColor: '#000',
+        zIndex: (theme) => theme.zIndex.drawer + 1,
+      }}
+    >
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         {/* Site Name Centered */}
         <Typography
@@ -128,41 +135,41 @@ const Header: React.FC = () => {
 
                 {/* Account Section */}
                 {user ? (
-                  <>
-                    <MenuItem onClick={() => handleNavigate('/create')}>
+                  [
+                    <MenuItem key="create" onClick={() => handleNavigate('/create')}>
                       <ListItemIcon>
                         <AddCircle fontSize="small" />
                       </ListItemIcon>
                       Create Prompt
-                    </MenuItem>
-                    <MenuItem onClick={() => handleNavigate('/profile/' + user._id)}>
+                    </MenuItem>,
+                    <MenuItem key="profile" onClick={() => handleNavigate('/profile/' + user._id)}>
                       <ListItemIcon>
                         <AccountCircle fontSize="small" />
                       </ListItemIcon>
                       Account Settings
-                    </MenuItem>
-                    <MenuItem onClick={handleLogout}>
+                    </MenuItem>,
+                    <MenuItem key="logout" onClick={handleLogout}>
                       <ListItemIcon>
                         <LogoutIcon fontSize="small" />
                       </ListItemIcon>
                       Logout
-                    </MenuItem>
-                  </>
+                    </MenuItem>,
+                  ]
                 ) : (
-                  <>
-                    <MenuItem onClick={() => handleNavigate('/login')}>
+                  [
+                    <MenuItem key="login" onClick={() => handleNavigate('/login')}>
                       <ListItemIcon>
                         <LoginIcon fontSize="small" />
                       </ListItemIcon>
                       Login
-                    </MenuItem>
-                    <MenuItem onClick={() => handleNavigate('/register')}>
+                    </MenuItem>,
+                    <MenuItem key="register" onClick={() => handleNavigate('/register')}>
                       <ListItemIcon>
                         <PersonAddIcon fontSize="small" />
                       </ListItemIcon>
                       Register
-                    </MenuItem>
-                  </>
+                    </MenuItem>,
+                  ]
                 )}
               </Menu>
             </>

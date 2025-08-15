@@ -66,7 +66,7 @@ const PromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
             {prompt.content}
           </Typography>
           <Typography variant="caption" color="grey.500">
-            by @{prompt.author?.username || 'Unknown'}
+            by @{prompt.author?.userName || 'Unknown'}
           </Typography>
         </CardContent>
       </Card>

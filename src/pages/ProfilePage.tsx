@@ -22,41 +22,74 @@ const PromptCard: React.FC<{
   prompt: Prompt;
   onEdit: () => void;
   onDelete: () => void;
-}> = ({ prompt, onEdit, onDelete }) => (
+  onView: () => void;
+}> = ({ prompt, onEdit, onDelete, onView }) => (
   <Card
     variant="outlined"
     sx={{
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      bgcolor: '#121212',
+      bgcolor: '#1a1a1a',
       border: '1px solid rgba(255,255,255,0.08)',
       borderRadius: 3,
-      transition: 'transform 0.2s, box-shadow 0.2s',
+      transition: 'all 0.25s ease',
+      cursor: 'pointer',
       '&:hover': {
-        transform: 'translateY(-4px)',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+        transform: 'translateY(-6px)',
+        boxShadow: '0 6px 24px rgba(144,202,249,0.25)',
+        borderColor: '#90caf9',
       },
     }}
+    onClick={onView}
   >
     <CardContent sx={{ flexGrow: 1 }}>
-      <Typography variant="h6" gutterBottom color="white">
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ color: '#fff', fontWeight: 600, letterSpacing: 0.3 }}
+      >
         {prompt.title}
       </Typography>
-      <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: 'rgba(255,255,255,0.7)',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: '-webkit-box',
+          WebkitLineClamp: 4,
+          WebkitBoxOrient: 'vertical',
+        }}
+      >
         {prompt.content}
       </Typography>
     </CardContent>
     <CardActions sx={{ pl: 2, pb: 2, justifyContent: 'space-between' }}>
-      <Button size="small" onClick={onEdit} sx={{ color: '#90caf9' }}>
+      <Button
+        size="small"
+        sx={{ color: '#90caf9' }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onEdit();
+        }}
+      >
         Edit
       </Button>
-      <Button size="small" color="error" onClick={onDelete}>
+      <Button
+        size="small"
+        sx={{ color: '#ef5350' }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete();
+        }}
+      >
         Delete
       </Button>
     </CardActions>
   </Card>
 );
+
 
 const ProfilePage: React.FC = () => {
   const { user: loggedInUser, loading: authLoading } = useAuth();
@@ -107,7 +140,7 @@ const ProfilePage: React.FC = () => {
           justifyContent: 'center',
           alignItems: 'center',
           height: '100vh',
-          bgcolor: '#000',
+          bgcolor: 'linear-gradient(145deg, #0d0d0d, #1c1c1c)',
           color: 'white',
         }}
       >
@@ -119,14 +152,18 @@ const ProfilePage: React.FC = () => {
 
   if (!loggedInUser) {
     return (
-      <Box sx={{ bgcolor: '#000', color: 'white', minHeight: '100vh', pt: 4 }}>
+      <Box sx={{ bgcolor: '#0d0d0d', color: 'white', minHeight: '100vh', pt: 4 }}>
         <Typography variant="h6" align="center">
           Please log in to view your profile.
         </Typography>
         <Box sx={{ textAlign: 'center', mt: 2 }}>
           <Button
             variant="contained"
-            sx={{ bgcolor: '#90caf9' }}
+            sx={{
+              bgcolor: '#90caf9',
+              color: '#000',
+              '&:hover': { bgcolor: '#64b5f6' },
+            }}
             onClick={() => navigate('/login')}
           >
             Go to Login
@@ -137,42 +174,72 @@ const ProfilePage: React.FC = () => {
   }
 
   return (
-    <Box sx={{ bgcolor: '#000', minHeight: '100vh', color: 'white', py: 4 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        color: 'white',
+        py: 4,
+        background: 'linear-gradient(145deg, #0d0d0d, #1a1a1a)',
+      }}
+    >
       <Container maxWidth="md">
         <Paper
           elevation={4}
           sx={{
-            p: { xs: 2, md: 3 },
+            p: { xs: 2, md: 4 },
             mb: 4,
-            borderRadius: '12px',
-            bgcolor: '#1e1e1e',
-            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '20px',
+            background: 'linear-gradient(145deg, #1f1f1f, #2b2b2b)',
+            border: '1px solid rgba(255,255,255,0.08)',
           }}
         >
           <Stack
-            direction={{ xs: 'column', md: 'row' }}
-            spacing={3}
-            alignItems={{ xs: 'center', md: 'flex-start' }}
+            direction="row"
+            spacing={{ xs: 2, md: 3 }}
+            alignItems="center"
           >
             <Avatar
-              src={loggedInUser.avatar || '/default-avatar.png'}
-              alt={loggedInUser.username || 'User'}
-              sx={{ width: 96, height: 96 }}
+              src={'/default-avatar.png'}
+              alt={loggedInUser.userName || 'User'}
+              sx={{
+                width: { xs: 70, sm: 80, md: 96 },
+                height: { xs: 70, sm: 80, md: 96 },
+                border: '3px solid #90caf9',
+                boxShadow: '0 0 10px rgba(144,202,249,0.4)',
+                flexShrink: 0,
+              }}
             />
-            <Box sx={{ flexGrow: 1, textAlign: { xs: 'center', md: 'left' } }}>
-              <Typography variant="h4" fontWeight="bold">
-                {loggedInUser.username || 'Unnamed User'}
+
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography
+                variant="h5"
+                fontWeight="bold"
+                sx={{
+                  color: '#fff',
+                  fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' },
+                }}
+              >
+                {loggedInUser.userName || 'Unnamed User'}
               </Typography>
-              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)' }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'rgba(255,255,255,0.6)',
+                  fontSize: { xs: '0.85rem', sm: '0.9rem', md: '1rem' },
+                }}
+              >
                 {loggedInUser.email || 'No email provided'}
               </Typography>
+
               <Button
                 variant="outlined"
-                size="medium"
+                size="small"
                 sx={{
-                  mt: 2,
+                  mt: 1.5,
                   borderColor: '#90caf9',
                   color: '#90caf9',
+                  fontWeight: 600,
+                  minWidth: { xs: '90px', md: 'auto' },
                   '&:hover': {
                     borderColor: '#64b5f6',
                     backgroundColor: 'rgba(144,202,249,0.1)',
@@ -186,7 +253,17 @@ const ProfilePage: React.FC = () => {
           </Stack>
         </Paper>
 
-        <Typography variant="h5" fontWeight="bold" sx={{ mb: 3 }}>
+
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          sx={{
+            mb: 3,
+            color: '#90caf9',
+            borderBottom: '1px solid rgba(255,255,255,0.08)',
+            pb: 1,
+          }}
+        >
           My Prompts
         </Typography>
 
@@ -196,13 +273,20 @@ const ProfilePage: React.FC = () => {
               <Grid item xs={12} sm={6} md={4} key={prompt._id}>
                 <PromptCard
                   prompt={prompt}
+                  onView={() => navigate(`/prompts/${prompt._id}`)}
                   onEdit={() => handleEdit(prompt._id)}
                   onDelete={() => handleDelete(prompt._id)}
                 />
               </Grid>
             ))
           ) : (
-            <Typography sx={{ ml: 3, mt: 2, color: 'rgba(255,255,255,0.6)' }}>
+            <Typography
+              sx={{
+                ml: 3,
+                mt: 2,
+                color: 'rgba(255,255,255,0.6)',
+              }}
+            >
               You haven't created any prompts yet.
             </Typography>
           )}

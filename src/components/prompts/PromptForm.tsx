@@ -114,6 +114,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
           helperText={errors.title}
           fullWidth
           variant="outlined"
+          placeholder="Title of your prompt"
           InputProps={{
             sx: { color: "white" },
           }}

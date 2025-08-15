@@ -146,7 +146,7 @@ const handleAddComment = async () => {
             {prompt.description}
           </Typography>
           <Typography variant="subtitle2" sx={{ color: '#bbb' }}>
-            By <strong>{prompt.author.username || 'anonymous'}</strong> • {formatDate(prompt.createdAt)}
+            By <strong>{prompt.author.userName || 'anonymous'}</strong> • {formatDate(prompt.createdAt)}
           </Typography>
         </Box>
 
@@ -258,11 +258,11 @@ const handleAddComment = async () => {
               >
                 <Stack direction="row" spacing={2} alignItems="flex-start">
                   <Avatar sx={{ bgcolor: '#3080cfff', color: '#ffffffff' }}>
-                    {comment.author?.username?.charAt(0).toUpperCase() || 'A'}
+                    {comment.author?.userName?.charAt(0).toUpperCase() || 'A'}
                   </Avatar>
                   <Box>
                     <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: '#ccc' }}>
-                      {comment.author?.username || 'Anonymous'} - {formatDate(comment.createdAt)}
+                      {comment.author?.userName || 'Anonymous'} - {formatDate(comment.createdAt)}
                     </Typography>
                     <Typography variant="body2" sx={{ mt: 0.5, color: '#888' }}>{comment.text}</Typography>
                   </Box>
@@ -281,7 +281,7 @@ const handleAddComment = async () => {
               fullWidth
               multiline
               rows={3}
-              placeholder={`Comment as ${user?.username}`}
+              placeholder={`Comment as ${user?.userName}`}
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               disabled={isCommenting}
