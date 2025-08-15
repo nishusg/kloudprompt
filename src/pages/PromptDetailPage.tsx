@@ -54,38 +54,63 @@ const PromptDetailPage: React.FC = () => {
 
   const handleBookmark = async () => {
     if (!prompt || !isAuthenticated) return;
+
     try {
       setBookmarkLoading(true);
-      const updatedPrompt = await toggleBookmarkPrompt(prompt._id);
-      setPrompt(updatedPrompt);
+
+      // Optimistically update the UI
+      setPrompt(prev =>
+        prev
+          ? {
+              ...prev,
+              isBookmarkedByCurrentUser: !prev.isBookmarkedByCurrentUser
+            }
+          : prev
+      );
+
+      // Call backend to toggle
+      await toggleBookmarkPrompt(prompt._id);
+
+    } catch (err) {
+      console.error("Failed to toggle bookmark", err);
+      // Rollback if needed
+      setPrompt(prev =>
+        prev
+          ? {
+              ...prev,
+              isBookmarkedByCurrentUser: !prev.isBookmarkedByCurrentUser
+            }
+          : prev
+      );
     } finally {
       setBookmarkLoading(false);
     }
   };
 
-const handleAddComment = async () => {
-  if (!newComment.trim() || !prompt || !isAuthenticated) return;
-  try {
-    setIsCommenting(true);
 
-    const createdComment = await addCommentToPrompt(prompt._id, newComment.trim());
+  const handleAddComment = async () => {
+    if (!newComment.trim() || !prompt || !isAuthenticated) return;
+    try {
+      setIsCommenting(true);
 
-    setComments(prev => [
-      ...prev,
-      {
-        ...createdComment,
-        text: newComment, // Ensure the UI has text
-        createdAt: new Date(), // Immediate timestamp for display
-        updatedAt: new Date(),
-        author: user!, // Current logged-in user object
-      } as PromptComment
-    ]);
+      const createdComment = await addCommentToPrompt(prompt._id, newComment.trim());
 
-    setNewComment('');
-  } finally {
-    setIsCommenting(false);
-  }
-};
+      setComments(prev => [
+        ...prev,
+        {
+          ...createdComment,
+          text: newComment, // Ensure the UI has text
+          createdAt: new Date(), // Immediate timestamp for display
+          updatedAt: new Date(),
+          author: user!, // Current logged-in user object
+        } as PromptComment
+      ]);
+
+      setNewComment('');
+    } finally {
+      setIsCommenting(false);
+    }
+  };
 
 
   const handleShare = async () => {
@@ -146,7 +171,7 @@ const handleAddComment = async () => {
             {prompt.description}
           </Typography>
           <Typography variant="subtitle2" sx={{ color: '#bbb' }}>
-            By <strong>{prompt.author.userName || 'anonymous'}</strong> • {formatDate(prompt.createdAt)}
+            By <strong>{prompt.author?.userName || 'anonymous'}</strong> • {formatDate(prompt.createdAt)}
           </Typography>
         </Box>
 

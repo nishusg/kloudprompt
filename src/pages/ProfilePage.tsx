@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getUserPrompts, deletePrompt } from '../services/PromptService';
+import { getUserBookmarks } from '../services/BookmarkService';
 import { Prompt } from '../models';
 import {
   Container,
@@ -20,8 +21,8 @@ import {
 
 const PromptCard: React.FC<{
   prompt: Prompt;
-  onEdit: () => void;
-  onDelete: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
   onView: () => void;
 }> = ({ prompt, onEdit, onDelete, onView }) => (
   <Card
@@ -65,56 +66,66 @@ const PromptCard: React.FC<{
         {prompt.content}
       </Typography>
     </CardContent>
-    <CardActions sx={{ pl: 2, pb: 2, justifyContent: 'space-between' }}>
-      <Button
-        size="small"
-        sx={{ color: '#90caf9' }}
-        onClick={(e) => {
-          e.stopPropagation();
-          onEdit();
-        }}
-      >
-        Edit
-      </Button>
-      <Button
-        size="small"
-        sx={{ color: '#ef5350' }}
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete();
-        }}
-      >
-        Delete
-      </Button>
-    </CardActions>
+    {(onEdit || onDelete) && (
+      <CardActions sx={{ pl: 2, pb: 2, justifyContent: 'space-between' }}>
+        {onEdit && (
+          <Button
+            size="small"
+            sx={{ color: '#90caf9' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+          >
+            Edit
+          </Button>
+        )}
+        {onDelete && (
+          <Button
+            size="small"
+            sx={{ color: '#ef5350' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
+          >
+            Delete
+          </Button>
+        )}
+      </CardActions>
+    )}
   </Card>
 );
-
 
 const ProfilePage: React.FC = () => {
   const { user: loggedInUser, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const [prompts, setPrompts] = useState<Prompt[]>([]);
-  const [loadingPrompts, setLoadingPrompts] = useState(true);
+  const [bookmarkedPrompts, setBookmarkedPrompts] = useState<Prompt[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
 
   useEffect(() => {
-    const fetchUserPrompts = async () => {
+    const fetchData = async () => {
       if (loggedInUser?._id) {
         try {
-          setLoadingPrompts(true);
-          const userPrompts = await getUserPrompts(loggedInUser._id);
+          setLoadingData(true);
+          const [userPrompts, bookmarks] = await Promise.all([
+            getUserPrompts(loggedInUser._id),
+            getUserBookmarks(loggedInUser._id), // assumes token auth to get bookmarks
+          ]);
           setPrompts(userPrompts);
+          setBookmarkedPrompts(bookmarks);
         } catch (error) {
-          console.error('Failed to fetch user prompts:', error);
+          console.error('Failed to fetch profile data:', error);
         } finally {
-          setLoadingPrompts(false);
+          setLoadingData(false);
         }
       } else {
-        setLoadingPrompts(false);
+        setLoadingData(false);
       }
     };
-    if (!authLoading) fetchUserPrompts();
+    if (!authLoading) fetchData();
   }, [loggedInUser, authLoading]);
 
   const handleEdit = (promptId: string) => {
@@ -132,7 +143,7 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  if (authLoading || loadingPrompts) {
+  if (authLoading || loadingData) {
     return (
       <Box
         sx={{
@@ -182,7 +193,8 @@ const ProfilePage: React.FC = () => {
         background: 'linear-gradient(145deg, #0d0d0d, #1a1a1a)',
       }}
     >
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
+        {/* Profile Header */}
         <Paper
           elevation={4}
           sx={{
@@ -193,11 +205,7 @@ const ProfilePage: React.FC = () => {
             border: '1px solid rgba(255,255,255,0.08)',
           }}
         >
-          <Stack
-            direction="row"
-            spacing={{ xs: 2, md: 3 }}
-            alignItems="center"
-          >
+          <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems="center">
             <Avatar
               src={'/default-avatar.png'}
               alt={loggedInUser.userName || 'User'}
@@ -209,7 +217,6 @@ const ProfilePage: React.FC = () => {
                 flexShrink: 0,
               }}
             />
-
             <Box sx={{ flexGrow: 1 }}>
               <Typography
                 variant="h5"
@@ -230,7 +237,6 @@ const ProfilePage: React.FC = () => {
               >
                 {loggedInUser.email || 'No email provided'}
               </Typography>
-
               <Button
                 variant="outlined"
                 size="small"
@@ -239,7 +245,6 @@ const ProfilePage: React.FC = () => {
                   borderColor: '#90caf9',
                   color: '#90caf9',
                   fontWeight: 600,
-                  minWidth: { xs: '90px', md: 'auto' },
                   '&:hover': {
                     borderColor: '#64b5f6',
                     backgroundColor: 'rgba(144,202,249,0.1)',
@@ -253,43 +258,73 @@ const ProfilePage: React.FC = () => {
           </Stack>
         </Paper>
 
-
-        <Typography
-          variant="h5"
-          fontWeight="bold"
-          sx={{
-            mb: 3,
-            color: '#90caf9',
-            borderBottom: '1px solid rgba(255,255,255,0.08)',
-            pb: 1,
-          }}
-        >
-          My Prompts
-        </Typography>
-
-        <Grid container spacing={3}>
-          {prompts.length > 0 ? (
-            prompts.map((prompt) => (
-              <Grid item xs={12} sm={6} md={4} key={prompt._id}>
-                <PromptCard
-                  prompt={prompt}
-                  onView={() => navigate(`/prompts/${prompt._id}`)}
-                  onEdit={() => handleEdit(prompt._id)}
-                  onDelete={() => handleDelete(prompt._id)}
-                />
-              </Grid>
-            ))
-          ) : (
+        {/* Prompts + Bookmarks Side by Side */}
+        <Grid container spacing={4}>
+          {/* My Prompts */}
+          <Grid item xs={12} md={6}>
             <Typography
+              variant="h5"
+              fontWeight="bold"
               sx={{
-                ml: 3,
-                mt: 2,
-                color: 'rgba(255,255,255,0.6)',
+                mb: 3,
+                color: '#90caf9',
+                borderBottom: '1px solid rgba(255,255,255,0.08)',
+                pb: 1,
               }}
             >
-              You haven't created any prompts yet.
+              My Prompts
             </Typography>
-          )}
+            <Grid container spacing={3}>
+              {prompts.length > 0 ? (
+                prompts.map((prompt) => (
+                  <Grid item xs={12} key={prompt._id}>
+                    <PromptCard
+                      prompt={prompt}
+                      onView={() => navigate(`/prompts/${prompt._id}`)}
+                      onEdit={() => handleEdit(prompt._id)}
+                      onDelete={() => handleDelete(prompt._id)}
+                    />
+                  </Grid>
+                ))
+              ) : (
+                <Typography sx={{ ml: 1, mt: 2, color: 'rgba(255,255,255,0.6)' }}>
+                  You haven't created any prompts yet.
+                </Typography>
+              )}
+            </Grid>
+          </Grid>
+
+          {/* Bookmarked Prompts */}
+          <Grid item xs={12} md={6}>
+            <Typography
+              variant="h5"
+              fontWeight="bold"
+              sx={{
+                mb: 3,
+                color: '#ffb74d',
+                borderBottom: '1px solid rgba(255,255,255,0.08)',
+                pb: 1,
+              }}
+            >
+              Bookmarked Prompts
+            </Typography>
+            <Grid container spacing={3}>
+              {bookmarkedPrompts.length > 0 ? (
+                bookmarkedPrompts.map((prompt) => (
+                  <Grid item xs={12} key={prompt._id}>
+                    <PromptCard
+                      prompt={prompt}
+                      onView={() => navigate(`/prompts/${prompt._id}`)}
+                    />
+                  </Grid>
+                ))
+              ) : (
+                <Typography sx={{ ml: 1, mt: 2, color: 'rgba(255,255,255,0.6)' }}>
+                  You haven't bookmarked any prompts yet.
+                </Typography>
+              )}
+            </Grid>
+          </Grid>
         </Grid>
       </Container>
     </Box>

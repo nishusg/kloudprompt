@@ -86,7 +86,7 @@ const NotFoundPage: React.FC = () => {
           </Button>
           <Button
             component={RouterLink}
-            to="/prompts"
+            to="/explore"
             variant="outlined"
             size="large"
             sx={{ color: '#fff', borderColor: '#fff' }}

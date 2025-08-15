@@ -65,6 +65,6 @@ export const searchPrompts = async (query: string): Promise<Prompt[]> => {
 };
 
 export const toggleBookmarkPrompt = async (id: string): Promise<Prompt> => {
-  const response = await apiClient.post(`/prompts/${id}/bookmark`);
+  const response = await apiClient.patch(`/bookmarks/${id}`);
   return response.data;
 };
