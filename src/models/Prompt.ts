@@ -1,4 +1,5 @@
 import { PromptComment } from './Comment';
+import { GenerationTypeEnum, ModelTypeEnum } from './Enum';
 import { User } from './User';
 
 export interface Prompt {
@@ -26,8 +27,8 @@ export interface CreatePromptDto {
   content: string;
   description: string;
   tags: string[];
-  modelType: 'gemini' | 'chatgpt' | 'grok';
-  generationType: 'image' | 'video' | 'text' | 'audio';
+  modelType: ModelTypeEnum;
+  generationType: GenerationTypeEnum;
 }
 
 // No changes needed, this is an excellent use of TypeScript's Partial
