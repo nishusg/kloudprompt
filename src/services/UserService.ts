@@ -3,7 +3,7 @@ import { User, UpdateUserDto } from '../models/User';
 import { Prompt } from '../models/Prompt';
 
 export const registerUser = async (data: {
-  username: string;
+  userName: string;
   email: string;
   password: string;
 }): Promise<{ user: User; token: string }> => {

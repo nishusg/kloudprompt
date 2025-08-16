@@ -34,8 +34,8 @@ export const validatePrompt = (prompt: {
   
   if (!prompt.title.trim()) {
     errors.title = 'Title is required';
-  } else if (prompt.title.length > 100) {
-    errors.title = 'Title must be less than 100 characters';
+  } else if (prompt.title.length > 50) {
+    errors.title = 'Title must be less than 50 characters';
   }
   
   if (!prompt.content.trim()) {

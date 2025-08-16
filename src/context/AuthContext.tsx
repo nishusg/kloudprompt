@@ -77,11 +77,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [fetchCurrentUser]);
 
-  const register = useCallback(async (username: string, email: string, password: string) => {
+  const register = useCallback(async (userName: string, email: string, password: string) => {
     setLoading(true);
     setError(null);
     try {
-      const res: AuthResponse = await registerUser({ username, email, password });
+      const res: AuthResponse = await registerUser({ userName, email, password });
       setToken(res.token);
 
       if (res.user) {

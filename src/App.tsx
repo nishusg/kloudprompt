@@ -14,6 +14,9 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ExplorePage from './pages/ExplorePage';
 import NotFoundPage from './pages/NotFoundPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -38,6 +41,9 @@ const AppRoutes: React.FC = () => {
             <Route path="/prompts/:id" element={<PromptDetailPage />} />
             <Route path="/create" element={<CreatePromptPage />} />
             <Route path="/profile/:id" element={<ProfilePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
           </Route>
 
           {/* Redirect auth users away from login/register */}

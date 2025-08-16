@@ -50,9 +50,9 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#121212', display: 'flex', alignItems: 'center', justifyContent: 'center', py: 4 }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', py: 4 }}>
       <Container component="main" maxWidth="xs">
-        <Card sx={{ bgcolor: '#1E1E1E', color: '#fff', borderRadius: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+        <Card sx={{ bgcolor: '#1E1E1E', color: '#fff', borderRadius: 3 }}>
           <CardContent sx={{ p: 4 }}>
             <Typography component="h1" variant="h5" align="center" gutterBottom sx={{ fontWeight: 'bold' }}>
               Sign in to your account
@@ -116,7 +116,7 @@ const LoginPage: React.FC = () => {
 
               <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 1, mb: 2 }}>
                 <FormControlLabel control={<Checkbox color="primary" />} label="Remember me" disabled={loading} sx={{ color: '#ccc' }} />
-                <Link component={RouterLink} to="/forgot-password" variant="body2" sx={{ color: '#90caf9' }}>
+                <Link component={RouterLink} to="/forgotPassword" variant="body2" sx={{ color: '#90caf9' }}>
                   Forgot password?
                 </Link>
               </Stack>

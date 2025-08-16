@@ -22,7 +22,7 @@ const RegisterPage: React.FC = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
+    userName: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -38,9 +38,9 @@ const RegisterPage: React.FC = () => {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    const usernameValidation = validateUsername(formData.username);
-    if (!usernameValidation.valid) {
-      newErrors.username = usernameValidation.message || '';
+    const userNameValidation = validateUsername(formData.userName);
+    if (!userNameValidation.valid) {
+      newErrors.userName = userNameValidation.message || '';
     }
 
     if (!validateEmail(formData.email)) {
@@ -66,7 +66,7 @@ const RegisterPage: React.FC = () => {
 
     setIsLoading(true);
     try {
-      await register(formData.username, formData.email, formData.password);
+      await register(formData.userName, formData.email, formData.password);
       navigate('/');
     } catch (error) {
       setErrors({
@@ -81,7 +81,7 @@ const RegisterPage: React.FC = () => {
     <Box
       sx={{
         minHeight: '100vh',
-        bgcolor: '#121212',
+        bgcolor: '#0a0a0a',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -95,7 +95,6 @@ const RegisterPage: React.FC = () => {
             color: '#fff',
             backdropFilter: 'blur(8px)',
             borderRadius: 3,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
             p: 2
           }}
         >
@@ -116,15 +115,15 @@ const RegisterPage: React.FC = () => {
                   variant="filled"
                   InputProps={{ style: { color: '#fff', backgroundColor: '#1e1e1e' } }}
                   InputLabelProps={{ style: { color: '#bbb' } }}
-                  id="username"
-                  name="username"
+                  id="userName"
+                  name="userName"
                   label="Username"
                   required
                   fullWidth
-                  value={formData.username}
+                  value={formData.userName}
                   onChange={handleChange}
-                  error={!!errors.username}
-                  helperText={errors.username}
+                  error={!!errors.userName}
+                  helperText={errors.userName}
                 />
                 <TextField
                   variant="filled"

@@ -67,7 +67,7 @@ const CreatePromptPage: React.FC = () => {
         color: '#fff',
       }}
     >
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Grid container justifyContent="center">
           <Grid item xs={12} md={10} lg={8}>
             {/* Header */}
@@ -82,7 +82,7 @@ const CreatePromptPage: React.FC = () => {
               <CreateIcon
                 sx={{
                   fontSize: 50,
-                  color: '#1877F2',
+                  color: '#42a5f5',
                   transition: 'transform 0.3s ease',
                   '&:hover': { transform: 'rotate(-5deg) scale(1.05)' },
                 }}
@@ -91,7 +91,7 @@ const CreatePromptPage: React.FC = () => {
                 variant="h3"
                 fontWeight="bold"
                 sx={{
-                  background: 'linear-gradient(90deg, #1877F2, #0d47a1)',
+                  background: '#42a5f5',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   letterSpacing: 1,
@@ -101,7 +101,7 @@ const CreatePromptPage: React.FC = () => {
               </Typography>
             </Box>
 
-            <Typography variant="body1" sx={{ color: 'grey.400', mb: 3, maxWidth: 600 }}>
+            <Typography variant="body1" sx={{ color: 'grey.400', mb: 3, maxWidth: 800 }}>
               Craft a detailed and effective prompt. Provide a clear title, a concise
               description, and specific content to guide the AI. Use tags to help
               others discover your creation.
@@ -111,18 +111,9 @@ const CreatePromptPage: React.FC = () => {
 
             {/* Form */}
             <Paper
-              elevation={8}
               sx={{
-                p: { xs: 2.5, sm: 4 },
                 borderRadius: 3,
-                bgcolor: 'rgba(18, 18, 18, 0.9)',
-                backdropFilter: 'blur(8px)',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-                transition: 'transform 0.2s ease',
-                '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 12px 32px rgba(0,0,0,0.5)',
-                },
+                bgcolor: '#0a0a0a',
               }}
             >
               {submitError && (

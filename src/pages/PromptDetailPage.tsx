@@ -157,7 +157,7 @@ const PromptDetailPage: React.FC = () => {
     );
 
   return (
-    <Box sx={{ bgcolor: '#0d0d0d', color: '#fff', minHeight: '100vh', py: 4 }}>
+    <Box sx={{ bgcolor: '#0a0a0a', color: '#fff', minHeight: '100vh', py: 4 }}>
       <Container maxWidth="md">
         
         {/* Header */}

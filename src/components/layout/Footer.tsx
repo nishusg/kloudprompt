@@ -1,5 +1,7 @@
-import React from 'react';
-import { Box, Container, Typography, Divider, Link, Stack } from '@mui/material';
+import React from "react";
+import { Box, Container, Typography, Divider, Stack } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+import { Website_Title } from "../../utils/Constants";
 
 const Footer: React.FC = () => {
   return (
@@ -7,14 +9,14 @@ const Footer: React.FC = () => {
       component="footer"
       sx={{
         px: 2,
-        mt: 'auto',
-        backgroundColor: '#000', // Black background
-        color: '#fff', // White text
+        mt: "auto",
+        backgroundColor: "#000", // Black background
+        color: "#fff", // White text
       }}
     >
       <Container maxWidth="lg">
         {/* Divider for separation */}
-        <Divider sx={{ bgcolor: 'rgba(255,255,255,0.2)', mb: 3 }} />
+        <Divider sx={{ bgcolor: "rgba(255,255,255,0.2)", mb: 3 }} />
 
         {/* Navigation Links */}
         <Stack
@@ -23,26 +25,31 @@ const Footer: React.FC = () => {
           spacing={3}
           sx={{ mb: 2 }}
         >
-          {['About', 'Contact', 'Privacy Policy'].map((text, i) => (
-            <Link
+          {[
+            { text: "About", path: "/about" },
+            { text: "Contact", path: "/contact" },
+            { text: "Privacy Policy", path: "/privacy" },
+          ].map((link, i) => (
+            <Typography
               key={i}
-              href={`/${text.toLowerCase().replace(/\s+/g, '')}`}
-              color="inherit"
-              underline="none"
+              component={RouterLink}
+              to={link.path}
               sx={{
                 fontWeight: 500,
-                transition: 'color 0.3s',
-                '&:hover': { color: '#1877F2' }, // Orange hover
+                textDecoration: "none",
+                color: "inherit",
+                transition: "color 0.3s",
+                "&:hover": { color: "#42a5f5" }, // Hover effect
               }}
             >
-              {text}
-            </Link>
+              {link.text}
+            </Typography>
           ))}
         </Stack>
 
         {/* Copyright */}
         <Typography variant="body2" align="center" sx={{ opacity: 0.8 }}>
-          © {new Date().getFullYear()} PromptShare. All rights reserved.
+          © {new Date().getFullYear()} {Website_Title}. All rights reserved.
         </Typography>
       </Container>
     </Box>
