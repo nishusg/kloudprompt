@@ -1,7 +1,7 @@
 // src/pages/PromptDetailPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { getPromptById, toggleBookmarkPrompt } from '../services/PromptService';
+import { getPromptById, incrementPromptView, toggleBookmarkPrompt } from '../services/PromptService';
 import { addCommentToPrompt } from '../services/CommentService';
 import { useAuth } from '../context/AuthContext';
 import { Prompt } from '../models/Prompt';
@@ -34,7 +34,9 @@ const PromptDetailPage: React.FC = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState('');
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
+  const hasIncremented = useRef(false);
 
+  // Fetch prompt
   useEffect(() => {
     if (!id) return;
     const fetchData = async () => {
@@ -43,6 +45,10 @@ const PromptDetailPage: React.FC = () => {
         const promptData = await getPromptById(id);
         setPrompt(promptData);
         setComments(promptData.comments || []);
+        if (id && !hasIncremented.current) {
+          incrementPromptView(id);
+          hasIncremented.current = true;
+        }
       } catch (err) {
         setError('Failed to fetch prompt data. Please try again later.');
       } finally {

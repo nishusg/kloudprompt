@@ -40,6 +40,26 @@ export const getPromptById = async (id: string): Promise<Prompt> => {
   }
 };
 
+export const incrementPromptView = async (id: string): Promise<number> => {
+  try {
+    const response = await apiClient.post(`/prompts/${id}/view`);
+    return response.data.views;
+  } catch (err) {
+    handleApiError(err, "Failed to increment views");
+    return 0;
+  }
+};
+
+export const getTrendingPrompts = async (limit: number = 10): Promise<Prompt[]> => {
+  try {
+    const response = await apiClient.get(`/prompts/trending?limit=${limit}`);
+    return response.data;
+  } catch (err) {
+    console.error("Failed to fetch trending prompts", err);
+    return [];
+  }
+};
+
 export const getUserPrompts = async (userId: string): Promise<Prompt[]> => {
   try {
     const response = await apiClient.get(`/users/${userId}/prompts`);

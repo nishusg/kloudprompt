@@ -90,7 +90,7 @@ const CreatePromptPage: React.FC = () => {
               <CreateIcon
                 sx={{
                   fontSize: 50,
-                  color: '#42a5f5',
+                  color: '#ffffffff',
                   transition: 'transform 0.3s ease',
                   '&:hover': { transform: 'rotate(-5deg) scale(1.05)' },
                 }}
@@ -99,7 +99,7 @@ const CreatePromptPage: React.FC = () => {
                 variant="h3"
                 fontWeight="bold"
                 sx={{
-                  background: '#42a5f5',
+                  background: '#ffffffff',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   letterSpacing: 1,
