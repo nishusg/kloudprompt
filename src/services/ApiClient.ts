@@ -1,11 +1,16 @@
 // src/services/ApiClient.ts
 import axios from 'axios';
+import { API_URL } from '../utils/Constants';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:5000/api', // Your API base URL
+  baseURL: API_URL, // 🔹 configurable via env
+  timeout: 10000, // ⏱️ 10s timeout
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-// ✨ Use an interceptor to automatically add the token to every request
+// ✨ Request interceptor → attach token
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('authToken');
@@ -15,6 +20,20 @@ apiClient.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// ✨ Response interceptor → handle 401 globally
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('authToken'); // 🔹 clear token
+      // Optionally redirect to login page
+      // window.location.href = '/login';
+    }
+    console.error("API Error:", error); // 🔹 central log
     return Promise.reject(error);
   }
 );

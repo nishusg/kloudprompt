@@ -51,7 +51,7 @@ const ProfilePage: React.FC = () => {
   }, [loggedInUser, authLoading]);
 
   const handleEdit = (promptId: string) => {
-    navigate(`/update-prompt/${promptId}`);
+    navigate(`/update/${promptId}`);
   };
 
   const handleDelete = async (promptId: string) => {

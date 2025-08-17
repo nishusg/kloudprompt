@@ -33,16 +33,24 @@ const CreatePromptPage: React.FC = () => {
   const handleSubmit = async (data: CreatePromptDto) => {
     setIsSubmitting(true);
     setSubmitError(null);
+
     try {
       const newPrompt = await createPrompt(data);
       navigate(`/prompts/${newPrompt._id}`);
-    } catch (error) {
-      console.error('Failed to create prompt:', error);
-      setSubmitError(
-        error instanceof Error
-          ? error.message
-          : 'An unknown error occurred. Please try again.'
-      );
+    } catch (error: any) {
+      console.error("Failed to create prompt:", error);
+
+      // 🔹 If backend sent a proper JSON error
+      if (error.response?.data?.message) {
+        setSubmitError(error.response.data.message);
+      } 
+      // 🔹 Fallback to default error message
+      else if (error instanceof Error) {
+        setSubmitError(error.message);
+      } 
+      else {
+        setSubmitError("An unknown error occurred. Please try again.");
+      }
     } finally {
       setIsSubmitting(false);
     }

@@ -3,7 +3,7 @@ import { Box, Typography, Button } from '@mui/material';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-const words = ['designers', 'creators', 'developers'];
+const words = ['designers', 'creators', 'developers', 'innovators', 'artists', 'thinkers'];
 
 const HomePage: React.FC = () => {
   const [index, setIndex] = useState(0);        // Which word
