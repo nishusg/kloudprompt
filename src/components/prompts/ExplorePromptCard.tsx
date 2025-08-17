@@ -19,15 +19,16 @@ const ExplorePromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
           display: 'flex',
           flexDirection: 'column',
           textDecoration: 'none',
-          borderRadius: 3,
           backgroundColor: '#121212',
           color: '#fff',
+          border: '1px solid rgba(144,202,249,0.15)',
+          borderRadius: 4,
           transition: 'all 0.3s ease',
-          boxShadow: '0 4px 10px rgba(0,0,0,0.4)',
-          backdropFilter: 'blur(8px)',
+          cursor: 'pointer',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
           '&:hover': {
-            transform: 'translateY(-6px)',
-            boxShadow: '0 8px 20px rgba(0,0,0,0.6)',
+            boxShadow: '0 8px 24px rgba(144,202,249,0.3)',
+            borderColor: '#90caf9',
           },
         }}
       >

@@ -12,9 +12,7 @@ import {
 const PrivacyPolicyPage: React.FC = () => {
   return (
     <Box sx={{ minHeight: "80vh", bgcolor: "#0a0a0a", py: 6 }}>
-    <Container
-      maxWidth="md"
-    >
+    <Container maxWidth="md">
       <Paper
         elevation={4}
         sx={{

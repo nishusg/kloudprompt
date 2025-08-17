@@ -4,7 +4,7 @@ import { Container, Paper, Typography, Box, Stack, Link } from "@mui/material";
 const ContactPage: React.FC = () => {
   return (
     <Box sx={{ minHeight: "80vh", bgcolor: "#0a0a0a", py: 6 }}>
-      <Container maxWidth="sm">
+      <Container maxWidth="md">
         <Paper
           elevation={4}
           sx={{ p: { xs: 3, md: 5 }, borderRadius: 3, bgcolor: "#121212", color: "white" }}

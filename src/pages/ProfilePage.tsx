@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProfilePromptCard from '../components/prompts/ProfilePromptCard';
+import PromptActivityGraph from '../components/prompts/PromptActivityGraph';
 
 const ProfilePage: React.FC = () => {
   const { user: loggedInUser, loading: authLoading } = useAuth();
@@ -49,10 +50,6 @@ const ProfilePage: React.FC = () => {
     };
     if (!authLoading) fetchData();
   }, [loggedInUser, authLoading]);
-
-  const handleEdit = (promptId: string) => {
-    navigate(`/update/${promptId}`);
-  };
 
   const handleDelete = async (promptId: string) => {
     if (window.confirm('Are you sure you want to delete this prompt?')) {
@@ -125,7 +122,7 @@ const ProfilePage: React.FC = () => {
         background: '#0a0a0a',
       }}
     >
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         {/* Profile Header */}
         <Paper
           elevation={6}
@@ -193,6 +190,9 @@ const ProfilePage: React.FC = () => {
           </Stack>
         </Paper>
 
+        {/* Prompt Activity Graph */}
+        <PromptActivityGraph prompts={prompts} />
+
         {/* Toggle Buttons */}
         <Stack direction="row" spacing={2} mb={3}>
           <Button
@@ -203,7 +203,7 @@ const ProfilePage: React.FC = () => {
               fontWeight: 600,
               textTransform: 'none',
               bgcolor: view === 'prompts' ? '#42a5f5' : 'transparent',
-              color: view === 'prompts' ? '#ffffffff' : '#42a5f5',
+              color: view === 'prompts' ? '#000' : '#fff',
               borderColor: '#42a5f5',
               boxShadow: view === 'prompts'
                 ? '0 4px 14px rgba(144,202,249,0.4)'
@@ -261,7 +261,6 @@ const ProfilePage: React.FC = () => {
                       <ProfilePromptCard
                         prompt={prompt}
                         onView={() => navigate(`/prompts/${prompt._id}`)}
-                        onEdit={() => handleEdit(prompt._id)}
                         onDelete={() => handleDelete(prompt._id)}
                       />
                     </Grid>
