@@ -1,6 +1,6 @@
 // src/pages/PromptDetailPage.tsx
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link as RouterLink } from 'react-router-dom';
 import { getPromptById, incrementPromptView, toggleBookmarkPrompt } from '../services/PromptService';
 import { addCommentToPrompt } from '../services/CommentService';
 import { useAuth } from '../context/AuthContext';
@@ -9,7 +9,7 @@ import { PromptComment } from '../models/Comment';
 
 import {
   Container, Typography, Button, CircularProgress, Box, Chip, TextField,
-  Avatar, Stack, Alert, Divider, Paper, Snackbar, IconButton, Tooltip
+  Avatar, Stack, Alert, Divider, Paper, Snackbar, IconButton, Tooltip, Link
 } from '@mui/material';
 import ForumIcon from '@mui/icons-material/Forum';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -160,7 +160,19 @@ const PromptDetailPage: React.FC = () => {
           <Divider sx={{ bgcolor: 'rgba(255,255,255,0.2)', mb: 3 }} />
           <Typography variant="subtitle1" sx={{ color: '#bbb' }}>{prompt.description}</Typography>
           <Typography variant="subtitle2" sx={{ color: '#bbb' }}>
-            By <strong>{prompt.author?.userName || 'anonymous'}</strong> • {formatDate(prompt.createdAt)}
+            By{' '}
+            {prompt.author ? (
+              <Link
+                component={RouterLink}
+                to={`/users/${prompt.author._id}`}
+                sx={{ color: '#90caf9', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}
+              >
+                {prompt.author.userName}
+              </Link>
+            ) : (
+              'anonymous'
+            )}
+            {' '}• {formatDate(prompt.createdAt)}
           </Typography>
         </Box>
 
@@ -176,7 +188,6 @@ const PromptDetailPage: React.FC = () => {
 
         {/* Prompt Content */}
         <Paper sx={{ bgcolor: '#111', p: 2, borderRadius: 2, border: '1px solid #333', overflowX: 'auto', position: 'relative', mb: 3 }}>
-          {/* Copy Button */}
           <Tooltip title="Copy prompt content">
             <IconButton size="small" onClick={handleCopyContent} sx={{ position: 'absolute', top: 8, right: 8, bgcolor: '#222', color: '#c0e1fcff', '&:hover': { bgcolor: '#333' } }}>
               <ContentCopyIcon fontSize="small" />
