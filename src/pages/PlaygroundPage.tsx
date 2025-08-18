@@ -83,36 +83,49 @@ const PlaygroundPage: React.FC = () => {
   if (!prompt) return <CircularProgress sx={{ display: 'block', mx: 'auto', mt: 10 }} />;
 
   return (
-    <Box sx={{ bgcolor: '#0a0a0a', color: '#fff', minHeight: '100vh', py: 4 }}>
+    <Box sx={{ bgcolor: '#0d0d0d', color: '#fff', minHeight: '100vh', py: 6 }}>
       <Container maxWidth="md">
-        <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>{prompt.title}</Typography>
-        <Typography variant="subtitle1" sx={{ mb: 3, color: '#bbb' }}>{prompt.description}</Typography>
+        {/* Prompt Header */}
+        <Typography variant="h4" sx={{ mb: 1, fontWeight: 700, color: '#fff' }}>
+          {prompt.title}
+        </Typography>
+        <Typography variant="subtitle1" sx={{ mb: 4, color: '#ccc' }}>
+          {prompt.description}
+        </Typography>
 
-        <Paper sx={{ p: 2, bgcolor: '#111', mb: 3 }}>
-          <Typography variant="subtitle2" sx={{ mb: 1, color: '#90caf9' }}>Prompt Content</Typography>
+        {/* Prompt Content */}
+        <Paper sx={{ p: 3, bgcolor: '#1a1a1a', mb: 4, borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+          <Typography variant="subtitle2" sx={{ mb: 1, color: '#90caf9', fontWeight: 600 }}>
+            Prompt Content
+          </Typography>
           <TextField
             multiline minRows={4} fullWidth
             value={prompt.content}
             InputProps={{ readOnly: true, style: { color: '#fff', fontFamily: 'monospace' } }}
+            sx={{
+              '& .MuiOutlinedInput-root': { color: '#fff', borderColor: '#333' },
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: '#333' },
+            }}
           />
         </Paper>
 
-        <Paper sx={{ p: 2, bgcolor: '#111', mb: 3 }}>
-          <Stack spacing={2}>
+        {/* Settings Panel */}
+        <Paper sx={{ p: 3, bgcolor: '#1a1a1a', mb: 4, borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+          <Stack spacing={3}>
             <TextField
               label="Your Model API Key"
               placeholder="Enter your API key"
               value={userApiKey}
               onChange={e => setUserApiKey(e.target.value)}
               fullWidth
-                sx={{
-                    input: { color: '#fff', '&::placeholder': { color: '#fff', opacity: 1 } },
-                    label: { color: '#aaa' }
-                }}
+              sx={{
+                input: { color: '#fff', '&::placeholder': { color: '#aaa', opacity: 1 } },
+                label: { color: '#aaa' }
+              }}
             />
 
-            <Stack direction="row" spacing={2}>
-              <FormControl sx={{ minWidth: 120 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <FormControl sx={{ flex: 1 }}>
                 <InputLabel sx={{ color: '#aaa' }}>Model</InputLabel>
                 <Select
                   value={model}
@@ -127,7 +140,7 @@ const PlaygroundPage: React.FC = () => {
                 </Select>
               </FormControl>
 
-              <FormControl sx={{ minWidth: 120 }}>
+              <FormControl sx={{ flex: 1 }}>
                 <InputLabel sx={{ color: '#aaa' }}>Type</InputLabel>
                 <Select
                   value={type}
@@ -142,36 +155,27 @@ const PlaygroundPage: React.FC = () => {
             </Stack>
 
             {type === 'text' && (
-                <Stack direction="row" spacing={2}>
-                    <TextField
-                        label="Temperature"
-                        type="number"
-                        value={temperature}
-                        onChange={e => setTemperature(parseFloat(e.target.value))}
-                        inputProps={{ step: 0.1, min: 0, max: 1 }}
-                        sx={{
-                        width: 150,
-                        input: { color: '#fff', '&::placeholder': { color: '#fff', opacity: 1 } },
-                        label: { color: '#aaa' },
-                        }}
-                    />
-                    <TextField
-                        label="Max Tokens"
-                        type="number"
-                        value={maxTokens}
-                        onChange={e => setMaxTokens(parseInt(e.target.value))}
-                        sx={{
-                        width: 150,
-                        input: { color: '#fff', '&::placeholder': { color: '#fff', opacity: 1 } },
-                        label: { color: '#aaa' },
-                        }}
-                    />
-                </Stack>
-
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <TextField
+                  label="Temperature"
+                  type="number"
+                  value={temperature}
+                  onChange={e => setTemperature(parseFloat(e.target.value))}
+                  inputProps={{ step: 0.1, min: 0, max: 1 }}
+                  sx={{ flex: 1, input: { color: '#fff' }, label: { color: '#aaa' } }}
+                />
+                <TextField
+                  label="Max Tokens"
+                  type="number"
+                  value={maxTokens}
+                  onChange={e => setMaxTokens(parseInt(e.target.value))}
+                  sx={{ flex: 1, input: { color: '#fff' }, label: { color: '#aaa' } }}
+                />
+              </Stack>
             )}
 
             {type === 'image' && (
-              <FormControl sx={{ minWidth: 120 }}>
+              <FormControl sx={{ minWidth: 150 }}>
                 <InputLabel sx={{ color: '#aaa' }}>Image Size</InputLabel>
                 <Select value={size} onChange={e => setSize(e.target.value as any)} sx={{ color: '#fff' }}>
                   <MenuItem value="256x256">256x256</MenuItem>
@@ -181,16 +185,22 @@ const PlaygroundPage: React.FC = () => {
               </FormControl>
             )}
 
-            <Button variant="contained" onClick={handleRunPrompt} disabled={loading} sx={{ bgcolor: '#42a5f5' }}>
-              {loading ? <CircularProgress size={24} /> : 'Run Prompt'}
+            <Button
+              variant="contained"
+              onClick={handleRunPrompt}
+              disabled={loading}
+              sx={{ bgcolor: '#42a5f5', py: 1.5, fontWeight: 600, fontSize: '1rem' }}
+            >
+              {loading ? <CircularProgress size={24} sx={{ color: '#fff' }} /> : 'Run Prompt'}
             </Button>
           </Stack>
         </Paper>
 
+        {/* Output Section */}
         {(type === 'text' && output) && (
-          <Paper sx={{ p: 2, bgcolor: '#111', position: 'relative' }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Typography variant="subtitle2" sx={{ color: '#90caf9' }}>Output</Typography>
+          <Paper sx={{ p: 3, bgcolor: '#1a1a1a', mb: 4, borderRadius: 2, position: 'relative', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
+              <Typography variant="subtitle2" sx={{ color: '#90caf9', fontWeight: 600 }}>Output</Typography>
               <Tooltip title="Copy output">
                 <IconButton size="small" onClick={handleCopyOutput} sx={{ color: '#fff' }}>
                   <ContentCopyIcon />
@@ -205,16 +215,15 @@ const PlaygroundPage: React.FC = () => {
         )}
 
         {(type === 'image' && imageUrl) && (
-          <Paper sx={{ p: 2, bgcolor: '#111', textAlign: 'center' }}>
+          <Paper sx={{ p: 3, bgcolor: '#1a1a1a', textAlign: 'center', mb: 4, borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
             <img src={imageUrl} alt="AI Generated" style={{ maxWidth: '100%', borderRadius: 8 }} />
             <Tooltip title="Copy Image URL">
-              <IconButton size="small" onClick={handleCopyOutput} sx={{ color: '#fff' }}>
+              <IconButton size="small" onClick={handleCopyOutput} sx={{ color: '#fff', mt: 1 }}>
                 <ContentCopyIcon />
               </IconButton>
             </Tooltip>
           </Paper>
         )}
-
       </Container>
     </Box>
   );

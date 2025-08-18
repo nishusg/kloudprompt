@@ -47,7 +47,7 @@ const EditProfilePage: React.FC = () => {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
+        minHeight: "90vh",
         background: "#0a0a0a",
         color: "white",
         display: "flex",
