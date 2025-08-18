@@ -2,7 +2,6 @@ export interface User {
   readonly _id: string;
   userName: string;
   email?: string;
-  gptApiKey?: string;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   bookmarkedPrompts?: string[];
@@ -13,5 +12,4 @@ export interface UpdateUserDto {
   userName?: string;
   email?: string;
   password?: string;
-  gptApiKey?: string;
 }

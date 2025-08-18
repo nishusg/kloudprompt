@@ -9,10 +9,7 @@ import {
   Avatar,
   Paper,
   Stack,
-  InputAdornment,
-  IconButton,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuth } from "../context/AuthContext";
 import { updateUser } from "../services/UserService";
 
@@ -22,7 +19,6 @@ const EditProfilePage: React.FC = () => {
 
   const [userName, setUserName] = useState(loggedInUser?.userName || "");
   const [email, setEmail] = useState(loggedInUser?.email || "");
-  const [gptApiKey, setGptApiKey] = useState(loggedInUser?.gptApiKey || "");
   const [showApiKey, setShowApiKey] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -35,7 +31,6 @@ const EditProfilePage: React.FC = () => {
       const updatedUser = await updateUser(loggedInUser._id, {
         userName,
         email,
-        gptApiKey,
       });
 
       // Update context
@@ -102,29 +97,6 @@ const EditProfilePage: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 InputLabelProps={{ style: { color: "#aaa" } }}
                 InputProps={{ style: { color: "white" } }}
-              />
-              <TextField
-                label="GPT API Key"
-                variant="outlined"
-                fullWidth
-                type={showApiKey ? "text" : "password"}
-                value={gptApiKey}
-                onChange={(e) => setGptApiKey(e.target.value)}
-                InputLabelProps={{ style: { color: "#aaa" } }}
-                InputProps={{
-                  style: { color: "white" },
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowApiKey((prev) => !prev)}
-                        edge="end"
-                        sx={{ color: "#aaa" }}
-                      >
-                        {showApiKey ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
               />
               <Button
                 type="submit"
