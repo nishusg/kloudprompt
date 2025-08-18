@@ -41,7 +41,7 @@ const EditProfilePage: React.FC = () => {
       // Update context
       setUser?.(updatedUser);
 
-      navigate("/profile");
+      navigate("/profile/" + updatedUser._id);
     } catch (error) {
       console.error("Failed to update profile:", error);
     } finally {

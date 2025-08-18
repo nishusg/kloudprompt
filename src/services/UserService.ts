@@ -52,7 +52,7 @@ export const getUserById = async (id: string): Promise<User> => {
 
 export const updateUser = async (id: string, data: UpdateUserDto): Promise<User> => {
   try {
-    const response = await apiClient.patch(`/users/${id}`, data);
+    const response = await apiClient.patch(`/users/${id}/update`, data);
     return response.data;
   } catch (err) {
     handleApiError(err, "Failed to update user");
