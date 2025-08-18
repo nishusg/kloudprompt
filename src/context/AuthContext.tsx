@@ -18,6 +18,7 @@ interface AuthResponse {
 
 interface AuthContextType {
   user: User | null;
+  setUser?: (user: User | null) => void; // ✅ added setUser
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
@@ -61,10 +62,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setToken(res.token);
 
       if (res.user) {
-        // If backend returned the user directly
         setUser(res.user);
       } else {
-        // Fetch user if only token was returned
         await fetchCurrentUser();
       }
 
@@ -122,6 +121,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const value = useMemo(
     () => ({
       user,
+      setUser,
       loading,
       error,
       isAuthenticated: !!user,

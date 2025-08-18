@@ -18,6 +18,7 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TrendingPromptsPage from './pages/TrendingPromptsPage';
+import EditProfilePage from './pages/EditProfilePage';
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -46,6 +47,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/trending" element={<TrendingPromptsPage />} />
+            <Route path="/update" element={<EditProfilePage />} />
           </Route>
 
           {/* Redirect auth users away from login/register */}

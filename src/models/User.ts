@@ -1,16 +1,17 @@
 export interface User {
-  readonly _id: string; // Renamed from _id for consistency
+  readonly _id: string;
   userName: string;
-  email?: string; // Optional: likely only present for the logged-in user
-  readonly createdAt: Date; // Use Date object
+  email?: string;
+  gptApiKey?: string;
+  readonly createdAt: Date;
   readonly updatedAt: Date;
-  // Added: array of bookmarked prompt IDs or populated prompt objects
   bookmarkedPrompts?: string[];
 }
 
-// No changes needed, this DTO is well-defined for updates.
+// DTO for updating user
 export interface UpdateUserDto {
   userName?: string;
   email?: string;
   password?: string;
+  gptApiKey?: string;
 }

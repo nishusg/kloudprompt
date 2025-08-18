@@ -32,7 +32,6 @@ const TrendingPromptsPage = () => {
     fetchTrending();
   }, []);
 
-  // handle click
   const handlePromptClick = (id: string) => {
     if (id) navigate(`/prompts/${id}`);
   };
@@ -61,6 +60,7 @@ const TrendingPromptsPage = () => {
           <Typography
             variant="h3"
             fontWeight="bold"
+            component="h1"
             sx={{
               fontSize: { xs: "1.6rem", sm: "2rem", md: "2.5rem" },
               background: "#fff",
@@ -112,6 +112,7 @@ const TrendingPromptsPage = () => {
                         variant="subtitle1"
                         fontWeight="600"
                         color="#fff"
+                        component="span"
                         sx={{ mb: 1 }}
                       >
                         {p.title}
@@ -123,11 +124,8 @@ const TrendingPromptsPage = () => {
                       {/* Description */}
                       <Typography
                         variant="body2"
-                        component="span"
-                        sx={{
-                          display: "block",
-                          color: "#b0b0b0",
-                        }}
+                        component="div"
+                        sx={{ display: "block", color: "#b0b0b0" }}
                       >
                         {p.description && p.description.length > 80
                           ? `${p.description.slice(0, 80)}...`
