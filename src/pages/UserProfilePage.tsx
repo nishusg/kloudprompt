@@ -76,7 +76,7 @@ const UserProfilePage: React.FC = () => {
         ) : (
           <Grid container spacing={3}>
             {prompts.map((prompt) => (
-              <Grid item xs={12} sm={6} md={4} key={prompt._id}>
+              <Grid item xs={12} key={prompt._id}>
                 <ProfilePromptCard
                   prompt={prompt}
                   onView={() => navigate(`/prompts/${prompt._id}`)}
