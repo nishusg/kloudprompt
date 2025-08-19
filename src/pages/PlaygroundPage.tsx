@@ -6,9 +6,12 @@ import { runPlaygroundPrompt } from '../services/PlaygroundService';
 import { Prompt } from '../models/Prompt';
 import {
   Box, Container, Typography, TextField, Button, Paper, Stack,
-  CircularProgress, Tooltip, IconButton, Divider, MenuItem, Select, FormControl, InputLabel
+  CircularProgress, Tooltip, IconButton, Divider, MenuItem, Select,
+  FormControl, InputLabel, Snackbar, Alert
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import DownloadIcon from '@mui/icons-material/Download';
+import InfoIcon from '@mui/icons-material/Info';
 
 const PlaygroundPage: React.FC = () => {
   const { promptId } = useParams<{ promptId: string }>();
@@ -24,6 +27,7 @@ const PlaygroundPage: React.FC = () => {
   const [output, setOutput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState<{open: boolean, isError: boolean, message: string}>({open: false, isError: false, message: ''});
 
   useEffect(() => {
     if (!promptId) return;
@@ -32,16 +36,11 @@ const PlaygroundPage: React.FC = () => {
         const promptData = await getPromptById(promptId);
         setPrompt(promptData);
 
-        // 🔹 Prefill type + provider if available
-        if (promptData.generationType) {
-          setType(promptData.generationType as any);
-        }
-        if (promptData.modelType) {
-          setProvider(promptData.modelType as any);
-        }
+        if (promptData.generationType) setType(promptData.generationType as any);
+        if (promptData.modelType) setProvider(promptData.modelType as any);
       } catch (err) {
         console.error('Failed to load prompt', err);
-        navigate('/'); // fallback
+        navigate('/'); 
       }
     };
     fetchPrompt();
@@ -59,7 +58,7 @@ const PlaygroundPage: React.FC = () => {
         prompt: prompt.content,
         userApiKey,
         provider,
-        model: provider, // ⚡ backend requires both provider + model
+        model: provider,
         type,
         temperature,
         maxTokens,
@@ -68,7 +67,6 @@ const PlaygroundPage: React.FC = () => {
 
       if (type === 'text') setOutput(data.output || '');
       if (type === 'image') setImageUrl(data.imageUrl || '');
-      // 🔹 Future: video/audio handling
     } catch (err) {
       console.error(err);
       setOutput('Error running prompt');
@@ -82,16 +80,54 @@ const PlaygroundPage: React.FC = () => {
     if (!text) return;
     try {
       await navigator.clipboard.writeText(text);
+      setSnackbar({ open: true, isError: false, message: 'Copied to clipboard!' });
     } catch (err) {
       console.error('Failed to copy output', err);
     }
   };
+
+  // ✅ Fix: use blob download instead of direct link
+  const handleDownloadImage = async () => {
+    if (!imageUrl) return;
+    try {
+      const response = await fetch(imageUrl, { mode: 'cors' }); // 👈 ensure CORS
+      console.log('Response:', response);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'ai-generated.png';
+
+      document.body.appendChild(link); // 👈 append
+      link.click();
+      document.body.removeChild(link); // 👈 clean up
+
+      URL.revokeObjectURL(url);
+
+      setSnackbar({ open: true, isError: false, message: 'Image downloaded!' });
+    } catch (err) {
+      console.error('Failed to download image', err);
+      setSnackbar({ open: true, isError: true, message: 'Failed to download image' });
+    }
+  };
+
 
   if (!prompt) return <CircularProgress sx={{ display: 'block', mx: 'auto', mt: 10 }} />;
 
   return (
     <Box sx={{ bgcolor: '#0d0d0d', color: '#fff', minHeight: '100vh', py: 6 }}>
       <Container maxWidth="md">
+        {/* Info Notice */}
+        <Paper 
+          sx={{ p: 2, bgcolor: '#262626', mb: 3, borderRadius: 2, display: 'flex', alignItems: 'center', gap: 1 }}
+        >
+          <InfoIcon sx={{ color: '#90caf9' }} />
+          <Typography variant="body2" sx={{ color: '#ccc' }}>
+            We don’t store your API key — it’s only used locally in this session.
+          </Typography>
+        </Paper>
+
         {/* Prompt Header */}
         <Typography variant="h4" sx={{ mb: 1, fontWeight: 700, color: '#fff' }}>
           {prompt.title}
@@ -101,7 +137,7 @@ const PlaygroundPage: React.FC = () => {
         </Typography>
 
         {/* Prompt Content */}
-        <Paper sx={{ p: 3, bgcolor: '#1a1a1a', mb: 4, borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+        <Paper sx={{ p: 3, bgcolor: '#1a1a1a', mb: 4, borderRadius: 2 }}>
           <Typography variant="subtitle2" sx={{ mb: 1, color: '#90caf9', fontWeight: 600 }}>
             Prompt Content
           </Typography>
@@ -109,15 +145,11 @@ const PlaygroundPage: React.FC = () => {
             multiline minRows={4} fullWidth
             value={prompt.content}
             InputProps={{ readOnly: true, style: { color: '#fff', fontFamily: 'monospace' } }}
-            sx={{
-              '& .MuiOutlinedInput-root': { color: '#fff', borderColor: '#333' },
-              '& .MuiOutlinedInput-notchedOutline': { borderColor: '#333' },
-            }}
           />
         </Paper>
 
         {/* Settings Panel */}
-        <Paper sx={{ p: 3, bgcolor: '#1a1a1a', mb: 4, borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+        <Paper sx={{ p: 3, bgcolor: '#1a1a1a', mb: 4, borderRadius: 2 }}>
           <Stack spacing={3}>
             <TextField
               label="Your Model API Key"
@@ -125,12 +157,10 @@ const PlaygroundPage: React.FC = () => {
               value={userApiKey}
               onChange={e => setUserApiKey(e.target.value)}
               fullWidth
-              sx={{
-                input: { color: '#fff', '&::placeholder': { color: '#aaa', opacity: 1 } },
-                label: { color: '#aaa' }
-              }}
+              sx={{ input: { color: '#fff' }, label: { color: '#aaa' } }}
             />
 
+            {/* ✅ Fix: responsive Stack */}
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <FormControl sx={{ flex: 1 }}>
                 <InputLabel sx={{ color: '#aaa' }}>Provider</InputLabel>
@@ -138,7 +168,6 @@ const PlaygroundPage: React.FC = () => {
                   value={provider}
                   onChange={e => setProvider(e.target.value as any)}
                   sx={{ color: '#fff' }}
-                  label="Provider"
                 >
                   <MenuItem value="chatgpt">ChatGPT</MenuItem>
                   <MenuItem value="gemini">Gemini</MenuItem>
@@ -154,7 +183,6 @@ const PlaygroundPage: React.FC = () => {
                   value={type}
                   onChange={e => setType(e.target.value as any)}
                   sx={{ color: '#fff' }}
-                  label="Type"
                 >
                   <MenuItem value="text">Text</MenuItem>
                   <MenuItem value="image">Image</MenuItem>
@@ -171,7 +199,6 @@ const PlaygroundPage: React.FC = () => {
                   type="number"
                   value={temperature}
                   onChange={e => setTemperature(parseFloat(e.target.value))}
-                  inputProps={{ step: 0.1, min: 0, max: 1 }}
                   sx={{ flex: 1, input: { color: '#fff' }, label: { color: '#aaa' } }}
                 />
                 <TextField
@@ -199,7 +226,7 @@ const PlaygroundPage: React.FC = () => {
               variant="contained"
               onClick={handleRunPrompt}
               disabled={loading}
-              sx={{ bgcolor: '#42a5f5', py: 1.5, fontWeight: 600, fontSize: '1rem' }}
+              sx={{ bgcolor: '#42a5f5' }}
             >
               {loading ? <CircularProgress size={24} sx={{ color: '#fff' }} /> : 'Run Prompt'}
             </Button>
@@ -208,7 +235,7 @@ const PlaygroundPage: React.FC = () => {
 
         {/* Output Section */}
         {(type === 'text' && output) && (
-          <Paper sx={{ p: 3, bgcolor: '#1a1a1a', mb: 4, borderRadius: 2, position: 'relative', boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+          <Paper sx={{ p: 3, bgcolor: '#1a1a1a', mb: 4 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
               <Typography variant="subtitle2" sx={{ color: '#90caf9', fontWeight: 600 }}>Output</Typography>
               <Tooltip title="Copy output">
@@ -225,28 +252,37 @@ const PlaygroundPage: React.FC = () => {
         )}
 
         {(type === 'image' && imageUrl) && (
-          <Paper sx={{ p: 3, bgcolor: '#1a1a1a', textAlign: 'center', mb: 4, borderRadius: 2, boxShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
+          <Paper sx={{ p: 3, bgcolor: '#1a1a1a', textAlign: 'center', mb: 4 }}>
             <img src={imageUrl} alt="AI Generated" style={{ maxWidth: '100%', borderRadius: 8 }} />
-            <Tooltip title="Copy Image URL">
-              <IconButton size="small" onClick={handleCopyOutput} sx={{ color: '#fff', mt: 1 }}>
-                <ContentCopyIcon />
-              </IconButton>
-            </Tooltip>
+            <Stack direction="row" spacing={2} justifyContent="center" mt={2}>
+              <Tooltip title="Copy Image URL">
+                <IconButton size="small" onClick={handleCopyOutput} sx={{ color: '#fff' }}>
+                  <ContentCopyIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Download image">
+                <IconButton size="small" onClick={handleDownloadImage} sx={{ color: '#fff' }}>
+                  <DownloadIcon />
+                </IconButton>
+              </Tooltip>
+            </Stack>
           </Paper>
         )}
 
-        {/* 🔹 Future support for video/audio previews */}
-        {type === 'video' && output && (
-          <Paper sx={{ p: 3, bgcolor: '#1a1a1a', textAlign: 'center', mb: 4 }}>
-            <video controls src={output} style={{ maxWidth: '100%', borderRadius: 8 }} />
-          </Paper>
-        )}
-
-        {type === 'audio' && output && (
-          <Paper sx={{ p: 3, bgcolor: '#1a1a1a', textAlign: 'center', mb: 4 }}>
-            <audio controls src={output} />
-          </Paper>
-        )}
+        {/* Snackbar */}
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={2000}
+          onClose={() => setSnackbar({ open: false, isError: false, message: '' })}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert 
+            severity={snackbar.isError ? 'error' : 'success'}
+            sx={{ width: '100%' }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </Container>
     </Box>
   );
