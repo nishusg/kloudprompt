@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPromptById } from '../services/PromptService';
+import { runPlaygroundPrompt } from '../services/PlaygroundService';
 import { Prompt } from '../models/Prompt';
 import {
   Box, Container, Typography, TextField, Button, Paper, Stack,
@@ -15,8 +16,8 @@ const PlaygroundPage: React.FC = () => {
 
   const [prompt, setPrompt] = useState<Prompt | null>(null);
   const [userApiKey, setUserApiKey] = useState('');
-  const [model, setModel] = useState<'openai'|'gemini'|'openrouter'|'grok'>('openai');
-  const [type, setType] = useState<'text'|'image'>('text');
+  const [provider, setProvider] = useState<'chatgpt'|'gemini'|'openrouter'|'grok'|'together'>('chatgpt');
+  const [type, setType] = useState<'text'|'image'|'video'|'audio'>('text');
   const [temperature, setTemperature] = useState(0.7);
   const [maxTokens, setMaxTokens] = useState(150);
   const [size, setSize] = useState<'256x256'|'512x512'|'1024x1024'>('512x512');
@@ -30,13 +31,21 @@ const PlaygroundPage: React.FC = () => {
       try {
         const promptData = await getPromptById(promptId);
         setPrompt(promptData);
+
+        // 🔹 Prefill type + provider if available
+        if (promptData.generationType) {
+          setType(promptData.generationType as any);
+        }
+        if (promptData.modelType) {
+          setProvider(promptData.modelType as any);
+        }
       } catch (err) {
         console.error('Failed to load prompt', err);
         navigate('/'); // fallback
       }
     };
     fetchPrompt();
-  }, [promptId]);
+  }, [promptId, navigate]);
 
   const handleRunPrompt = async () => {
     if (!prompt || !userApiKey) return;
@@ -46,22 +55,20 @@ const PlaygroundPage: React.FC = () => {
     setImageUrl('');
 
     try {
-      const response = await fetch('/api/playground/run', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: prompt.content,
-          userApiKey,
-          model,
-          type,
-          temperature,
-          maxTokens,
-          size
-        })
+      const data = await runPlaygroundPrompt({
+        prompt: prompt.content,
+        userApiKey,
+        provider,
+        model: provider, // ⚡ backend requires both provider + model
+        type,
+        temperature,
+        maxTokens,
+        size
       });
-      const data = await response.json();
-      if(type === 'text') setOutput(data.output || '');
-      if(type === 'image') setImageUrl(data.imageUrl || '');
+
+      if (type === 'text') setOutput(data.output || '');
+      if (type === 'image') setImageUrl(data.imageUrl || '');
+      // 🔹 Future: video/audio handling
     } catch (err) {
       console.error(err);
       setOutput('Error running prompt');
@@ -126,17 +133,18 @@ const PlaygroundPage: React.FC = () => {
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <FormControl sx={{ flex: 1 }}>
-                <InputLabel sx={{ color: '#aaa' }}>Model</InputLabel>
+                <InputLabel sx={{ color: '#aaa' }}>Provider</InputLabel>
                 <Select
-                  value={model}
-                  onChange={e => setModel(e.target.value as any)}
+                  value={provider}
+                  onChange={e => setProvider(e.target.value as any)}
                   sx={{ color: '#fff' }}
-                  label="Model"
+                  label="Provider"
                 >
-                  <MenuItem value="openai">OpenAI</MenuItem>
+                  <MenuItem value="chatgpt">ChatGPT</MenuItem>
                   <MenuItem value="gemini">Gemini</MenuItem>
                   <MenuItem value="openrouter">OpenRouter</MenuItem>
                   <MenuItem value="grok">Grok</MenuItem>
+                  <MenuItem value="together">Together</MenuItem>
                 </Select>
               </FormControl>
 
@@ -150,6 +158,8 @@ const PlaygroundPage: React.FC = () => {
                 >
                   <MenuItem value="text">Text</MenuItem>
                   <MenuItem value="image">Image</MenuItem>
+                  <MenuItem value="video">Video</MenuItem>
+                  <MenuItem value="audio">Audio</MenuItem>
                 </Select>
               </FormControl>
             </Stack>
@@ -222,6 +232,19 @@ const PlaygroundPage: React.FC = () => {
                 <ContentCopyIcon />
               </IconButton>
             </Tooltip>
+          </Paper>
+        )}
+
+        {/* 🔹 Future support for video/audio previews */}
+        {type === 'video' && output && (
+          <Paper sx={{ p: 3, bgcolor: '#1a1a1a', textAlign: 'center', mb: 4 }}>
+            <video controls src={output} style={{ maxWidth: '100%', borderRadius: 8 }} />
+          </Paper>
+        )}
+
+        {type === 'audio' && output && (
+          <Paper sx={{ p: 3, bgcolor: '#1a1a1a', textAlign: 'center', mb: 4 }}>
+            <audio controls src={output} />
           </Paper>
         )}
       </Container>
