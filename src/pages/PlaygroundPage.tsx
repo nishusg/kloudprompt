@@ -21,9 +21,6 @@ const PlaygroundPage: React.FC = () => {
   const [userApiKey, setUserApiKey] = useState('');
   const [provider, setProvider] = useState<'chatgpt'|'gemini'|'openrouter'|'grok'|'together'>('chatgpt');
   const [type, setType] = useState<'text'|'image'|'video'|'audio'>('text');
-  const [temperature, setTemperature] = useState(0.7);
-  const [maxTokens, setMaxTokens] = useState(150);
-  const [size, setSize] = useState<'256x256'|'512x512'|'1024x1024'>('512x512');
   const [output, setOutput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -58,11 +55,7 @@ const PlaygroundPage: React.FC = () => {
         prompt: prompt.content,
         userApiKey,
         provider,
-        model: provider,
-        type,
-        temperature,
-        maxTokens,
-        size
+        type
       });
 
       if (type === 'text') setOutput(data.output || '');
@@ -94,7 +87,7 @@ const PlaygroundPage: React.FC = () => {
       const blobUrl = URL.createObjectURL(result);
       const link = document.createElement("a");
       link.href = blobUrl;
-      link.download = "ai-generated.png";
+      link.download = "image.png";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -183,36 +176,6 @@ const PlaygroundPage: React.FC = () => {
                 </Select>
               </FormControl>
             </Stack>
-
-            {type === 'text' && (
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <TextField
-                  label="Temperature"
-                  type="number"
-                  value={temperature}
-                  onChange={e => setTemperature(parseFloat(e.target.value))}
-                  sx={{ flex: 1, input: { color: '#fff' }, label: { color: '#aaa' } }}
-                />
-                <TextField
-                  label="Max Tokens"
-                  type="number"
-                  value={maxTokens}
-                  onChange={e => setMaxTokens(parseInt(e.target.value))}
-                  sx={{ flex: 1, input: { color: '#fff' }, label: { color: '#aaa' } }}
-                />
-              </Stack>
-            )}
-
-            {type === 'image' && (
-              <FormControl sx={{ minWidth: 150 }}>
-                <InputLabel sx={{ color: '#aaa' }}>Image Size</InputLabel>
-                <Select value={size} onChange={e => setSize(e.target.value as any)} sx={{ color: '#fff' }}>
-                  <MenuItem value="256x256">256x256</MenuItem>
-                  <MenuItem value="512x512">512x512</MenuItem>
-                  <MenuItem value="1024x1024">1024x1024</MenuItem>
-                </Select>
-              </FormControl>
-            )}
 
             <Button
               variant="contained"

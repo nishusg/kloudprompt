@@ -6,11 +6,7 @@ export interface PlaygroundRequest {
   prompt: string;
   userApiKey: string;
   provider: 'chatgpt' | 'gemini' | 'openrouter' | 'grok' | 'together';
-  model: string;
   type?: 'text'|'image'|'video'|'audio';
-  temperature?: number;
-  maxTokens?: number;
-  size?: '256x256' | '512x512' | '1024x1024';
 }
 
 export interface PlaygroundResponse {
@@ -30,7 +26,7 @@ export const runPlaygroundPrompt = async (
     return data;
   } catch (err) {
     handleApiError(err, 'Failed to run playground prompt');
-    return { error: 'Something went wrong while running prompt' };
+    return {} as PlaygroundResponse; // fallback
   }
 };
 
@@ -44,7 +40,7 @@ export const downloadImageBuffer = async (url: string): Promise<Blob | { error: 
     return response.data; // this will be a Blob
   } catch (err) {
     handleApiError(err, 'Failed to download image');
-    return { error: 'Something went wrong while downloading image' };
+    return {} as { error: string }; // fallback
   }
 };
 
