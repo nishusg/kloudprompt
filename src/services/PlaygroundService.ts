@@ -33,3 +33,18 @@ export const runPlaygroundPrompt = async (
     return { error: 'Something went wrong while running prompt' };
   }
 };
+
+export const downloadImageBuffer = async (url: string): Promise<Blob | { error: string }> => {
+  try {
+    const response = await apiClient.get(`/playground/download`, {
+      params: { url },
+      responseType: 'blob', // 👈 tell axios to return binary
+    });
+
+    return response.data; // this will be a Blob
+  } catch (err) {
+    handleApiError(err, 'Failed to download image');
+    return { error: 'Something went wrong while downloading image' };
+  }
+};
+

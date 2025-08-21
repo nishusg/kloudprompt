@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPromptById } from '../services/PromptService';
-import { runPlaygroundPrompt } from '../services/PlaygroundService';
+import { downloadImageBuffer, runPlaygroundPrompt } from '../services/PlaygroundService';
 import { Prompt } from '../models/Prompt';
 import {
   Box, Container, Typography, TextField, Button, Paper, Stack,
@@ -88,30 +88,22 @@ const PlaygroundPage: React.FC = () => {
 
   // ✅ Fix: use blob download instead of direct link
   const handleDownloadImage = async () => {
-    if (!imageUrl) return;
-    try {
-      const response = await fetch(imageUrl, { mode: 'cors' }); // 👈 ensure CORS
-      console.log('Response:', response);
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
+    const result = await downloadImageBuffer(imageUrl);
 
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'ai-generated.png';
-
-      document.body.appendChild(link); // 👈 append
+    if (result instanceof Blob) {
+      const blobUrl = URL.createObjectURL(result);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = "ai-generated.png";
+      document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link); // 👈 clean up
-
-      URL.revokeObjectURL(url);
-
-      setSnackbar({ open: true, isError: false, message: 'Image downloaded!' });
-    } catch (err) {
-      console.error('Failed to download image', err);
-      setSnackbar({ open: true, isError: true, message: 'Failed to download image' });
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+      setSnackbar({ open: true, isError: false, message: "Image downloaded!" });
+    } else {
+      setSnackbar({ open: true, isError: true, message: result.error });
     }
   };
-
 
   if (!prompt) return <CircularProgress sx={{ display: 'block', mx: 'auto', mt: 10 }} />;
 
