@@ -23,6 +23,11 @@ const LoginPage: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
+
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -45,8 +50,8 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    await login(formData.email, formData.password);
-    // No direct navigate here — handled by useEffect
+    const success = await login(formData.email, formData.password);
+    if (!success) return; // stop submit if login failed
   };
 
   return (

@@ -19,8 +19,8 @@ const PlaygroundPage: React.FC = () => {
 
   const [prompt, setPrompt] = useState<Prompt | null>(null);
   const [userApiKey, setUserApiKey] = useState('');
-  const [provider, setProvider] = useState<'chatgpt'|'gemini'|'openrouter'|'grok'|'together'>('chatgpt');
-  const [type, setType] = useState<'text'|'image'|'video'|'audio'>('text');
+  const [provider, setProvider] = useState<'chatgpt'|'gemini'|'openrouter'|'grok'|'together'>(prompt?.modelType || 'chatgpt');
+  const [type, setType] = useState<'text'|'image'|'video'|'audio'>(prompt?.generationType || 'text');
   const [output, setOutput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);

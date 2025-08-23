@@ -45,6 +45,7 @@ const Header: React.FC = () => {
   const handleLogout = () => {
     handleMenuClose();
     logout();
+    navigate("/login", { replace: true });  
   };
 
   return (
