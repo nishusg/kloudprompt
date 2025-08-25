@@ -8,7 +8,7 @@ export const getUserBookmarks = async (userId: string): Promise<Prompt[]> => {
     const response = await apiClient.get(`/bookmarks/users/${userId}`);
     return response.data.data.bookmarkedPrompts;
   } catch (err) {
-    handleApiError(err, "Failed to fetch user bookmarks");
-    return []; // fallback
+    const message = handleApiError(err, "Failed to fetch user bookmarks");
+    throw new Error(message);
   }
 };

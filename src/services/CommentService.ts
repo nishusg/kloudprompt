@@ -7,8 +7,8 @@ export const getComments = async (promptId: string): Promise<PromptComment[]> =>
     const response = await apiClient.get(`/prompts/${promptId}/comments`);
     return response.data;
   } catch (err) {
-    handleApiError(err, "Failed to fetch comments");
-    return []; // fallback
+    const message = handleApiError(err, "Failed to fetch comments");
+    throw new Error(message);
   }
 };
 
@@ -20,8 +20,8 @@ export const addCommentToPrompt = async (
     const response = await apiClient.post(`/prompts/${promptId}/comments`, { content });
     return response.data;
   } catch (err) {
-    handleApiError(err, "Failed to add comment");
-    return {} as PromptComment; // fallback
+    const message = handleApiError(err, "Failed to add comment");
+    throw new Error(message);
   }
 };
 
@@ -29,7 +29,7 @@ export const deleteComment = async (commentId: string): Promise<void> => {
   try {
     await apiClient.delete(`/comments/${commentId}`);
   } catch (err) {
-    handleApiError(err, "Failed to delete comment");
-    return; // fallback
+    const message = handleApiError(err, "Failed to delete comment");
+    throw new Error(message);
   }
 };

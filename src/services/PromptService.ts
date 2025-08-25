@@ -26,8 +26,8 @@ export const getPrompts = async (params: {
 
     return response.data.data.prompts.prompts;
   } catch (err) {
-    handleApiError(err, "Failed to fetch prompts");
-    return {} as Prompt[]; 
+    const message = handleApiError(err, "Failed to fetch prompts");
+    throw new Error(message);
   }
 };
 
@@ -38,8 +38,8 @@ export const getPromptById = async (id: string): Promise<Prompt> => {
     promptData.isBookmarkedByCurrentUser = response.data.data.isBookmarked;
     return promptData;
   } catch (err) {
-    handleApiError(err, "Failed to fetch prompt");
-    return {} as Prompt; 
+    const message = handleApiError(err, "Failed to fetch prompt");
+    throw new Error(message);
   }
 };
 
@@ -48,8 +48,8 @@ export const incrementPromptView = async (id: string): Promise<number> => {
     const response = await apiClient.post(`/prompts/${id}/view`);
     return response.data.data.prompt.views;
   } catch (err) {
-    handleApiError(err, "Failed to increment views");
-    return 0;
+    const message = handleApiError(err, "Failed to increment views");
+    throw new Error(message);
   }
 };
 
@@ -58,8 +58,8 @@ export const getTrendingPrompts = async (limit: number = 10): Promise<Prompt[]> 
     const response = await apiClient.get(`/prompts/trending?limit=${limit}`);
     return response.data.data.prompts;
   } catch (err) {
-    console.error("Failed to fetch trending prompts", err);
-    return [];
+    const message = handleApiError(err, "Failed to fetch trending prompts");
+    throw new Error(message);
   }
 };
 
@@ -68,8 +68,8 @@ export const getUserPrompts = async (userId: string): Promise<Prompt[]> => {
     const response = await apiClient.get(`/users/${userId}/prompts`);
     return response.data.data.prompts;
   } catch (err) {
-    handleApiError(err, "Failed to fetch user prompts");
-    return {} as Prompt[]; 
+    const message = handleApiError(err, "Failed to fetch user prompts");
+    throw new Error(message);
   }
 };
 
@@ -78,8 +78,8 @@ export const createPrompt = async (data: CreatePromptDto): Promise<Prompt> => {
     const response = await apiClient.post("/prompts", data);
     return response.data.data.prompt;
   } catch (err) {
-    handleApiError(err, "Failed to create prompt");
-    return {} as Prompt; 
+    const message = handleApiError(err, "Failed to create prompt");
+    throw new Error(message);
   }
 };
 
@@ -88,8 +88,8 @@ export const updatePrompt = async (id: string, data: UpdatePromptDto): Promise<P
     const response = await apiClient.patch(`/prompts/${id}`, data);
     return response.data.data.prompt;
   } catch (err) {
-    handleApiError(err, "Failed to update prompt");
-    return {} as Prompt; 
+    const message = handleApiError(err, "Failed to update prompt");
+    throw new Error(message);
   }
 };
 
@@ -97,7 +97,8 @@ export const deletePrompt = async (id: string): Promise<void> => {
   try {
     await apiClient.delete(`/prompts/${id}`);
   } catch (err) {
-    handleApiError(err, "Failed to delete prompt");
+    const message = handleApiError(err, "Failed to delete prompt");
+    throw new Error(message);
   }
 };
 
@@ -106,7 +107,7 @@ export const toggleBookmarkPrompt = async (id: string): Promise<Prompt> => {
     const response = await apiClient.patch(`/bookmarks/${id}`);
     return response.data.data;
   } catch (err) {
-    handleApiError(err, "Failed to toggle bookmark");
-    return {} as Prompt;
+    const message = handleApiError(err, "Failed to toggle bookmark");
+    throw new Error(message);
   }
 };

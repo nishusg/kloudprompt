@@ -25,8 +25,8 @@ export const runPlaygroundPrompt = async (
     );
     return data;
   } catch (err) {
-    handleApiError(err, 'Failed to run playground prompt');
-    return {} as PlaygroundResponse; // fallback
+    const message = handleApiError(err, 'Failed to run playground prompt');
+    throw new Error(message);
   }
 };
 
@@ -39,8 +39,8 @@ export const downloadImageBuffer = async (url: string): Promise<Blob | { error: 
 
     return response.data; // this will be a Blob
   } catch (err) {
-    handleApiError(err, 'Failed to download image');
-    return {} as { error: string }; // fallback
+    const message = handleApiError(err, 'Failed to download image');
+    throw new Error(message);
   }
 };
 
