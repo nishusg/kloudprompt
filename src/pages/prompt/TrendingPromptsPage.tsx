@@ -15,6 +15,7 @@ import WhatshotIcon from "@mui/icons-material/Whatshot";
 import { useNavigate } from "react-router-dom";
 import { Prompt } from "../../models/Prompt";
 import { getTrendingPrompts } from "../../services/PromptService";
+import { DefaultUserName } from "../../utils/Constants";
 
 const TrendingPromptsPage = () => {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
@@ -157,7 +158,7 @@ const TrendingPromptsPage = () => {
                         >
                           By{" "}
                           <Box component="span" sx={{ color: "#fff" }}>
-                            {p.author?.userName || "Unknown"}
+                            {p.author?.userName || DefaultUserName}
                           </Box>
                         </Typography>
 
