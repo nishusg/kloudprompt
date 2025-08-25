@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Container, Typography, Divider, Stack } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
-import { Website_Title } from "../../utils/Constants";
 
 const Footer: React.FC = () => {
   return (
@@ -49,7 +48,7 @@ const Footer: React.FC = () => {
 
         {/* Copyright */}
         <Typography variant="body2" align="center" sx={{ opacity: 0.8 }}>
-          © {new Date().getFullYear()} {Website_Title}. All rights reserved.
+          © {new Date().getFullYear()} {process.env.REACT_APP_Website_Title}. All rights reserved.
         </Typography>
       </Container>
     </Box>

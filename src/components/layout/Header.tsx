@@ -21,7 +21,6 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import AddCircle from '@mui/icons-material/AddCircle';
-import { Website_Title } from '../../utils/Constants';
 import { RocketLaunch } from '@mui/icons-material';
 
 const Header: React.FC = () => {
@@ -75,7 +74,7 @@ const Header: React.FC = () => {
             cursor: 'pointer',
           }}
         >
-          {Website_Title}
+          {process.env.REACT_APP_Website_Title}
         </Typography>
 
         {/* Hamburger Menu */}

@@ -1,10 +1,11 @@
 // src/services/ApiClient.ts
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
-import { API_URL } from '../utils/Constants';
 import { handleApiError } from './UtilsService';
 
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+
 const apiClient = axios.create({
-  baseURL: API_URL,
+  baseURL: REACT_APP_API_URL,
   timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
@@ -81,7 +82,7 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await axios.post(`${API_URL}${refreshTokenEndpoint}`, { refreshToken });
+        const res = await axios.post(`${REACT_APP_API_URL}${refreshTokenEndpoint}`, { refreshToken });
 
         const newAccessToken = res.data.data.accessToken;
         const newRefreshToken = res.data.data.refreshToken;
