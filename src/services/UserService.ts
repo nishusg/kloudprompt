@@ -29,9 +29,29 @@ export const loginUser = async (credentials: { email: string; password: string }
   }
 };
 
+export const logoutUser = async (): Promise<void> => {
+  try {
+    await apiClient.post('/auth/logout');
+  } catch (err) {
+    // Convert backend error to a proper Error
+    const message = handleApiError(err, 'Failed to logout');
+    throw new Error(message);
+  }
+};
+
 export const getCurrentUser = async (): Promise<User> => {
   try {
     const response = await apiClient.get('/users/current-user');
+    return response.data.data.user;
+  } catch (err) {
+    const message = handleApiError(err, "Failed to fetch current user");
+    throw new Error(message);
+  }
+};
+
+export const changePassword = async (id: string, currentPassword: string, newPassword: string): Promise<User> => {
+  try {
+    const response = await apiClient.post(`/users/${id}/change-password`, {currentPassword, newPassword});
     return response.data.data.user;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch current user");

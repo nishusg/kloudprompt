@@ -167,25 +167,47 @@ const ProfilePage: React.FC = () => {
               >
                 {loggedInUser.email || 'No email provided'}
               </Typography>
-              <Button
-                variant="outlined"
-                size="small"
-                sx={{
-                  mt: 1.5,
-                  borderColor: '#42a5f5',
-                  color: '#42a5f5',
-                  fontWeight: 600,
-                  borderRadius: '50px',
-                  px: 2,
-                  '&:hover': {
+              <Stack direction="row" spacing={1}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    mt: 1.5,
                     borderColor: '#42a5f5',
-                    backgroundColor: 'rgba(144,202,249,0.1)',
-                  },
-                }}
-                onClick={() => navigate('/update')}
-              >
-                Edit Profile
-              </Button>
+                    color: '#42a5f5',
+                    fontWeight: 600,
+                    borderRadius: '50px',
+                    px: 2,
+                    '&:hover': {
+                      borderColor: '#42a5f5',
+                      backgroundColor: 'rgba(144,202,249,0.1)',
+                    },
+                  }}
+                  onClick={() => navigate('/update')}
+                >
+                  Edit Profile
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    mt: 1.5,
+                    fontWeight: 600,
+                    borderRadius: '50px',
+                    px: 2,
+                    bgcolor: '#42a5f5',
+                    color: '#000000ff',
+                    borderColor: '#42a5f5',
+                    '&:hover': {
+                      bgcolor: '#42a5f5',
+                      color: '#000',
+                    },
+                  }}
+                  onClick={() => navigate('/change-password')}
+                >
+                  Change Password
+                </Button>
+              </Stack>
             </Box>
           </Stack>
         </Paper>

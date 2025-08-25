@@ -21,6 +21,7 @@ import TrendingPromptsPage from './pages/TrendingPromptsPage';
 import EditProfilePage from './pages/EditProfilePage';
 import PlaygroundPage from './pages/PlaygroundPage';
 import UserProfilePage from './pages/UserProfilePage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -52,6 +53,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/update" element={<EditProfilePage />} />
             <Route path="/playground/:promptId" element={<PlaygroundPage />} />
             <Route path="/users/:userId" element={<UserProfilePage />} />
+            <Route path="/change-password" element={<ChangePasswordPage />} />
           </Route>
 
           {/* Redirect auth users away from login/register */}

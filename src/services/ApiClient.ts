@@ -12,7 +12,7 @@ const apiClient = axios.create({
 });
 
 // 🔹 Refresh token endpoint (adjust path if different in your API)
-const refreshTokenEndpoint = "/auth/refresh";
+const refreshTokenEndpoint = "/auth/refresh-token";
 const Access_Token_Key = 'accessToken';
 const Refresh_Token_Key = 'refreshToken';
 
@@ -83,8 +83,8 @@ apiClient.interceptors.response.use(
       try {
         const res = await axios.post(`${API_URL}${refreshTokenEndpoint}`, { refreshToken });
 
-        const newAccessToken = res.data.accessToken;
-        const newRefreshToken = res.data.refreshToken;
+        const newAccessToken = res.data.data.accessToken;
+        const newRefreshToken = res.data.data.refreshToken;
 
         localStorage.setItem(Access_Token_Key, newAccessToken);
         localStorage.setItem(Refresh_Token_Key, newRefreshToken);

@@ -8,7 +8,7 @@ import React, {
   ReactNode,
   useMemo
 } from 'react';
-import { loginUser, registerUser, getCurrentUser } from '../services/UserService';
+import { loginUser, registerUser, getCurrentUser, logoutUser } from '../services/UserService';
 import { User } from '../models/User';
 
 export interface AuthResponse {
@@ -115,7 +115,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     [fetchCurrentUser]
   );
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    await logoutUser();
     clearToken(Access_Token_Key);
     clearToken(Refresh_Token_Key);
     setUser(null);

@@ -11,5 +11,4 @@ export interface User {
 export interface UpdateUserDto {
   userName?: string;
   email?: string;
-  password?: string;
 }
