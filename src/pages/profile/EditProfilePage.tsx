@@ -20,6 +20,8 @@ const EditProfilePage: React.FC = () => {
   const [userName, setUserName] = useState(loggedInUser?.userName || "");
   const [email, setEmail] = useState(loggedInUser?.email || "");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,13 +33,12 @@ const EditProfilePage: React.FC = () => {
         userName,
         email,
       });
-
+      setSuccess('Profile updated successfully!');
       // Update context
       setUser?.(updatedUser);
-
-      navigate("/profile/" + updatedUser._id);
-    } catch (error) {
-      console.error("Failed to update profile:", error);
+      setTimeout(() => navigate('/profile/' + updatedUser._id), 1500);
+    } catch (error: any) {
+      setError(error?.response?.data?.message || 'Failed to update profile');
     } finally {
       setLoading(false);
     }
@@ -99,6 +100,10 @@ const EditProfilePage: React.FC = () => {
                 InputLabelProps={{ style: { color: "#aaa" } }}
                 InputProps={{ style: { color: "white" } }}
               />
+
+              {error && <Typography color="error">{error}</Typography>}
+              {success && <Typography color="success.main">{success}</Typography>}
+
               <Button
                 type="submit"
                 variant="contained"
