@@ -10,8 +10,8 @@ import {
   Paper,
   Stack,
 } from "@mui/material";
-import { useAuth } from "../context/AuthContext";
-import { updateUser } from "../services/UserService";
+import { useAuth } from "../../context/AuthContext";
+import { updateUser } from "../../services/UserService";
 
 const EditProfilePage: React.FC = () => {
   const { user: loggedInUser, setUser } = useAuth(); // optional setUser to update context
@@ -19,7 +19,6 @@ const EditProfilePage: React.FC = () => {
 
   const [userName, setUserName] = useState(loggedInUser?.userName || "");
   const [email, setEmail] = useState(loggedInUser?.email || "");
-  const [showApiKey, setShowApiKey] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -72,14 +71,16 @@ const EditProfilePage: React.FC = () => {
           <form onSubmit={handleSubmit}>
             <Stack spacing={3}>
               <Avatar
-                src={"/default-avatar.png"}
                 sx={{
-                  width: 80,
-                  height: 80,
-                  border: "2px solid #42a5f5",
+                  width: { xs: 80, sm: 90, md: 100 },
+                  height: { xs: 80, sm: 90, md: 100 },
                   alignSelf: "center",
+                  bgcolor: '#42a5f5', 
+                  color: '#fff'
                 }}
-              />
+              >
+                {loggedInUser?.userName.charAt(0).toUpperCase()}
+              </Avatar>
               <TextField
                 label="Username"
                 variant="outlined"

@@ -1,11 +1,11 @@
 // src/pages/PromptDetailPage.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link as RouterLink } from 'react-router-dom';
-import { getPromptById, incrementPromptView, toggleBookmarkPrompt } from '../services/PromptService';
-import { addCommentToPrompt } from '../services/CommentService';
-import { useAuth } from '../context/AuthContext';
-import { Prompt } from '../models/Prompt';
-import { PromptComment } from '../models/Comment';
+import { getPromptById, incrementPromptView, toggleBookmarkPrompt } from '../../services/PromptService';
+import { addCommentToPrompt } from '../../services/CommentService';
+import { useAuth } from '../../context/AuthContext';
+import { Prompt } from '../../models/Prompt';
+import { PromptComment } from '../../models/Comment';
 
 import {
   Container, Typography, Button, CircularProgress, Box, Chip, TextField,
@@ -18,6 +18,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { DefaultUserName } from '../../utils/Constants';
 
 const formatDate = (date: Date) =>
   new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -170,7 +171,7 @@ const PromptDetailPage: React.FC = () => {
                 {prompt.author.userName}
               </Link>
             ) : (
-              'anonymous'
+              DefaultUserName
             )}
             {' '}• {formatDate(prompt.createdAt)}
           </Typography>
@@ -239,11 +240,11 @@ const PromptDetailPage: React.FC = () => {
               <Paper key={comment._id} variant="outlined" sx={{ p: 2, borderRadius: 2, bgcolor: '#1e1e1e', borderColor: '#333' }}>
                 <Stack direction="row" spacing={2} alignItems="flex-start">
                   <Avatar sx={{ bgcolor: '#3080cfff', color: '#fff' }}>
-                    {comment.user?.userName?.charAt(0).toUpperCase() || 'A'}
+                    {(comment.user?.userName || DefaultUserName).charAt(0).toUpperCase() || 'A'}
                   </Avatar>
                   <Box>
                     <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: '#ccc' }}>
-                      {comment.user?.userName || 'Anonymous'} - {formatDate(comment.createdAt)}
+                      {comment.user?.userName || DefaultUserName} - {formatDate(comment.createdAt)}
                     </Typography>
                     <Typography variant="body2" sx={{ mt: 0.5, color: '#888' }}>{comment.text}</Typography>
                   </Box>

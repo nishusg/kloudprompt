@@ -12,10 +12,10 @@ import {
   Divider,
 } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
-import PromptForm from '../components/prompts/PromptForm';
-import { createPrompt } from '../services/PromptService';
-import { useAuth } from '../context/AuthContext';
-import { CreatePromptDto } from '../models/Prompt';
+import PromptForm from '../../components/prompts/PromptForm';
+import { createPrompt } from '../../services/PromptService';
+import { useAuth } from '../../context/AuthContext';
+import { CreatePromptDto } from '../../models/Prompt';
 
 const CreatePromptPage: React.FC = () => {
   const navigate = useNavigate();

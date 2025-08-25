@@ -1,8 +1,8 @@
 // src/pages/LoginPage.tsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { validateEmail } from '../utils/Validators';
+import { useAuth } from '../../context/AuthContext';
+import { validateEmail } from '../../utils/Validators';
 import {
   Container, Box, Card, CardContent, Typography, TextField, Button,
   CircularProgress, FormControlLabel, Checkbox, Link, Alert, Stack, IconButton, InputAdornment

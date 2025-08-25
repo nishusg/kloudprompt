@@ -13,8 +13,8 @@ import {
 } from "@mui/material";
 import WhatshotIcon from "@mui/icons-material/Whatshot";
 import { useNavigate } from "react-router-dom";
-import { Prompt } from "../models/Prompt";
-import { getTrendingPrompts } from "../services/PromptService";
+import { Prompt } from "../../models/Prompt";
+import { getTrendingPrompts } from "../../services/PromptService";
 
 const TrendingPromptsPage = () => {
   const [prompts, setPrompts] = useState<Prompt[]>([]);

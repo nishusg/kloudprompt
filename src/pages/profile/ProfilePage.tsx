@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { getUserPrompts, deletePrompt } from '../services/PromptService';
-import { getUserBookmarks } from '../services/BookmarkService';
-import { Prompt } from '../models';
+import { useAuth } from '../../context/AuthContext';
+import { getUserPrompts, deletePrompt } from '../../services/PromptService';
+import { getUserBookmarks } from '../../services/BookmarkService';
+import { Prompt } from '../../models';
 import {
   Container,
   Box,
@@ -16,8 +16,9 @@ import {
   Stack,
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import ProfilePromptCard from '../components/prompts/ProfilePromptCard';
-import PromptActivityGraph from '../components/prompts/PromptActivityGraph';
+import ProfilePromptCard from '../../components/prompts/ProfilePromptCard';
+import PromptActivityGraph from '../../components/prompts/PromptActivityGraph';
+import { DefaultUserName } from '../../utils/Constants';
 
 const ProfilePage: React.FC = () => {
   const { user: loggedInUser, loading: authLoading } = useAuth();
@@ -137,16 +138,16 @@ const ProfilePage: React.FC = () => {
         >
           <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems="center">
             <Avatar
-              src={'/default-avatar.png'}
-              alt={loggedInUser.userName || 'User'}
+              alt={loggedInUser.userName || DefaultUserName}
               sx={{
                 width: { xs: 80, sm: 90, md: 100 },
                 height: { xs: 80, sm: 90, md: 100 },
-                border: '3px solid #42a5f5',
-                transition: 'transform 0.25s ease',
-                flexShrink: 0,
+                bgcolor: '#42a5f5', 
+                color: '#fff'
               }}
-            />
+            >
+              {(loggedInUser.userName || DefaultUserName).charAt(0).toUpperCase()}
+            </Avatar>
             <Box sx={{ flexGrow: 1 }}>
               <Typography
                 variant="h5"

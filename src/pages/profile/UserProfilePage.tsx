@@ -4,10 +4,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   Box, Container, Typography, Paper, Grid, CircularProgress, Avatar, Stack
 } from '@mui/material';
-import { getUserById, getUserPrompts } from '../services/UserService';
-import { User } from '../models/User';
-import { Prompt } from '../models/Prompt';
-import ProfilePromptCard from '../components/prompts/ProfilePromptCard';
+import { getUserById, getUserPrompts } from '../../services/UserService';
+import { User } from '../../models/User';
+import { Prompt } from '../../models/Prompt';
+import ProfilePromptCard from '../../components/prompts/ProfilePromptCard';
+import { DefaultUserName } from '../../utils/Constants';
 
 const UserProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -50,7 +51,7 @@ const UserProfilePage: React.FC = () => {
         <Paper sx={{ p: 3, mb: 4, bgcolor: '#111', borderRadius: 2 }}>
           <Stack direction="row" spacing={2} alignItems="center">
             <Avatar sx={{ width: 64, height: 64, bgcolor: '#42a5f5', color: '#fff' }}>
-              {user.userName.charAt(0).toUpperCase()}
+              {(user.userName || DefaultUserName).charAt(0).toUpperCase()}              
             </Avatar>
             <Box>
               <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#fff' }}>{user.userName}</Typography>

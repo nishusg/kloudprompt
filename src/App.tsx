@@ -7,21 +7,21 @@ import { CircularProgress, Box } from '@mui/material';
 
 // Import Pages
 import HomePage from './pages/HomePage';
-import PromptDetailPage from './pages/PromptDetailPage';
-import CreatePromptPage from './pages/CreatePromptPage';
-import ProfilePage from './pages/ProfilePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import PromptDetailPage from './pages/prompt/PromptDetailPage';
+import CreatePromptPage from './pages/prompt/CreatePromptPage';
+import ProfilePage from './pages/profile/ProfilePage';
+import LoginPage from './pages/auth/LoginPage';
+import RegisterPage from './pages/auth/RegisterPage';
 import ExplorePage from './pages/ExplorePage';
-import NotFoundPage from './pages/NotFoundPage';
-import AboutPage from './pages/AboutPage';
-import ContactPage from './pages/ContactPage';
-import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
-import TrendingPromptsPage from './pages/TrendingPromptsPage';
-import EditProfilePage from './pages/EditProfilePage';
+import NotFoundPage from './pages/static/NotFoundPage';
+import AboutPage from './pages/static/AboutPage';
+import ContactPage from './pages/static/ContactPage';
+import PrivacyPolicyPage from './pages/static/PrivacyPolicyPage';
+import TrendingPromptsPage from './pages/prompt/TrendingPromptsPage';
+import EditProfilePage from './pages/profile/EditProfilePage';
 import PlaygroundPage from './pages/PlaygroundPage';
-import UserProfilePage from './pages/UserProfilePage';
-import ChangePasswordPage from './pages/ChangePasswordPage';
+import UserProfilePage from './pages/profile/UserProfilePage';
+import ChangePasswordPage from './pages/profile/ChangePasswordPage';
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();

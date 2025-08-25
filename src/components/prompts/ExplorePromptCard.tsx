@@ -6,6 +6,7 @@ import {
   Card,
   CardContent} from '@mui/material';
 import { Prompt } from '../../models/Prompt';
+import { DefaultUserName } from '../../utils/Constants';
 
 const ExplorePromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
   return (
@@ -51,7 +52,7 @@ const ExplorePromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
             {prompt.content}
           </Typography>
           <Typography variant="caption" color="grey.500">
-            by @{prompt.author?.userName || 'Unknown'}
+            by @{prompt.author?.userName || DefaultUserName}
           </Typography>
         </CardContent>
       </Card>

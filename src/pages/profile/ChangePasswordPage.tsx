@@ -5,8 +5,8 @@ import {
   IconButton, InputAdornment 
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { changePassword } from '../services/UserService'; 
-import { useAuth } from '../context/AuthContext';
+import { changePassword } from '../../services/UserService'; 
+import { useAuth } from '../../context/AuthContext';
 
 const ChangePasswordPage: React.FC = () => {
   const { user: loggedInUser } = useAuth();
