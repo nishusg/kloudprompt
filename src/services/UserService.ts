@@ -2,70 +2,69 @@ import apiClient from './ApiClient';
 import { User, UpdateUserDto } from '../models/User';
 import { Prompt } from '../models/Prompt';
 import { handleApiError } from './UtilsService';
+import { AuthResponse } from '../context/AuthContext';
 
 export const registerUser = async (data: {
   userName: string;
   email: string;
   password: string;
-}): Promise<{ user: User; token: string }> => {
+}): Promise<AuthResponse> => {
   try {
     const response = await apiClient.post('/auth/register', data);
-    return response.data;
+    return response.data.data;
   } catch (err) {
-    handleApiError(err, "Failed to register user");
-    return { user: {} as User, token: "" }; // fallback
+    const message = handleApiError(err, "Failed to register user");
+    throw new Error(message);
   }
 };
 
-export const loginUser = async (credentials: {
-  email: string;
-  password: string;
-}): Promise<{ user: User; token: string }> => {
+export const loginUser = async (credentials: { email: string; password: string }): Promise<AuthResponse> => {
   try {
     const response = await apiClient.post('/auth/login', credentials);
-    return response.data;
+    return response.data.data;
   } catch (err) {
-    handleApiError(err, "Failed to login");
-    return { user: {} as User, token: "" }; // fallback
+    // Convert backend error to a proper Error
+    const message = handleApiError(err, 'Failed to login');
+    throw new Error(message);
   }
 };
 
 export const getCurrentUser = async (): Promise<User> => {
   try {
-    const response = await apiClient.get('/auth/me');
-    return response.data;
+    const response = await apiClient.get('/users/current-user');
+    return response.data.data.user;
   } catch (err) {
-    handleApiError(err, "Failed to fetch current user");
-    return {} as User; // fallback
+    const message = handleApiError(err, "Failed to fetch current user");
+    throw new Error(message);
   }
 };
 
 export const getUserById = async (id: string): Promise<User> => {
   try {
     const response = await apiClient.get(`/users/${id}`);
-    return response.data;
+    return response.data.data.user;
   } catch (err) {
-    handleApiError(err, "Failed to fetch user");
-    return {} as User; // fallback
+    const message = handleApiError(err, "Failed to fetch user");
+    throw new Error(message);
   }
 };
 
 export const updateUser = async (id: string, data: UpdateUserDto): Promise<User> => {
   try {
     const response = await apiClient.patch(`/users/${id}/update`, data);
-    return response.data;
+    return response.data.data.user;
   } catch (err) {
-    handleApiError(err, "Failed to update user");
-    return {} as User; // fallback
+    const message = handleApiError(err, "Failed to update user");
+    throw new Error(message);
   }
 };
 
 export const getUserPrompts = async (userId: string): Promise<Prompt[]> => {
   try {
     const response = await apiClient.get(`/users/${userId}/prompts`);
-    return response.data;
+    return response.data.data.prompts;
   } catch (err) {
-    handleApiError(err, "Failed to fetch user prompts");
-    return []; // fallback
+    const message = handleApiError(err, "Failed to fetch user prompts");
+    throw new Error(message);
   }
 };

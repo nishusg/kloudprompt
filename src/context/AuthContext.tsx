@@ -11,14 +11,15 @@ import React, {
 import { loginUser, registerUser, getCurrentUser } from '../services/UserService';
 import { User } from '../models/User';
 
-interface AuthResponse {
-  user?: User;
-  token: string;
+export interface AuthResponse {
+  user: User;
+  accessToken: string;
+  refreshToken: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  setUser?: (user: User | null) => void; // ✅ added setUser
+  setUser?: (user: User | null) => void;
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
@@ -30,11 +31,12 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const TOKEN_KEY = 'authToken';
+const Access_Token_Key = 'accessToken';
+const Refresh_Token_Key = 'refreshToken';
 
-const setToken = (token: string) => localStorage.setItem(TOKEN_KEY, token);
-const getToken = () => localStorage.getItem(TOKEN_KEY);
-const clearToken = () => localStorage.removeItem(TOKEN_KEY);
+const setToken = (token_key: string, token: string) => localStorage.setItem(token_key, token);
+const getToken = (token_key: string) => localStorage.getItem(token_key);
+const clearToken = (token_key: string) => localStorage.removeItem(token_key);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -49,57 +51,73 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const currentUser = await getCurrentUser();
       setUser(currentUser);
     } catch {
-      clearToken();
+      clearToken(Access_Token_Key);
+      clearToken(Refresh_Token_Key);
       setUser(null);
     }
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res: AuthResponse = await loginUser({ email, password });
-      setToken(res.token);
+  const login = useCallback(
+    async (email: string, password: string) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res: AuthResponse = await loginUser({ email, password });
 
-      if (res.user) {
-        setUser(res.user);
-      } else {
-        await fetchCurrentUser();
+        setToken(Access_Token_Key, res.accessToken);
+        setToken(Refresh_Token_Key, res.refreshToken);
+
+        if (res.user) {
+          setUser(res.user);
+        } else {
+          await fetchCurrentUser();
+        }
+
+        return true;
+      } catch (err) {
+        setError(normalizeError(err));
+        return false;
+      } finally {
+        setLoading(false);
       }
+    },
+    [fetchCurrentUser]
+  );
 
-      return true;
-    } catch (err) {
-      setError(normalizeError(err));
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchCurrentUser]);
+  const register = useCallback(
+    async (userName: string, email: string, password: string) => {
+      setLoading(true);
+      setError(null);
+      try {
+        // First register
+        await registerUser({ userName, email, password });
 
-  const register = useCallback(async (userName: string, email: string, password: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res: AuthResponse = await registerUser({ userName, email, password });
-      setToken(res.token);
+        // Then auto-login
+        const res: AuthResponse = await loginUser({ email, password });
 
-      if (res.user) {
-        setUser(res.user);
-      } else {
-        await fetchCurrentUser();
+        setToken(Access_Token_Key, res.accessToken);
+        setToken(Refresh_Token_Key, res.refreshToken);
+
+        if (res.user) {
+          setUser(res.user);
+        } else {
+          await fetchCurrentUser();
+        }
+
+        return true;
+      } catch (err) {
+        setError(normalizeError(err));
+        return false;
+      } finally {
+        setLoading(false);
       }
-
-      return true;
-    } catch (err) {
-      setError(normalizeError(err));
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchCurrentUser]);
+    },
+    [fetchCurrentUser]
+  );
 
   const logout = useCallback(() => {
-    clearToken();
+    clearToken(Access_Token_Key);
+    clearToken(Refresh_Token_Key);
     setUser(null);
   }, []);
 
@@ -107,7 +125,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     const initAuth = async () => {
-      const token = getToken();
+      const token = getToken(Access_Token_Key); // ✅ FIXED
       if (!token) {
         setLoading(false);
         return;

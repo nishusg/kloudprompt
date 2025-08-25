@@ -23,7 +23,8 @@ export const getPrompts = async (params: {
     }
 
     const response = await apiClient.get('/prompts', { params: apiParams });
-    return response.data.prompts;
+
+    return response.data.data.prompts.prompts;
   } catch (err) {
     handleApiError(err, "Failed to fetch prompts");
     return {} as Prompt[]; 
@@ -33,7 +34,9 @@ export const getPrompts = async (params: {
 export const getPromptById = async (id: string): Promise<Prompt> => {
   try {
     const response = await apiClient.get(`/prompts/${id}`);
-    return response.data;
+    const promptData = response.data.data.prompt;
+    promptData.isBookmarkedByCurrentUser = response.data.data.isBookmarked;
+    return promptData;
   } catch (err) {
     handleApiError(err, "Failed to fetch prompt");
     return {} as Prompt; 
@@ -43,7 +46,7 @@ export const getPromptById = async (id: string): Promise<Prompt> => {
 export const incrementPromptView = async (id: string): Promise<number> => {
   try {
     const response = await apiClient.post(`/prompts/${id}/view`);
-    return response.data.views;
+    return response.data.data.prompt.views;
   } catch (err) {
     handleApiError(err, "Failed to increment views");
     return 0;
@@ -53,7 +56,7 @@ export const incrementPromptView = async (id: string): Promise<number> => {
 export const getTrendingPrompts = async (limit: number = 10): Promise<Prompt[]> => {
   try {
     const response = await apiClient.get(`/prompts/trending?limit=${limit}`);
-    return response.data;
+    return response.data.data.prompts;
   } catch (err) {
     console.error("Failed to fetch trending prompts", err);
     return [];
@@ -63,7 +66,7 @@ export const getTrendingPrompts = async (limit: number = 10): Promise<Prompt[]> 
 export const getUserPrompts = async (userId: string): Promise<Prompt[]> => {
   try {
     const response = await apiClient.get(`/users/${userId}/prompts`);
-    return response.data;
+    return response.data.data.prompts;
   } catch (err) {
     handleApiError(err, "Failed to fetch user prompts");
     return {} as Prompt[]; 
@@ -73,7 +76,7 @@ export const getUserPrompts = async (userId: string): Promise<Prompt[]> => {
 export const createPrompt = async (data: CreatePromptDto): Promise<Prompt> => {
   try {
     const response = await apiClient.post("/prompts", data);
-    return response.data;
+    return response.data.data.prompt;
   } catch (err) {
     handleApiError(err, "Failed to create prompt");
     return {} as Prompt; 
@@ -83,7 +86,7 @@ export const createPrompt = async (data: CreatePromptDto): Promise<Prompt> => {
 export const updatePrompt = async (id: string, data: UpdatePromptDto): Promise<Prompt> => {
   try {
     const response = await apiClient.patch(`/prompts/${id}`, data);
-    return response.data;
+    return response.data.data.prompt;
   } catch (err) {
     handleApiError(err, "Failed to update prompt");
     return {} as Prompt; 
@@ -98,40 +101,10 @@ export const deletePrompt = async (id: string): Promise<void> => {
   }
 };
 
-export const upvotePrompt = async (id: string): Promise<Prompt> => {
-  try {
-    const response = await apiClient.post(`/prompts/${id}/upvote`);
-    return response.data;
-  } catch (err) {
-    handleApiError(err, "Failed to upvote prompt");
-    return {} as Prompt; 
-  }
-};
-
-export const getPopularTags = async (): Promise<string[]> => {
-  try {
-    const response = await apiClient.get('/prompts/tags/popular'); // 🔹 better endpoint than `/prompts`
-    return response.data;
-  } catch (err) {
-    handleApiError(err, "Failed to fetch popular tags");
-    return {} as string[]; 
-  }
-};
-
-export const searchPrompts = async (query: string): Promise<Prompt[]> => {
-  try {
-    const response = await apiClient.get('/prompts/search', { params: { q: query } });
-    return response.data;
-  } catch (err) {
-    handleApiError(err, "Failed to search prompts");
-    return {} as Prompt[]; 
-  }
-};
-
 export const toggleBookmarkPrompt = async (id: string): Promise<Prompt> => {
   try {
     const response = await apiClient.patch(`/bookmarks/${id}`);
-    return response.data;
+    return response.data.data;
   } catch (err) {
     handleApiError(err, "Failed to toggle bookmark");
     return {} as Prompt;

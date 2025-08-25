@@ -17,32 +17,23 @@ const LoginPage: React.FC = () => {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
 
+  // redirect if logged in
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/', { replace: true });
-    }
+    if (isAuthenticated) navigate('/', { replace: true });
   }, [isAuthenticated, navigate]);
 
-  useEffect(() => {
-    clearError();
-  }, [clearError]);
-
+  useEffect(() => { clearError(); }, [clearError]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setFieldErrors(prev => ({ ...prev, [name]: '' }));
-    if (authError) clearError();
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-    if (!formData.password.trim()) {
-      newErrors.password = 'Password is required';
-    }
+    if (!validateEmail(formData.email)) newErrors.email = 'Please enter a valid email address';
+    if (!formData.password.trim()) newErrors.password = 'Password is required';
     setFieldErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -50,8 +41,9 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
+    clearError();
     const success = await login(formData.email, formData.password);
-    if (!success) return; // stop submit if login failed
+    if (!success) return; // authError now shows in <Alert>
   };
 
   return (
@@ -63,6 +55,7 @@ const LoginPage: React.FC = () => {
               Sign in to your account
             </Typography>
 
+            {/* show backend error */}
             {authError && <Alert severity="error" sx={{ mb: 2 }}>{authError}</Alert>}
 
             <Box component="form" onSubmit={handleSubmit} noValidate>
@@ -83,10 +76,9 @@ const LoginPage: React.FC = () => {
                 disabled={loading}
                 variant="outlined"
                 InputLabelProps={{ style: { color: '#ccc' } }}
-                InputProps={{
-                  style: { color: '#fff', backgroundColor: '#2A2A2A' }
-                }}
+                InputProps={{ style: { color: '#fff', backgroundColor: '#2A2A2A' } }}
               />
+
               <TextField
                 margin="normal"
                 required
@@ -106,12 +98,7 @@ const LoginPage: React.FC = () => {
                   style: { color: '#fff', backgroundColor: '#2A2A2A' },
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(prev => !prev)}
-                        edge="end"
-                        sx={{ color: '#ccc' }}
-                        type="button"
-                      >
+                      <IconButton onClick={() => setShowPassword(prev => !prev)} edge="end" sx={{ color: '#ccc' }} type="button">
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
@@ -121,9 +108,7 @@ const LoginPage: React.FC = () => {
 
               <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 1, mb: 2 }}>
                 <FormControlLabel control={<Checkbox color="primary" />} label="Remember me" disabled={loading} sx={{ color: '#ccc' }} />
-                <Link component={RouterLink} to="/forgotPassword" variant="body2" sx={{ color: '#90caf9' }}>
-                  Forgot password?
-                </Link>
+                <Link component={RouterLink} to="/forgotPassword" variant="body2" sx={{ color: '#90caf9' }}>Forgot password?</Link>
               </Stack>
 
               <Button type="submit" fullWidth variant="contained" disabled={loading}
@@ -134,9 +119,7 @@ const LoginPage: React.FC = () => {
 
             <Typography variant="body2" align="center" sx={{ mt: 3, color: '#ccc' }}>
               Don&apos;t have an account?{' '}
-              <Link component={RouterLink} to="/register" variant="body2" sx={{ color: '#90caf9' }}>
-                Register here
-              </Link>
+              <Link component={RouterLink} to="/register" variant="body2" sx={{ color: '#90caf9' }}>Register here</Link>
             </Typography>
           </CardContent>
         </Card>
