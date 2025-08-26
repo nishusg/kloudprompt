@@ -1,6 +1,7 @@
 import apiClient from './ApiClient';
 import { Prompt, CreatePromptDto, UpdatePromptDto } from '../models/Prompt';
 import { handleApiError } from './UtilsService';
+import { EnhancePromptRequest, EnhancePromptResponse } from '../models';
 
 export interface PaginatedPrompts {
   data: Prompt[];
@@ -110,4 +111,9 @@ export const toggleBookmarkPrompt = async (id: string): Promise<Prompt> => {
     const message = handleApiError(err, "Failed to toggle bookmark");
     throw new Error(message);
   }
+};
+
+export const enhancePrompt = async (payload: EnhancePromptRequest): Promise<EnhancePromptResponse> => {
+  const res = await apiClient.post(`/prompts/enhance`, payload  );
+  return res.data.data as EnhancePromptResponse;
 };
