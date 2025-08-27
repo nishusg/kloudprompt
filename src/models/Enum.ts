@@ -1,8 +1,10 @@
 // ===== Enums =====
-export enum ModelTypeEnum {
+export enum ProviderTypeEnum {
   GEMINI = 'gemini',
   CHATGPT = 'chatgpt',
   GROK = 'grok',
+  OPENROUTER = 'openrouter',
+  TOGETHER = 'together',
 }
 
 export enum GenerationTypeEnum {

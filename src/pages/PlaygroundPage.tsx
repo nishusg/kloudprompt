@@ -1,17 +1,18 @@
 // src/pages/PlaygroundPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPromptById } from '../services/PromptService';
 import { downloadImageBuffer, runPlaygroundPrompt } from '../services/PlaygroundService';
 import { Prompt } from '../models/Prompt';
 import {
   Box, Container, Typography, TextField, Button, Paper, Stack,
-  CircularProgress, Tooltip, IconButton, Divider, MenuItem, Select,
-  FormControl, InputLabel, Snackbar, Alert
+  CircularProgress, Tooltip, IconButton, MenuItem, 
+  Snackbar, Alert
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DownloadIcon from '@mui/icons-material/Download';
 import InfoIcon from '@mui/icons-material/Info';
+import { ProviderTypeEnum } from '../models/Enum';
 
 const PlaygroundPage: React.FC = () => {
   const { promptId } = useParams<{ promptId: string }>();
@@ -19,12 +20,10 @@ const PlaygroundPage: React.FC = () => {
 
   const [prompt, setPrompt] = useState<Prompt | null>(null);
   const [userApiKey, setUserApiKey] = useState('');
-  const [provider, setProvider] = useState<'chatgpt'|'gemini'|'openrouter'|'grok'|'together'>(prompt?.modelType || 'chatgpt');
-  const [type, setType] = useState<'text'|'image'|'video'|'audio'>(prompt?.generationType || 'text');
-  const [output, setOutput] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState<{open: boolean, isError: boolean, message: string}>({open: false, isError: false, message: ''});
+  const modelRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!promptId) return;
@@ -32,9 +31,6 @@ const PlaygroundPage: React.FC = () => {
       try {
         const promptData = await getPromptById(promptId);
         setPrompt(promptData);
-
-        if (promptData.generationType) setType(promptData.generationType as any);
-        if (promptData.modelType) setProvider(promptData.modelType as any);
       } catch (err) {
         console.error('Failed to load prompt', err);
         navigate('/'); 
@@ -47,29 +43,25 @@ const PlaygroundPage: React.FC = () => {
     if (!prompt || !userApiKey) return;
 
     setLoading(true);
-    setOutput('');
     setImageUrl('');
 
     try {
       const data = await runPlaygroundPrompt({
         prompt: prompt.content,
         userApiKey,
-        provider,
-        type
+        provider: modelRef.current?.value || ProviderTypeEnum.CHATGPT,
       });
 
-      if (type === 'text') setOutput(data.output || '');
-      if (type === 'image') setImageUrl(data.imageUrl || '');
+      setImageUrl(data.imageUrl || '');
     } catch (err) {
       console.error(err);
-      setOutput('Error running prompt');
     } finally {
       setLoading(false);
     }
   };
 
   const handleCopyOutput = async () => {
-    const text = type === 'text' ? output : imageUrl;
+    const text = imageUrl;
     if (!text) return;
     try {
       await navigator.clipboard.writeText(text);
@@ -133,49 +125,65 @@ const PlaygroundPage: React.FC = () => {
           />
         </Paper>
 
+        {/* Playground Section */}
+        <Typography 
+          variant="h6" 
+          component="h2" 
+          sx={{ 
+            mb: 2, 
+            fontWeight: "bold", 
+            color: "primary.contrastText", 
+            letterSpacing: 0.5 
+          }}
+        >
+          Try it out!
+        </Typography>
+      
         {/* Settings Panel */}
         <Paper sx={{ p: 3, bgcolor: '#1a1a1a', mb: 4, borderRadius: 2 }}>
           <Stack spacing={3}>
+            {/* Provider Dropdown */}
             <TextField
-              label="Your Model API Key"
+              select
+              label="Select Provider"
+              fullWidth
+              inputRef={modelRef}
+              defaultValue={ProviderTypeEnum.CHATGPT}
+              InputLabelProps={{ style: { color: '#bbb' } }}
+              sx={{
+                '& .MuiInputBase-input': { color: '#fff' },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#555' },
+                  '&:hover fieldset': { borderColor: '#777' },
+                  '&.Mui-focused fieldset': { borderColor: '#90caf9' },
+                  borderRadius: 1.5,
+                },
+              }}
+            >
+              {Object.values(ProviderTypeEnum).map((model) => (
+                <MenuItem key={model} value={model}>
+                  {model.toUpperCase()}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            <TextField
+              label="API Key"
               placeholder="Enter your API key"
               value={userApiKey}
               onChange={e => setUserApiKey(e.target.value)}
               fullWidth
-              sx={{ input: { color: '#fff' }, label: { color: '#aaa' } }}
+              InputLabelProps={{ style: { color: '#bbb' } }}
+              sx={{
+                '& .MuiInputBase-input': { color: '#fff' },
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: '#555' },
+                  '&:hover fieldset': { borderColor: '#777' },
+                  '&.Mui-focused fieldset': { borderColor: '#90caf9' },
+                  borderRadius: 1.5,
+                },
+              }}
             />
-
-            {/* ✅ Fix: responsive Stack */}
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-              <FormControl sx={{ flex: 1 }}>
-                <InputLabel sx={{ color: '#aaa' }}>Provider</InputLabel>
-                <Select
-                  value={provider}
-                  onChange={e => setProvider(e.target.value as any)}
-                  sx={{ color: '#fff' }}
-                >
-                  <MenuItem value="chatgpt">ChatGPT</MenuItem>
-                  <MenuItem value="gemini">Gemini</MenuItem>
-                  <MenuItem value="openrouter">OpenRouter</MenuItem>
-                  <MenuItem value="grok">Grok</MenuItem>
-                  <MenuItem value="together">Together</MenuItem>
-                </Select>
-              </FormControl>
-
-              <FormControl sx={{ flex: 1 }}>
-                <InputLabel sx={{ color: '#aaa' }}>Type</InputLabel>
-                <Select
-                  value={type}
-                  onChange={e => setType(e.target.value as any)}
-                  sx={{ color: '#fff' }}
-                >
-                  <MenuItem value="text">Text</MenuItem>
-                  <MenuItem value="image">Image</MenuItem>
-                  <MenuItem value="video">Video</MenuItem>
-                  <MenuItem value="audio">Audio</MenuItem>
-                </Select>
-              </FormControl>
-            </Stack>
 
             <Button
               variant="contained"
@@ -188,25 +196,7 @@ const PlaygroundPage: React.FC = () => {
           </Stack>
         </Paper>
 
-        {/* Output Section */}
-        {(type === 'text' && output) && (
-          <Paper sx={{ p: 3, bgcolor: '#1a1a1a', mb: 4 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
-              <Typography variant="subtitle2" sx={{ color: '#90caf9', fontWeight: 600 }}>Output</Typography>
-              <Tooltip title="Copy output">
-                <IconButton size="small" onClick={handleCopyOutput} sx={{ color: '#fff' }}>
-                  <ContentCopyIcon />
-                </IconButton>
-              </Tooltip>
-            </Stack>
-            <Divider sx={{ bgcolor: '#333', my: 1 }} />
-            <Typography component="pre" sx={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', color: '#fff' }}>
-              {output}
-            </Typography>
-          </Paper>
-        )}
-
-        {(type === 'image' && imageUrl) && (
+        {(imageUrl) && (
           <Paper sx={{ p: 3, bgcolor: '#1a1a1a', textAlign: 'center', mb: 4 }}>
             <img src={imageUrl} alt="AI Generated" style={{ maxWidth: '100%', borderRadius: 8 }} />
             <Stack direction="row" spacing={2} justifyContent="center" mt={2}>

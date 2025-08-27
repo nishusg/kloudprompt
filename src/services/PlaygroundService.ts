@@ -5,8 +5,7 @@ import { handleApiError } from './UtilsService';
 export interface PlaygroundRequest {
   prompt: string;
   userApiKey: string;
-  provider: 'chatgpt' | 'gemini' | 'openrouter' | 'grok' | 'together';
-  type?: 'text'|'image'|'video'|'audio';
+  provider: string;
 }
 
 export interface PlaygroundResponse {

@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { CreatePromptDto } from "../../models/Prompt";
 import { validatePrompt } from "../../utils/Validators";
-import { GenerationTypeEnum, ModelTypeEnum } from "../../models/Enum";
+import { GenerationTypeEnum, ProviderTypeEnum } from "../../models/Enum";
 
 interface PromptFormProps {
   initialData?: CreatePromptDto;
@@ -26,7 +26,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
     title: "",
     content: "",
     description: "",
-    modelType: ModelTypeEnum.CHATGPT,
+    modelType: ProviderTypeEnum.CHATGPT,
     generationType: GenerationTypeEnum.TEXT,
     tags: [],
   },

@@ -1,5 +1,5 @@
 import { PromptComment } from './Comment';
-import { GenerationTypeEnum, ModelTypeEnum } from './Enum';
+import { GenerationTypeEnum, ProviderTypeEnum } from './Enum';
 import { User } from './User';
 
 export interface Prompt {
@@ -7,7 +7,7 @@ export interface Prompt {
   title: string;
   content: string;
   description: string;
-  modelType: ModelTypeEnum;
+  modelType: ProviderTypeEnum;
   generationType: GenerationTypeEnum;
   tags: string[];
   readonly author: User;
@@ -24,7 +24,7 @@ export interface CreatePromptDto {
   content: string;
   description: string;
   tags: string[];
-  modelType: ModelTypeEnum;
+  modelType: ProviderTypeEnum;
   generationType: GenerationTypeEnum;
 }
 

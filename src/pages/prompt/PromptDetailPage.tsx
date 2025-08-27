@@ -24,7 +24,7 @@ import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { DefaultUserName } from '../../utils/Constants';
 import { enhancePrompt } from "../../services/PromptService";
 import { EnhancePromptRequest, EnhancePromptResponse } from "../../models/EnhancePrompt";
-import { ModelTypeEnum } from '../../models/Enum';
+import { ProviderTypeEnum } from '../../models/Enum';
 
 const formatDate = (date: Date) =>
   new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -140,7 +140,7 @@ const PromptDetailPage: React.FC = () => {
   const handleEnhancePrompt = async () => {
     if (!prompt) return;
     const payload: EnhancePromptRequest = {
-      model: modelRef.current?.value || '',
+      provider: modelRef.current?.value || ProviderTypeEnum.CHATGPT,
       apiKey: apiKeyRef.current?.value || '',
       promptContent: prompt.content,
     };
@@ -324,12 +324,13 @@ const PromptDetailPage: React.FC = () => {
 
           <DialogContent dividers sx={{ bgcolor: '#1c1c1c', py: 3 }}>
             <Stack spacing={3}>
-              {/* Model Dropdown */}
+              {/* Provider Dropdown */}
               <TextField
                 select
-                label="Select Model"
+                label="Select Provider"
                 fullWidth
                 inputRef={modelRef}
+                defaultValue={ProviderTypeEnum.CHATGPT}
                 InputLabelProps={{ style: { color: '#bbb' } }}
                 sx={{
                   '& .MuiInputBase-input': { color: '#fff' },
@@ -341,7 +342,7 @@ const PromptDetailPage: React.FC = () => {
                   },
                 }}
               >
-                {Object.values(ModelTypeEnum).map((model) => (
+                {Object.values(ProviderTypeEnum).map((model) => (
                   <MenuItem key={model} value={model}>
                     {model.toUpperCase()}
                   </MenuItem>

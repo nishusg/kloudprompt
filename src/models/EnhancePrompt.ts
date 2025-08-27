@@ -1,6 +1,6 @@
 // Request DTO
 export interface EnhancePromptRequest {
-  model: string;
+  provider: string;
   apiKey: string;
   promptContent: string;
 }
