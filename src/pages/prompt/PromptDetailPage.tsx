@@ -58,7 +58,7 @@ const PromptDetailPage: React.FC = () => {
         setLoading(true);
         const promptData = await getPromptById(id);
         setPrompt(promptData);
-        setComments(promptData.comments || []);
+        setComments(promptData.commentIds || []);
         if (id && !hasIncremented.current) {
           incrementPromptView(id);
           hasIncremented.current = true;

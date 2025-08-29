@@ -296,14 +296,14 @@ const ProfilePage: React.FC = () => {
               px: 3,
               fontWeight: 600,
               textTransform: 'none',
-              bgcolor: view === 'bookmarks' ? '#9e9e9e' : 'transparent', // Medium-light gray
+              bgcolor: view === 'bookmarks' ? '#42a5f5' : 'transparent', // Medium-light gray
               color: view === 'bookmarks' ? '#000' : '#e0e0e0',           // Light gray text
-              borderColor: '#9e9e9e',
+              borderColor: '#42a5f5',
               boxShadow: view === 'bookmarks'
                 ? '0 4px 14px rgba(158,158,158,0.4)'
                 : 'none',
               '&:hover': {
-                bgcolor: '#d8d5d5ff',                                      // Slightly lighter on hover
+                bgcolor: '#42a5f5',                                      // Slightly lighter on hover
                 color: '#000',
                 boxShadow: '0 6px 20px rgba(189,189,189,0.5)',
               },

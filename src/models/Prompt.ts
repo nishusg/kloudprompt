@@ -14,7 +14,7 @@ export interface Prompt {
   readonly views: number;
   readonly createdAt: Date;
   readonly updatedAt: Date;
-  comments: PromptComment[];
+  commentIds: PromptComment[];
   isBookmarkedByCurrentUser: any;
 }
 
