@@ -2,7 +2,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Box, Container, Typography, Paper, Grid, CircularProgress, Avatar, Stack
+  Box,
+  Container,
+  Typography,
+  Paper,
+  Grid,
+  CircularProgress,
+  Avatar,
+  Stack,
+  Link,
 } from '@mui/material';
 import { getUserById, getUserPrompts } from '../../services/UserService';
 import { User } from '../../models/User';
@@ -39,29 +47,93 @@ const UserProfilePage: React.FC = () => {
   }, [userId]);
 
   if (loading)
-    return <CircularProgress sx={{ display: 'block', mx: 'auto', mt: 10, color: '#42a5f5' }} />;
+    return (
+      <CircularProgress
+        sx={{ display: 'block', mx: 'auto', mt: 10, color: '#42a5f5' }}
+      />
+    );
 
   if (!user)
-    return <Typography sx={{ textAlign: 'center', mt: 10, color: '#fff' }}>User not found</Typography>;
+    return (
+      <Typography sx={{ textAlign: 'center', mt: 10, color: '#fff' }}>
+        User not found
+      </Typography>
+    );
 
   return (
     <Box sx={{ bgcolor: '#0a0a0a', color: '#fff', minHeight: '100vh', py: 4 }}>
       <Container maxWidth="md">
         {/* User Info */}
         <Paper sx={{ p: 3, mb: 4, bgcolor: '#111', borderRadius: 2 }}>
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={2} alignItems="flex-start">
             <Avatar sx={{ width: 64, height: 64, bgcolor: '#42a5f5', color: '#fff' }}>
-              {(user.userName || DefaultUserName).charAt(0).toUpperCase()}              
+              {(user.userName || DefaultUserName).charAt(0).toUpperCase()}
             </Avatar>
             <Box>
-              <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#fff' }}>{user.userName}</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#fff' }}>
+                {user.userName}
+              </Typography>
               <Typography variant="body2" sx={{ color: '#bbb' }}>
                 Joined on {new Date(user.createdAt).toLocaleDateString()}
               </Typography>
+
+              {/* Email */}
               {user.email && (
-                <Typography variant="body2" sx={{ color: '#bbb' }}>
+                <Typography variant="body2" sx={{ color: '#bbb', mt: 1 }}>
                   {user.email}
                 </Typography>
+              )}
+
+              {/* Optional Fields */}
+              {user.fullName && (
+                <Typography variant="body2" sx={{ color: '#bbb' }}>
+                  {user.fullName}
+                </Typography>
+              )}
+              {user.phone && (
+                <Typography variant="body2" sx={{ color: '#bbb' }}>
+                  {user.phone}
+                </Typography>
+              )}
+              {user.bio && (
+                <Typography variant="body2" sx={{ color: '#bbb', mt: 1 }}>
+                  {user.bio}
+                </Typography>
+              )}
+
+              {/* Social Links */}
+              {user.socialLinks && Object.keys(user.socialLinks).length > 0 && (
+                <Stack spacing={1} mt={1}>
+                  {Object.entries(user.socialLinks).map(([platform, url]) =>
+                    url ? (
+                      <Stack
+                        key={platform}
+                        direction="row"
+                        spacing={1}
+                        alignItems="center"
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{ color: '#aaa', fontWeight: 600, minWidth: 80 }}
+                        >
+                          {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                        </Typography>
+                        <Link
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          sx={{
+                            color: '#42a5f5',
+                            textDecoration: 'none',
+                            wordBreak: 'break-all',
+                          }}
+                        >
+                          link
+                        </Link>
+                      </Stack>
+                    ) : null
+                  )}
+                </Stack>
               )}
             </Box>
           </Stack>

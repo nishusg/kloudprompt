@@ -114,16 +114,12 @@ const ProfilePage: React.FC = () => {
     );
   }
 
+  // ✅ Use socialLinks only if it exists
+  const socialLinks = loggedInUser.socialLinks || {};
+
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        color: 'white',
-        py: 4,
-        background: '#0a0a0a',
-      }}
-    >
-      <Container maxWidth="lg">
+    <Box sx={{ minHeight: '100vh', color: 'white', py: 4, background: '#0a0a0a' }}>
+      <Container maxWidth="md">
         {/* Profile Header */}
         <Paper
           elevation={6}
@@ -142,8 +138,9 @@ const ProfilePage: React.FC = () => {
               sx={{
                 width: { xs: 80, sm: 90, md: 100 },
                 height: { xs: 80, sm: 90, md: 100 },
-                bgcolor: '#42a5f5', 
-                color: '#fff'
+                bgcolor: '#42a5f5',
+                color: '#fff',
+                fontSize: '2rem',
               }}
             >
               {(loggedInUser.userName || DefaultUserName).charAt(0).toUpperCase()}
@@ -157,17 +154,68 @@ const ProfilePage: React.FC = () => {
                   fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' },
                 }}
               >
-                {loggedInUser.userName || 'Unnamed User'}
+                {loggedInUser.fullName || loggedInUser.userName || 'Unnamed User'}
               </Typography>
               <Typography
                 variant="body2"
-                sx={{
-                  color: 'rgba(255,255,255,0.6)',
-                  fontSize: { xs: '0.85rem', sm: '0.9rem', md: '1rem' },
-                }}
+                sx={{ color: 'rgba(255,255,255,0.6)' }}
               >
                 {loggedInUser.email || 'No email provided'}
               </Typography>
+
+              {/* Phone */}
+              {loggedInUser.phone && (<Typography
+                variant="body2"
+                sx={{ color: 'rgba(255,255,255,0.6)' }}
+              >
+                {loggedInUser.phone}
+              </Typography>)}
+
+              {/* Bio */}
+              {loggedInUser.bio && (
+                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)', mt: 1 }}>
+                  {loggedInUser.bio}
+                </Typography>
+              )}
+
+              {/* ✅ Social Links Only if They Exist */}
+              {Object.entries(socialLinks).length > 0 && (
+                <Stack spacing={1} mt={1}>
+                  {Object.entries(socialLinks).map(([platform, url]) =>
+                    url ? (
+                      <Stack
+                        key={platform}
+                        direction="row"
+                        spacing={1}
+                        alignItems="center"
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "#aaa", fontWeight: 600, minWidth: 80 }}
+                        >
+                          {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                        </Typography>
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: "#42a5f5",
+                            textDecoration: "none",
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          link
+                        </a>
+                      </Stack>
+                    ) : null
+                  )}
+                </Stack>
+              )}
+
+              <hr style={{ border: '0.5px solid rgba(255,255,255,0.1)', margin: '12px 0' }} />
+
+              {/* Actions */}
               <Stack direction="row" spacing={1}>
                 <Button
                   variant="outlined"

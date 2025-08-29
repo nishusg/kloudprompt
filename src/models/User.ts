@@ -2,6 +2,10 @@ export interface User {
   readonly _id: string;
   userName: string;
   email?: string;
+  fullName?: string;
+  phone?: string;
+  bio?: string;
+  socialLinks?: { [key: string]: string };
   readonly createdAt: Date;
   readonly updatedAt: Date;
   bookmarkedPrompts?: string[];
@@ -11,4 +15,8 @@ export interface User {
 export interface UpdateUserDto {
   userName?: string;
   email?: string;
+  fullName?: string;
+  phone?: string;
+  bio?: string;
+  socialLinks?: { [key: string]: string };
 }
