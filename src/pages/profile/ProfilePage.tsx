@@ -19,9 +19,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ProfilePromptCard from '../../components/prompts/ProfilePromptCard';
 import PromptActivityGraph from '../../components/prompts/PromptActivityGraph';
 import { DefaultUserName } from '../../utils/Constants';
+import { useSnackbar } from '../../context/SnackbarContext';
 
 const ProfilePage: React.FC = () => {
   const { user: loggedInUser, loading: authLoading } = useAuth();
+  const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const [prompts, setPrompts] = useState<Prompt[]>([]);
@@ -57,8 +59,9 @@ const ProfilePage: React.FC = () => {
       try {
         await deletePrompt(promptId);
         setPrompts((prev) => prev.filter((p) => p._id !== promptId));
+        showSnackbar('Prompt deleted successfully', 'success');
       } catch (error) {
-        console.error('Failed to delete prompt:', error);
+        showSnackbar('Failed to delete prompt:', 'error');
       }
     }
   };

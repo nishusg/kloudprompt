@@ -7,16 +7,16 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { changePassword } from '../../services/UserService'; 
 import { useAuth } from '../../context/AuthContext';
+import { useSnackbar } from '../../context/SnackbarContext';
 
 const ChangePasswordPage: React.FC = () => {
   const { user: loggedInUser } = useAuth();
+  const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
   // visibility states
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -27,14 +27,12 @@ const ChangePasswordPage: React.FC = () => {
     if (!loggedInUser?._id) return;
 
     setLoading(true);
-    setError('');
-    setSuccess('');
     try {
       await changePassword(loggedInUser._id, currentPassword, newPassword);
-      setSuccess('Password updated successfully!');
+      showSnackbar('Password updated successfully!', 'success');
       setTimeout(() => navigate('/profile/' + loggedInUser._id), 1500);
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to change password');
+      showSnackbar(err?.response?.data?.message || 'Failed to change password', 'error');
     } finally {
       setLoading(false);
     }
@@ -122,9 +120,6 @@ const ChangePasswordPage: React.FC = () => {
                   )
                 }}
               />
-
-              {error && <Typography color="error">{error}</Typography>}
-              {success && <Typography color="success.main">{success}</Typography>}
 
               <Button
                 type="submit"

@@ -7,22 +7,21 @@ import { Prompt } from '../models/Prompt';
 import {
   Box, Container, Typography, TextField, Button, Paper, Stack,
   CircularProgress, Tooltip, IconButton, MenuItem, 
-  Snackbar, Alert
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DownloadIcon from '@mui/icons-material/Download';
 import InfoIcon from '@mui/icons-material/Info';
 import { ProviderTypeEnum } from '../models/Enum';
+import { useSnackbar } from '../context/SnackbarContext';
 
 const PlaygroundPage: React.FC = () => {
   const { promptId } = useParams<{ promptId: string }>();
   const navigate = useNavigate();
-
+  const { showSnackbar } = useSnackbar();
   const [prompt, setPrompt] = useState<Prompt | null>(null);
   const [userApiKey, setUserApiKey] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
-  const [snackbar, setSnackbar] = useState<{open: boolean, isError: boolean, message: string}>({open: false, isError: false, message: ''});
   const modelRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -53,8 +52,9 @@ const PlaygroundPage: React.FC = () => {
       });
 
       setImageUrl(data.imageUrl || '');
+      showSnackbar('Prompt executed successfully!', 'success');
     } catch (err) {
-      console.error(err);
+      showSnackbar('Failed to run prompt. Please check your API key and try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -65,9 +65,9 @@ const PlaygroundPage: React.FC = () => {
     if (!text) return;
     try {
       await navigator.clipboard.writeText(text);
-      setSnackbar({ open: true, isError: false, message: 'Copied to clipboard!' });
+      showSnackbar('Image URL copied to clipboard!', 'success');
     } catch (err) {
-      console.error('Failed to copy output', err);
+      showSnackbar('Failed to copy to clipboard', 'error');
     }
   };
 
@@ -84,9 +84,9 @@ const PlaygroundPage: React.FC = () => {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
-      setSnackbar({ open: true, isError: false, message: "Image downloaded!" });
+      showSnackbar('Image downloaded successfully!', 'success');
     } else {
-      setSnackbar({ open: true, isError: true, message: result.error });
+      showSnackbar(result.error || 'Failed to download image', 'error');
     }
   };
 
@@ -213,21 +213,6 @@ const PlaygroundPage: React.FC = () => {
             </Stack>
           </Paper>
         )}
-
-        {/* Snackbar */}
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={2000}
-          onClose={() => setSnackbar({ open: false, isError: false, message: '' })}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        >
-          <Alert 
-            severity={snackbar.isError ? 'error' : 'success'}
-            sx={{ width: '100%' }}
-          >
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
       </Container>
     </Box>
   );

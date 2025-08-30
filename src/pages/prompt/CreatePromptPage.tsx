@@ -8,7 +8,6 @@ import {
   Grid,
   Paper,
   CircularProgress,
-  Alert,
   Divider,
 } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
@@ -16,12 +15,13 @@ import PromptForm from '../../components/prompts/PromptForm';
 import { createPrompt } from '../../services/PromptService';
 import { useAuth } from '../../context/AuthContext';
 import { CreatePromptDto } from '../../models/Prompt';
+import { useSnackbar } from '../../context/SnackbarContext';
 
 const CreatePromptPage: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated, loading: authLoading } = useAuth();
+  const { showSnackbar } = useSnackbar();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -32,25 +32,13 @@ const CreatePromptPage: React.FC = () => {
 
   const handleSubmit = async (data: CreatePromptDto) => {
     setIsSubmitting(true);
-    setSubmitError(null);
 
     try {
       const newPrompt = await createPrompt(data);
       navigate(`/prompts/${newPrompt._id}`);
+      showSnackbar('Prompt created successfully!', 'success');
     } catch (error: any) {
-      console.error("Failed to create prompt:", error);
-
-      // 🔹 If backend sent a proper JSON error
-      if (error.response?.data?.message) {
-        setSubmitError(error.response.data.message);
-      } 
-      // 🔹 Fallback to default error message
-      else if (error instanceof Error) {
-        setSubmitError(error.message);
-      } 
-      else {
-        setSubmitError("An unknown error occurred. Please try again.");
-      }
+      showSnackbar(error?.response?.data?.message || 'Failed to create prompt', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -124,11 +112,6 @@ const CreatePromptPage: React.FC = () => {
                 bgcolor: '#0a0a0a',
               }}
             >
-              {submitError && (
-                <Alert severity="error" sx={{ mb: 3 }}>
-                  {submitError}
-                </Alert>
-              )}
               <PromptForm onSubmit={handleSubmit} isLoading={isSubmitting} />
             </Paper>
           </Grid>

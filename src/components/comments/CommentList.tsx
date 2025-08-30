@@ -33,28 +33,29 @@ export const CommentList: React.FC<CommentListProps> = ({ promptId, limit = 5 })
     // Load comments whenever page changes
     useEffect(() => {
         if (!promptId || !hasMore) return;
+        const loadComments = async () => {
+            setLoading(true);
+            try {
+            const res = await getComments(promptId, page, limit);
+            
+            const commentArray = Array.isArray(res.comments) ? res.comments : [];
 
+            if (commentArray.length < limit) setHasMore(false);
+            setComments(prev => [...prev, ...commentArray]);
+            
+            setTotalCount(res.totalCount);
+        
+            } catch (err) {
+                console.error("Failed to load comments", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
         loadComments();
     }, [promptId, page, limit, hasMore]);
 
-    const loadComments = async () => {
-        setLoading(true);
-        try {
-        const res = await getComments(promptId, page, limit);
-        
-        const commentArray = Array.isArray(res.comments) ? res.comments : [];
 
-        if (commentArray.length < limit) setHasMore(false);
-        setComments(prev => [...prev, ...commentArray]);
-        
-        setTotalCount(res.totalCount);
-    
-        } catch (err) {
-            console.error("Failed to load comments", err);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleLoadMore = () => {
         if (!loading && hasMore) setPage(prev => prev + 1);

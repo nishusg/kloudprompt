@@ -7,7 +7,7 @@ import { Prompt } from '../../models/Prompt';
 
 import {
   Container, Typography, Button, CircularProgress, Box, Chip, TextField,
-  Stack, Alert, Divider, Paper, Snackbar, IconButton, Tooltip, Link,
+  Stack, Alert, Divider, Paper, IconButton, Tooltip, Link,
   Dialog, DialogTitle, DialogContent, DialogActions,
   MenuItem
 } from '@mui/material';
@@ -23,6 +23,7 @@ import { enhancePrompt } from "../../services/PromptService";
 import { EnhancePromptRequest, EnhancePromptResponse } from "../../models/EnhancePrompt";
 import { ProviderTypeEnum } from '../../models/Enum';
 import { CommentList } from '../../components/comments/CommentList';
+import { useSnackbar } from '../../context/SnackbarContext';
 
 const formatDate = (date: Date) =>
   new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -31,12 +32,11 @@ const PromptDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { showSnackbar } = useSnackbar();
 
   const [prompt, setPrompt] = useState<Prompt | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMsg, setSnackbarMsg] = useState('');
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
   const [enhanceDialogOpen, setEnhanceDialogOpen] = useState(false);
   const [enhancedContent, setEnhancedContent] = useState<string | null>(null);
@@ -76,8 +76,9 @@ const PromptDetailPage: React.FC = () => {
           : prev
       );
       await toggleBookmarkPrompt(prompt._id);
+      showSnackbar(prompt.isBookmarkedByCurrentUser ? 'Removed from saved' : 'Saved prompt', 'success');
     } catch (err) {
-      console.error("Failed to toggle bookmark", err);
+      showSnackbar("Failed to toggle bookmark", 'error');
       setPrompt(prev =>
         prev
           ? { ...prev, isBookmarkedByCurrentUser: !prev.isBookmarkedByCurrentUser }
@@ -92,10 +93,9 @@ const PromptDetailPage: React.FC = () => {
     try {
       const shareUrl = `${window.location.origin}/prompts/${prompt?._id}`;
       await navigator.clipboard.writeText(shareUrl);
-      setSnackbarMsg('Link copied to clipboard!');
-      setSnackbarOpen(true);
+      showSnackbar('Link copied to clipboard!', 'success');
     } catch (err) {
-      console.error('Failed to copy link', err);
+      showSnackbar('Failed to copy link', 'error');
     }
   };
 
@@ -103,10 +103,9 @@ const PromptDetailPage: React.FC = () => {
     if (!content) return;
     try {
       await navigator.clipboard.writeText(content);
-      setSnackbarMsg('Prompt content copied!');
-      setSnackbarOpen(true);
+      showSnackbar('Prompt content copied!', 'success');
     } catch (err) {
-      console.error('Failed to copy prompt content', err);
+      showSnackbar('Failed to copy prompt content', 'error');
     }
   };
 
@@ -120,12 +119,11 @@ const PromptDetailPage: React.FC = () => {
     try {
       const response: EnhancePromptResponse = await enhancePrompt(payload);
       setEnhancedContent(response.enhancedText);
-      // test prompt
-      //setEnhancedContent("A bustling neon-lit cyberpunk street at night, rain-slick pavement reflecting vibrant holographic billboards and glowing advertisements, crowds of people in futuristic, high-tech outfits, some with cybernetic implants, flying cars and drones zipping through the sky above, steam rising from street vents, cinematic neon lighting casting deep reflections and shadows, puddles shimmering with multicolored light, intricate futuristic architecture with towering skyscrapers, ultra-realistic 8K detail, cinematic wide-angle perspective, hyper-detailed textures, moody atmosphere with subtle fog and lens flare");
       
       setEnhanceDialogOpen(false);
+      showSnackbar('Prompt enhanced successfully!', 'success');
     } catch (err) {
-      console.error('Failed to enhance prompt', err);
+      showSnackbar('Failed to enhance prompt', 'error');
     }
   };
 
@@ -442,9 +440,6 @@ const PromptDetailPage: React.FC = () => {
         <CommentList promptId={prompt._id} limit={5} />
 
       </Container>
-
-      {/* Snackbar */}
-      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)} message={snackbarMsg} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} />
     </Box>
   );
 };

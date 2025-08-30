@@ -14,14 +14,15 @@ import {
 import { CloseOutlined, AddOutlined } from "@mui/icons-material";
 import { useAuth } from "../../context/AuthContext";
 import { updateUser } from "../../services/UserService";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 const EditProfilePage: React.FC = () => {
   const { user: loggedInUser, setUser } = useAuth();
+  const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const [userName, setUserName] = useState(loggedInUser?.userName || "");
   const [fullName, setFullName] = useState(loggedInUser?.fullName || "");
-  const [email, setEmail] = useState(loggedInUser?.email || "");
   const [phone, setPhone] = useState(loggedInUser?.phone || "");
   const [bio, setBio] = useState(loggedInUser?.bio || "");
   const [socialKey, setSocialKey] = useState("");
@@ -31,8 +32,6 @@ const EditProfilePage: React.FC = () => {
   );
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   // Update specific key/value
   const handleChangeSocial = (key: string, value: string) => {
@@ -57,16 +56,16 @@ const EditProfilePage: React.FC = () => {
       const updatedUser = await updateUser(loggedInUser._id, {
         userName,
         fullName,
-        email,
+        email: loggedInUser?.email,
         phone,
         bio,
         socialLinks,
       });
-      setSuccess("Profile updated successfully!");
+      showSnackbar("Profile updated successfully!", "success");
       setUser?.(updatedUser);
       setTimeout(() => navigate("/profile/" + updatedUser._id), 1500);
     } catch (error: any) {
-      setError(error?.response?.data?.message || "Failed to update profile");
+      showSnackbar(error?.response?.data?.message || "Failed to update profile", "error");
     } finally {
       setLoading(false);
     }
@@ -131,7 +130,7 @@ const EditProfilePage: React.FC = () => {
               <TextField
                 label="Email"
                 fullWidth
-                value={email}
+                value={loggedInUser?.email || ""}
                 disabled
                 InputLabelProps={{ style: { color: "#aaa" } }}
                 sx={{
@@ -231,11 +230,6 @@ const EditProfilePage: React.FC = () => {
                   </IconButton>
                 </Stack>
               </Stack>
-
-              {error && <Typography color="error">{error}</Typography>}
-              {success && (
-                <Typography color="success.main">{success}</Typography>
-              )}
 
               <Button
                 type="submit"
