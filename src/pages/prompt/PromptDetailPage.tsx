@@ -76,7 +76,7 @@ const PromptDetailPage: React.FC = () => {
           : prev
       );
       await toggleBookmarkPrompt(prompt._id);
-      showSnackbar(prompt.isBookmarkedByCurrentUser ? 'Removed from saved' : 'Saved prompt', 'success');
+      showSnackbar(prompt.isBookmarkedByCurrentUser ? 'Removed from bookmark' : 'Bookmark prompt', 'success');
     } catch (err) {
       showSnackbar("Failed to toggle bookmark", 'error');
       setPrompt(prev =>
@@ -428,7 +428,7 @@ const PromptDetailPage: React.FC = () => {
           </Tooltip>
 
           {isAuthenticated && (
-            <Tooltip title={prompt.isBookmarkedByCurrentUser ? 'Remove from saved' : 'Save this prompt'}>
+            <Tooltip title={prompt.isBookmarkedByCurrentUser ? 'Remove from bookmark' : 'Bookmark this prompt'}>
               <IconButton onClick={handleBookmark} disabled={bookmarkLoading} sx={{ bgcolor: '#333', color: '#fff', '&:hover': { bgcolor: '#444' } }}>
                 {bookmarkLoading ? <CircularProgress size={20} color="inherit" /> : prompt.isBookmarkedByCurrentUser ? <BookmarkIcon /> : <BookmarkBorderIcon />}
               </IconButton>

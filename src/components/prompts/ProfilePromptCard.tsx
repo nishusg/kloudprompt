@@ -5,8 +5,9 @@ import { Prompt } from '../../models';
 const ProfilePromptCard: React.FC<{
   prompt: Prompt;
   onDelete?: () => void;
+  onRemoved?: () => void;
   onView: () => void;
-}> = ({ prompt, onDelete, onView }) => (
+}> = ({ prompt, onDelete, onRemoved, onView }) => (
   <Card
     variant="outlined"
     sx={{
@@ -64,6 +65,24 @@ const ProfilePromptCard: React.FC<{
           }}
         >
           Delete
+        </Button>
+      </CardActions>
+    )}
+
+    {onRemoved && (
+      <CardActions sx={{ pl: 2, pb: 2, justifyContent: 'flex-start' }}>
+        <Button
+          size="small"
+          sx={{
+            color: '#ef5350',
+            '&:hover': { color: '#f6685e' },
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemoved();
+          }}
+        >
+          Removed
         </Button>
       </CardActions>
     )}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { getUserPrompts, deletePrompt } from '../../services/PromptService';
+import { getUserPrompts, deletePrompt, toggleBookmarkPrompt } from '../../services/PromptService';
 import { getUserBookmarks } from '../../services/BookmarkService';
 import { Prompt } from '../../models';
 import {
@@ -54,7 +54,7 @@ const ProfilePage: React.FC = () => {
     if (!authLoading) fetchData();
   }, [loggedInUser, authLoading]);
 
-  const handleDelete = async (promptId: string) => {
+  const handleDeletePrompt = async (promptId: string) => {
     if (window.confirm('Are you sure you want to delete this prompt?')) {
       try {
         await deletePrompt(promptId);
@@ -63,6 +63,20 @@ const ProfilePage: React.FC = () => {
       } catch (error) {
         showSnackbar('Failed to delete prompt:', 'error');
       }
+    }
+  };
+
+  const handleBookmarkRemoved = async (promptId: string) => {
+    try {
+      await toggleBookmarkPrompt(promptId);
+
+      // Remove from bookmarked list
+      setBookmarkedPrompts((prev) => prev.filter((p) => p._id !== promptId));
+
+      showSnackbar("Removed from bookmarks", "success");
+    } catch (err) {
+      console.error("Failed to remove bookmark", err);
+      showSnackbar("Failed to remove bookmark", "error");
     }
   };
 
@@ -335,7 +349,7 @@ const ProfilePage: React.FC = () => {
                       <ProfilePromptCard
                         prompt={prompt}
                         onView={() => navigate(`/prompts/${prompt._id}`)}
-                        onDelete={() => handleDelete(prompt._id)}
+                        onDelete={() => handleDeletePrompt(prompt._id)}
                       />
                     </Grid>
                   ))
@@ -363,6 +377,7 @@ const ProfilePage: React.FC = () => {
                       <ProfilePromptCard
                         prompt={prompt}
                         onView={() => navigate(`/prompts/${prompt._id}`)}
+                        onRemoved={() => handleBookmarkRemoved(prompt._id)}
                       />
                     </Grid>
                   ))
