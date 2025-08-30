@@ -2,18 +2,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link as RouterLink } from 'react-router-dom';
 import { getPromptById, incrementPromptView, toggleBookmarkPrompt } from '../../services/PromptService';
-import { addCommentToPrompt } from '../../services/CommentService';
 import { useAuth } from '../../context/AuthContext';
 import { Prompt } from '../../models/Prompt';
-import { PromptComment } from '../../models/Comment';
 
 import {
   Container, Typography, Button, CircularProgress, Box, Chip, TextField,
-  Avatar, Stack, Alert, Divider, Paper, Snackbar, IconButton, Tooltip, Link,
+  Stack, Alert, Divider, Paper, Snackbar, IconButton, Tooltip, Link,
   Dialog, DialogTitle, DialogContent, DialogActions,
   MenuItem
 } from '@mui/material';
-import ForumIcon from '@mui/icons-material/Forum';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ShareIcon from '@mui/icons-material/Share';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
@@ -25,6 +22,7 @@ import { DefaultUserName } from '../../utils/Constants';
 import { enhancePrompt } from "../../services/PromptService";
 import { EnhancePromptRequest, EnhancePromptResponse } from "../../models/EnhancePrompt";
 import { ProviderTypeEnum } from '../../models/Enum';
+import { CommentList } from '../../components/comments/CommentList';
 
 const formatDate = (date: Date) =>
   new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -32,14 +30,11 @@ const formatDate = (date: Date) =>
 const PromptDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const [prompt, setPrompt] = useState<Prompt | null>(null);
-  const [comments, setComments] = useState<PromptComment[]>([]);
-  const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isCommenting, setIsCommenting] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState('');
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
@@ -58,7 +53,6 @@ const PromptDetailPage: React.FC = () => {
         setLoading(true);
         const promptData = await getPromptById(id);
         setPrompt(promptData);
-        setComments(promptData.commentIds || []);
         if (id && !hasIncremented.current) {
           incrementPromptView(id);
           hasIncremented.current = true;
@@ -91,27 +85,6 @@ const PromptDetailPage: React.FC = () => {
       );
     } finally {
       setBookmarkLoading(false);
-    }
-  };
-
-  const handleAddComment = async () => {
-    if (!newComment.trim() || !prompt || !isAuthenticated) return;
-    try {
-      setIsCommenting(true);
-      const createdComment = await addCommentToPrompt(prompt._id, newComment.trim());
-      setComments(prev => [
-        ...prev,
-        {
-          ...createdComment,
-          text: newComment,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          user: user!,
-        } as PromptComment
-      ]);
-      setNewComment('');
-    } finally {
-      setIsCommenting(false);
     }
   };
 
@@ -213,9 +186,6 @@ const PromptDetailPage: React.FC = () => {
         <Stack direction="row" spacing={2} justifyContent="center" sx={{ mb: 3 }}>
           <Stack direction="row" spacing={1} alignItems="center" sx={{ color: '#aaa' }}>
             <VisibilityIcon fontSize="small" /> <Typography variant="body2">{prompt.views} views</Typography>
-          </Stack>
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ color: '#aaa' }}>
-            <ForumIcon fontSize="small" /> <Typography variant="body2">{comments.length} comments</Typography>
           </Stack>
         </Stack>
 
@@ -469,51 +439,8 @@ const PromptDetailPage: React.FC = () => {
         </Stack>
 
         {/* Comments */}
-        <Typography variant="h5" gutterBottom>Comments ({comments.length})</Typography>
-        <Stack spacing={2} sx={{ mb: 4 }}>
-          {comments.length > 0 ? (
-            comments.map(comment => (
-              <Paper key={comment._id} variant="outlined" sx={{ p: 2, borderRadius: 2, bgcolor: '#1e1e1e', borderColor: '#333' }}>
-                <Stack direction="row" spacing={2} alignItems="flex-start">
-                  <Avatar sx={{ bgcolor: '#3080cfff', color: '#fff' }}>
-                    {(comment.user?.userName || DefaultUserName).charAt(0).toUpperCase() || 'A'}
-                  </Avatar>
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: '#ccc' }}>
-                      {comment.user?.userName || DefaultUserName} - {formatDate(comment.createdAt)}
-                    </Typography>
-                    <Typography variant="body2" sx={{ mt: 0.5, color: '#888' }}>{comment.text}</Typography>
-                  </Box>
-                </Stack>
-              </Paper>
-            ))
-          ) : (
-            <Typography color="inherit">Be the first to comment!</Typography>
-          )}
-        </Stack>
+        <CommentList promptId={prompt._id} limit={5} />
 
-        {/* Add Comment */}
-        {isAuthenticated ? (
-          <Paper sx={{ p: 2, borderRadius: 2, bgcolor: '#1e1e1e', borderColor: '#333' }} variant="outlined">
-            <TextField
-              fullWidth
-              multiline
-              rows={3}
-              placeholder={`Comment as ${user?.userName}`}
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              disabled={isCommenting}
-              sx={{ mb: 2, '& .MuiInputBase-root': { color: '#fff' }, '& .MuiInputLabel-root': { color: '#aaa' } }}
-            />
-            <Button variant="contained" color='primary' onClick={handleAddComment}>
-              {isCommenting ? <CircularProgress size={24} sx={{ color: '#000' }} /> : 'Post Comment'}
-            </Button>
-          </Paper>
-        ) : (
-          <Alert severity="info" sx={{ bgcolor: '#1e1e1e', color: '#fff', border: '1px solid #333' }}>
-            You must be <a href="/login" style={{ color: '#90caf9' }}>logged in</a> to post a comment.
-          </Alert>
-        )}
       </Container>
 
       {/* Snackbar */}

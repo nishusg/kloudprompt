@@ -1,16 +1,16 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { SnackbarProvider } from './context/SnackbarContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
+  <SnackbarProvider>
     <App />
-  </React.StrictMode>
+  </SnackbarProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
