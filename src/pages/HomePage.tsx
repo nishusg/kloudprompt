@@ -67,7 +67,8 @@ const HomePage: React.FC = () => {
 
         {/* Typing tagline */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <Typography
+          <Box
+            component="span" // or "p", "h1", etc., depending on semantics
             sx={{
               opacity: 0.6,
               fontWeight: 500,
@@ -75,13 +76,13 @@ const HomePage: React.FC = () => {
             }}
           >
             A platform for
-          </Typography>
-
+          </Box>
+          
           <Box
             sx={{
               py: 0.5,
               borderRadius: 3,
-              minWidth: '150px',
+              minWidth: '80px',
               fontWeight: 'bold',
               fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem', lg: '3rem' },
               userSelect: 'none',
