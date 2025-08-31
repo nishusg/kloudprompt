@@ -105,6 +105,24 @@ const Header: React.FC = () => {
                   vertical: 'top',
                   horizontal: 'right',
                 }}
+                disableScrollLock 
+                PaperProps={{
+                  sx: {
+                    bgcolor: '#1e1e1e',
+                    color: '#fff',
+                    borderRadius: 2,
+                    border: '1px solid #333',
+                    boxShadow: '0px 4px 20px rgba(0,0,0,0.6)',
+                    '& .MuiMenuItem-root': {
+                      '&:hover': {
+                        bgcolor: '#333',
+                      },
+                    },
+                    '& .MuiListItemIcon-root': {
+                      color: '#90caf9',
+                    },
+                  },
+                }}
               >
                 {/* Explore Section */}
                 <MenuItem onClick={() => handleNavigate('/explore')}>

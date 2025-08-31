@@ -75,7 +75,33 @@ const TrendingPromptsPage = () => {
         </Box>
 
         <List disablePadding>
-          {prompts.map((p, index) => (
+        {prompts.length === 0 ? (
+          <Paper
+            elevation={3}
+            sx={{
+              p: 4,
+              textAlign: "center",
+              borderRadius: 3,
+              bgcolor: "#1a1a1a",
+              color: "#bbb",
+            }}
+          >
+            <Typography
+              variant="h6"
+              fontWeight="600"
+              sx={{
+                color: "#fff",
+                mb: 1,
+              }}
+            >
+              No trending prompts yet 🚀
+            </Typography>
+            <Typography variant="body2" sx={{ color: "#aaa" }}>
+              Be the first one to create and explore prompts!
+            </Typography>
+          </Paper>
+        ) : (
+          prompts.map((p, index) => (
             <Paper
               key={p._id}
               elevation={4}
@@ -175,8 +201,9 @@ const TrendingPromptsPage = () => {
                 />
               </ListItem>
             </Paper>
-          ))}
-        </List>
+          ))
+        )}
+      </List>
       </Container>
     </Box>
   );

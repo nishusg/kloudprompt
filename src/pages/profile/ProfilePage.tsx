@@ -354,9 +354,13 @@ const ProfilePage: React.FC = () => {
                     </Grid>
                   ))
                 ) : (
-                  <Typography sx={{ ml: 1, mt: 2, color: 'rgba(255,255,255,0.6)' }}>
-                    You haven't created any prompts yet.
-                  </Typography>
+                  <Grid item xs={12}>
+                    <Box sx={{ textAlign: "center", mt: 0 }}>
+                      <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.6)" }}>
+                        You haven't created any prompts yet.
+                      </Typography>
+                    </Box>
+                  </Grid>
                 )}
               </Grid>
             </motion.div>
@@ -382,9 +386,13 @@ const ProfilePage: React.FC = () => {
                     </Grid>
                   ))
                 ) : (
-                  <Typography sx={{ ml: 1, mt: 2, color: 'rgba(255,255,255,0.6)' }}>
-                    You haven't bookmarked any prompts yet.
-                  </Typography>
+                    <Grid item xs={12}>
+                      <Box sx={{ textAlign: "center", mt: 0 }}>
+                        <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.6)" }}>
+                          You haven't bookmarked any prompts yet.
+                        </Typography>
+                      </Box>
+                    </Grid>
                 )}
               </Grid>
             </motion.div>
