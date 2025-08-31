@@ -57,18 +57,18 @@ const Header: React.FC = () => {
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Toolbar sx={{ position: 'relative' }}>
         {/* Site Name Centered */}
         <Typography
           variant="h6"
           component="button"
           onClick={() => navigate('/')}
           sx={{
+            position: 'absolute',
+            left: '50%',
+            transform: 'translateX(-50%)',
             color: '#fff',
-            textDecoration: 'none',
             fontWeight: 'bold',
-            flex: 1,
-            textAlign: 'center',
             background: 'none',
             border: 'none',
             cursor: 'pointer',
@@ -78,7 +78,7 @@ const Header: React.FC = () => {
         </Typography>
 
         {/* Hamburger Menu */}
-        <Box>
+        <Box sx={{ marginLeft: 'auto' }}>
           {loading ? (
             <CircularProgress size={24} sx={{ color: '#fff' }} />
           ) : (

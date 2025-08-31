@@ -125,39 +125,71 @@ const PromptForm: React.FC<PromptFormProps> = ({
         {/* Model & Generation in one row always */}
         <Box>
           <Grid container spacing={2}>
+            {/* Model Type */}
             <Grid item xs={6}>
               <TextField
                 select
                 fullWidth
                 label="Model Type"
                 name="modelType"
-                value={formData.modelType}
+                value={formData.modelType || ""}
                 onChange={handleChange}
                 variant="outlined"
-                InputProps={{ sx: { color: "white" } }}
-                InputLabelProps={{ sx: { color: "#ccc" } }}
+                InputProps={{
+                  sx: { color: "white" },
+                }}
+                InputLabelProps={{
+                  sx: { color: "#ccc" },
+                }}
+                SelectProps={{
+                  MenuProps: {
+                    PaperProps: {
+                      sx: { bgcolor: "#1e1e1e", color: "#fff" },
+                    },
+                    disableScrollLock: true,
+                  },
+                }}
               >
-                <MenuItem value="gemini">Gemini</MenuItem>
-                <MenuItem value="chatgpt">ChatGPT</MenuItem>
-                <MenuItem value="grok">Grok</MenuItem>
+                <MenuItem value="">All</MenuItem>
+                {Object.values(ProviderTypeEnum).map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </MenuItem>
+                ))}
               </TextField>
             </Grid>
+
+            {/* Generation Type */}
             <Grid item xs={6}>
               <TextField
                 select
                 fullWidth
                 label="Generation Type"
                 name="generationType"
-                value={formData.generationType}
+                value={formData.generationType || ""}
                 onChange={handleChange}
                 variant="outlined"
-                InputProps={{ sx: { color: "white" } }}
-                InputLabelProps={{ sx: { color: "#ccc" } }}
+                InputProps={{
+                  sx: { color: "white" },
+                }}
+                InputLabelProps={{
+                  sx: { color: "#ccc" },
+                }}
+                SelectProps={{
+                  MenuProps: {
+                    PaperProps: {
+                      sx: { bgcolor: "#1e1e1e", color: "#fff" },
+                    },
+                    disableScrollLock: true,
+                  },
+                }}
               >
-                <MenuItem value="text">Text</MenuItem>
-                <MenuItem value="image">Image</MenuItem>
-                <MenuItem value="video">Video</MenuItem>
-                <MenuItem value="audio">Audio</MenuItem>
+                <MenuItem value="">All</MenuItem>
+                {Object.values(GenerationTypeEnum).map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </MenuItem>
+                ))}
               </TextField>
             </Grid>
           </Grid>

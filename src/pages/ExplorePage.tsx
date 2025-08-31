@@ -22,6 +22,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { getPrompts } from '../services/PromptService';
 import { Prompt } from '../models/Prompt';
 import ExplorePromptCard from '../components/prompts/ExplorePromptCard';
+import { GenerationTypeEnum, ProviderTypeEnum } from '../models/Enum';
 
 
 const ExplorePage: React.FC = () => {
@@ -175,6 +176,7 @@ const ExplorePage: React.FC = () => {
               flexWrap: 'wrap',
             }}
           >
+            {/* Model Type */}
             <FormControl sx={{ minWidth: 200 }} size="small">
               <InputLabel sx={{ color: '#ccc' }}>Model Type</InputLabel>
               <Select
@@ -184,15 +186,25 @@ const ExplorePage: React.FC = () => {
                   bgcolor: 'rgba(40, 40, 40, 0.8)',
                   borderRadius: '12px',
                   color: '#fff',
+                  '& .MuiSelect-icon': { color: '#fff' },
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: { bgcolor: '#1e1e1e', color: '#fff' },
+                  },
+                  disableScrollLock: true,
                 }}
               >
                 <MenuItem value="">All</MenuItem>
-                <MenuItem value="gemini">Gemini</MenuItem>
-                <MenuItem value="chatgpt">ChatGPT</MenuItem>
-                <MenuItem value="grok">Grok</MenuItem>
+                {Object.values(ProviderTypeEnum).map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
+            {/* Generation Type */}
             <FormControl sx={{ minWidth: 200 }} size="small">
               <InputLabel sx={{ color: '#ccc' }}>Generation Type</InputLabel>
               <Select
@@ -202,16 +214,25 @@ const ExplorePage: React.FC = () => {
                   bgcolor: 'rgba(40, 40, 40, 0.8)',
                   borderRadius: '12px',
                   color: '#fff',
+                  '& .MuiSelect-icon': { color: '#fff' },
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: { bgcolor: '#1e1e1e', color: '#fff' },
+                  },
+                  disableScrollLock: true,
                 }}
               >
                 <MenuItem value="">All</MenuItem>
-                <MenuItem value="image">🖼️ Image</MenuItem>
-                <MenuItem value="video">🎥 Video</MenuItem>
-                <MenuItem value="text">📄 Text</MenuItem>
-                <MenuItem value="audio">🎵 Audio</MenuItem>
+                {Object.values(GenerationTypeEnum).map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
+            {/* Clear Filters */}
             {(modelType || generationType) && (
               <Button
                 variant="outlined"
@@ -220,11 +241,11 @@ const ExplorePage: React.FC = () => {
                   setModelType(null);
                   setGenerationType(null);
                 }}
-                sx={{ 
+                sx={{
                   color: '#fff',
                   bgcolor: 'rgba(40, 40, 40, 0.8)',
                   borderRadius: '12px',
-                  borderColor: '#555' 
+                  borderColor: '#555',
                 }}
               >
                 Clear Filters
