@@ -32,5 +32,7 @@ COPY ./docker/env-config.js /usr/share/nginx/html/env-config.js
 
 EXPOSE 80
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Use entrypoint script to overwrite env-config.js with real values
+COPY ./docker/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
