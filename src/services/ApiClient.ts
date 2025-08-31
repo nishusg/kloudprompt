@@ -2,7 +2,7 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { handleApiError } from './UtilsService';
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = (window as any)._env_?.REACT_APP_API_URL || process.env.REACT_APP_API_URL;
 
 const apiClient = axios.create({
   baseURL: REACT_APP_API_URL,

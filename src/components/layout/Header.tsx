@@ -74,7 +74,7 @@ const Header: React.FC = () => {
             cursor: 'pointer',
           }}
         >
-          {process.env.REACT_APP_Website_Title}
+          {(window as any)._env_?.REACT_APP_Website_Title || process.env.REACT_APP_Website_Title}
         </Typography>
 
         {/* Hamburger Menu */}

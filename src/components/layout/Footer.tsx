@@ -48,7 +48,7 @@ const Footer: React.FC = () => {
 
         {/* Copyright */}
         <Typography variant="body2" align="center" sx={{ opacity: 0.8 }}>
-          © {new Date().getFullYear()} {process.env.REACT_APP_Website_Title}. All rights reserved.
+          © {new Date().getFullYear()} {(window as any)._env_?.REACT_APP_Website_Title || process.env.REACT_APP_Website_Title}. All rights reserved.
         </Typography>
       </Container>
     </Box>
