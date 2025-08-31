@@ -21,6 +21,9 @@ WORKDIR /app
 # Copy built files from builder
 COPY --from=builder /app/build /usr/share/nginx/html
 
+# Copy custom Nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Copy default runtime env script (will be overwritten in prod)
 COPY ./docker/env-config.js /usr/share/nginx/html/env-config.js
 
