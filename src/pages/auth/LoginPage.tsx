@@ -8,9 +8,11 @@ import {
   CircularProgress, FormControlLabel, Checkbox, Link, Alert, Stack, IconButton, InputAdornment
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useSnackbar } from '../../context/SnackbarContext';
 
 const LoginPage: React.FC = () => {
   const { login, error: authError, clearError, loading, isAuthenticated } = useAuth();
+  const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -42,9 +44,15 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     if (!validateForm()) return;
     clearError();
-    const success = await login(formData.email, formData.password);
-    if (!success) return; // authError now shows in <Alert>
+
+    try {
+      await login(formData.email, formData.password);
+      showSnackbar('Logged in successfully!', 'success');
+    } catch (error: any) {
+      showSnackbar(error instanceof Error ? error.message : 'Login failed', 'error');
+    }
   };
+
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', py: 4 }}>

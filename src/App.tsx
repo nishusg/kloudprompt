@@ -23,6 +23,7 @@ import PlaygroundPage from './pages/PlaygroundPage';
 import UserProfilePage from './pages/profile/UserProfilePage';
 import ChangePasswordPage from './pages/profile/ChangePasswordPage';
 import TodoPage from './pages/static/TodoPage';
+import { SnackbarProvider } from './context/SnackbarContext';
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -80,9 +81,11 @@ const AppRoutes: React.FC = () => {
 const App: React.FC = () => {
   return (
     <Router>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
+      <SnackbarProvider>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </SnackbarProvider>
     </Router>
   );
 };

@@ -17,9 +17,11 @@ import {
   CircularProgress,
   Box
 } from '@mui/material';
+import { useSnackbar } from '../../context/SnackbarContext';
 
 const RegisterPage: React.FC = () => {
   const { register } = useAuth();
+  const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     userName: '',
@@ -68,10 +70,9 @@ const RegisterPage: React.FC = () => {
     try {
       await register(formData.userName, formData.email, formData.password);
       navigate('/');
+      showSnackbar('Registered successfully!', 'success');
     } catch (error) {
-      setErrors({
-        form: error instanceof Error ? error.message : 'Registration failed'
-      });
+      showSnackbar(error instanceof Error ? error.message : 'Registration failed', 'error');
     } finally {
       setIsLoading(false);
     }

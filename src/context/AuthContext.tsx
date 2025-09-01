@@ -43,9 +43,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const normalizeError = (err: unknown): string =>
-    err instanceof Error ? err.message : 'Something went wrong. Please try again.';
-
   const fetchCurrentUser = useCallback(async () => {
     try {
       const currentUser = await getCurrentUser();
@@ -75,8 +72,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         return true;
       } catch (err) {
-        setError(normalizeError(err));
-        return false;
+        throw err;
       } finally {
         setLoading(false);
       }
@@ -106,8 +102,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         return true;
       } catch (err) {
-        setError(normalizeError(err));
-        return false;
+        throw err;
       } finally {
         setLoading(false);
       }
