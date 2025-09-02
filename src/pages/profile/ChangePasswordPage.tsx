@@ -130,8 +130,8 @@ const ChangePasswordPage: React.FC = () => {
                 {loading ? 'Updating...' : 'Update Password'}
               </Button>
               <Button
-                variant="text"
-                sx={{ color: "#aaa", textTransform: "none" }}
+                variant="outlined"
+                sx={{ textTransform: "none", borderRadius: "50px" }}
                 onClick={() => navigate("/profile/" + loggedInUser?._id)}
               >
                 Cancel

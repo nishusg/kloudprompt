@@ -247,8 +247,8 @@ const EditProfilePage: React.FC = () => {
                 {loading ? "Saving..." : "Save Changes"}
               </Button>
               <Button
-                variant="text"
-                sx={{ color: "#aaa", textTransform: "none" }}
+                variant="outlined"
+                sx={{ textTransform: "none", borderRadius: "50px" }}
                 onClick={() => navigate("/profile/" + loggedInUser?._id)}
               >
                 Cancel

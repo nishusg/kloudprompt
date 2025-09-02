@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { validateEmail } from '../../utils/Validators';
 import {
   Container, Box, Card, CardContent, Typography, TextField, Button,
-  CircularProgress, Link, Alert, Stack, IconButton, InputAdornment
+  CircularProgress, Link, Alert, IconButton, InputAdornment
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useSnackbar } from '../../context/SnackbarContext';

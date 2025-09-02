@@ -21,6 +21,7 @@ import ProfilePromptCard from '../../components/prompts/ProfilePromptCard';
 import PromptActivityGraph from '../../components/prompts/PromptActivityGraph';
 import { DefaultUserName } from '../../utils/Constants';
 import { useSnackbar } from '../../context/SnackbarContext';
+import { VerificationStatus } from '../../utils/Enum';
 
 const ProfilePage: React.FC = () => {
   const { user: loggedInUser, loading: authLoading } = useAuth();
@@ -175,7 +176,8 @@ const ProfilePage: React.FC = () => {
                 {loggedInUser.fullName || loggedInUser.userName || 'Unnamed User'}
               </Typography>
               <Typography
-                variant="body1"
+                component={'div'}
+                variant="body2"
                 sx={{
                   color: 'rgba(255,255,255,0.6)',
                   display: 'flex',
@@ -187,9 +189,9 @@ const ProfilePage: React.FC = () => {
                   {/* Verification Chip */}
                   {loggedInUser.verificationStatus && (
                     <Chip
-                      label={loggedInUser.verificationStatus ? "Verified" : "Unverified"}
+                      label={loggedInUser.verificationStatus == VerificationStatus.Verified ? "Verified" : "Pending"}
                       size="small"
-                      color={loggedInUser.verificationStatus ? "success" : "error"}
+                      color={loggedInUser.verificationStatus == VerificationStatus.Verified ? "success" : "error"}
                       sx={{ fontSize: '0.60rem' }}
                     />
                   )}
@@ -256,7 +258,7 @@ const ProfilePage: React.FC = () => {
                     mt: 1.5,
                     borderColor: '#42a5f5',
                     color: '#42a5f5',
-                    fontWeight: 600,
+                    fontWeight: { xs: 400, sm: 500, md: 600 },
                     borderRadius: '50px',
                     px: 2,
                     '&:hover': {
@@ -273,7 +275,7 @@ const ProfilePage: React.FC = () => {
                   size="small"
                   sx={{
                     mt: 1.5,
-                    fontWeight: 600,
+                    fontWeight: { xs: 400, sm: 500, md: 600 },
                     borderRadius: '50px',
                     px: 2,
                     bgcolor: '#42a5f5',
@@ -288,6 +290,27 @@ const ProfilePage: React.FC = () => {
                 >
                   Change Password
                 </Button>
+                {loggedInUser.verificationStatus === 'pending' && (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                      mt: 1.5,
+                      borderColor: '#42a5f5',
+                      color: '#42a5f5',
+                      fontWeight: { xs: 400, sm: 500, md: 600 },
+                      borderRadius: '50px',
+                      px: 2,
+                      '&:hover': {
+                        borderColor: '#42a5f5',
+                        backgroundColor: 'rgba(144,202,249,0.1)',
+                      },
+                    }}
+                    onClick={() => navigate('/email-verification')}
+                  >
+                    Verify Email
+                  </Button>
+                )}
               </Stack>
             </Box>
           </Stack>
