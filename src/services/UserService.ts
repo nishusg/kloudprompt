@@ -39,6 +39,15 @@ export const logoutUser = async (): Promise<void> => {
   }
 };
 
+export const resetPassword = async (email: string, newPassword: string): Promise<void> => {
+  try {
+    await apiClient.post('/auth/reset-password', { email, newPassword });
+  } catch (err) {
+    const message = handleApiError(err, 'Failed to reset password');
+    throw new Error(message);
+  }
+};
+
 export const getCurrentUser = async (): Promise<User> => {
   try {
     const response = await apiClient.get('/users/current-user');

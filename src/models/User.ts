@@ -1,3 +1,5 @@
+import { VerificationStatus } from "../utils/Enum";
+
 export interface User {
   readonly _id: string;
   userName: string;
@@ -9,6 +11,7 @@ export interface User {
   readonly createdAt: Date;
   readonly updatedAt: Date;
   bookmarkedPrompts?: string[];
+  verificationStatus: VerificationStatus;
 }
 
 // DTO for updating user

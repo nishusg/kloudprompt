@@ -21,7 +21,7 @@ import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import { DefaultUserName } from '../../utils/Constants';
 import { enhancePrompt } from "../../services/PromptService";
 import { EnhancePromptRequest, EnhancePromptResponse } from "../../models/EnhancePrompt";
-import { ProviderTypeEnum } from '../../models/Enum';
+import { ProviderTypeEnum } from '../../utils/Enum';
 import { CommentList } from '../../components/comments/CommentList';
 import { useSnackbar } from '../../context/SnackbarContext';
 

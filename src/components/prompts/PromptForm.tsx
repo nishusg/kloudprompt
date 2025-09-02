@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { CreatePromptDto } from "../../models/Prompt";
 import { validatePrompt } from "../../utils/Validators";
-import { GenerationTypeEnum, ProviderTypeEnum } from "../../models/Enum";
+import { GenerationTypeEnum, ProviderTypeEnum } from "../../utils/Enum";
 
 interface PromptFormProps {
   initialData?: CreatePromptDto;

@@ -24,6 +24,7 @@ import UserProfilePage from './pages/profile/UserProfilePage';
 import ChangePasswordPage from './pages/profile/ChangePasswordPage';
 import TodoPage from './pages/static/TodoPage';
 import { SnackbarProvider } from './context/SnackbarContext';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -69,6 +70,7 @@ const AppRoutes: React.FC = () => {
         <>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgotPassword" element={<ForgotPasswordPage />} />
 
           {/* Redirect unauthenticated users to login */}
           <Route path="*" element={<Navigate to="/login" replace />} />

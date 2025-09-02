@@ -1,5 +1,5 @@
 import { PromptComment } from './Comment';
-import { GenerationTypeEnum, ProviderTypeEnum } from './Enum';
+import { GenerationTypeEnum, ProviderTypeEnum } from '../utils/Enum';
 import { User } from './User';
 
 export interface Prompt {

@@ -11,7 +11,7 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DownloadIcon from '@mui/icons-material/Download';
 import InfoIcon from '@mui/icons-material/Info';
-import { ProviderTypeEnum } from '../models/Enum';
+import { ProviderTypeEnum } from '../utils/Enum';
 import { useSnackbar } from '../context/SnackbarContext';
 
 const PlaygroundPage: React.FC = () => {

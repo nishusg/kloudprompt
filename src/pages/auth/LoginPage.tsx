@@ -1,11 +1,10 @@
-// src/pages/LoginPage.tsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { validateEmail } from '../../utils/Validators';
 import {
   Container, Box, Card, CardContent, Typography, TextField, Button,
-  CircularProgress, FormControlLabel, Checkbox, Link, Alert, Stack, IconButton, InputAdornment
+  CircularProgress, Link, Alert, Stack, IconButton, InputAdornment
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useSnackbar } from '../../context/SnackbarContext';
@@ -53,7 +52,6 @@ const LoginPage: React.FC = () => {
     }
   };
 
-
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', py: 4 }}>
       <Container component="main" maxWidth="xs">
@@ -63,7 +61,6 @@ const LoginPage: React.FC = () => {
               Sign in to your account
             </Typography>
 
-            {/* show backend error */}
             {authError && <Alert severity="error" sx={{ mb: 2 }}>{authError}</Alert>}
 
             <Box component="form" onSubmit={handleSubmit} noValidate>
@@ -83,8 +80,8 @@ const LoginPage: React.FC = () => {
                 helperText={fieldErrors.email}
                 disabled={loading}
                 variant="outlined"
-                InputLabelProps={{ style: { color: '#ccc' } }}
-                InputProps={{ style: { color: '#fff', backgroundColor: '#2A2A2A' } }}
+                InputProps={{ style: { color: '#fff', backgroundColor: '#1e1e1e' } }}
+                InputLabelProps={{ style: { color: '#bbb' } }}
               />
 
               <TextField
@@ -101,9 +98,9 @@ const LoginPage: React.FC = () => {
                 error={!!fieldErrors.password}
                 helperText={fieldErrors.password}
                 disabled={loading}
-                InputLabelProps={{ style: { color: '#ccc' } }}
+                InputLabelProps={{ style: { color: '#bbb' } }}
                 InputProps={{
-                  style: { color: '#fff', backgroundColor: '#2A2A2A' },
+                  style: { color: '#fff', backgroundColor: '#1e1e1e' },
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={() => setShowPassword(prev => !prev)} edge="end" sx={{ color: '#ccc' }} type="button">
@@ -114,13 +111,8 @@ const LoginPage: React.FC = () => {
                 }}
               />
 
-              <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 1, mb: 2 }}>
-                <FormControlLabel control={<Checkbox color="primary" />} label="Remember me" disabled={loading} sx={{ color: '#ccc' }} />
-                <Link component={RouterLink} to="/forgotPassword" variant="body2" sx={{ color: '#90caf9' }}>Forgot password?</Link>
-              </Stack>
-
               <Button type="submit" fullWidth variant="contained" disabled={loading}
-                sx={{ py: 1.5, bgcolor: '#1976d2', '&:hover': { bgcolor: '#1565c0' }, fontWeight: 'bold' }}>
+                sx={{ py: 1.5, bgcolor: '#1976d2', '&:hover': { bgcolor: '#1565c0' }, fontWeight: 'bold', mt: 2 }}>
                 {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
               </Button>
             </Box>
@@ -128,6 +120,10 @@ const LoginPage: React.FC = () => {
             <Typography variant="body2" align="center" sx={{ mt: 3, color: '#ccc' }}>
               Don&apos;t have an account?{' '}
               <Link component={RouterLink} to="/register" variant="body2" sx={{ color: '#90caf9' }}>Register here</Link>
+            </Typography>
+
+            <Typography variant="body2" align="center" sx={{ mt: 1 }}>
+              <Link component={RouterLink} to="/forgotPassword" variant="body2" sx={{ color: '#90caf9' }}>Forgot password?</Link>
             </Typography>
           </CardContent>
         </Card>

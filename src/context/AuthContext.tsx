@@ -82,32 +82,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const register = useCallback(
     async (userName: string, email: string, password: string) => {
-      setLoading(true);
       setError(null);
       try {
         // First register
         await registerUser({ userName, email, password });
 
-        // Then auto-login
-        const res: AuthResponse = await loginUser({ email, password });
-
-        setToken(Access_Token_Key, res.accessToken);
-        setToken(Refresh_Token_Key, res.refreshToken);
-
-        if (res.user) {
-          setUser(res.user);
-        } else {
-          await fetchCurrentUser();
-        }
-
         return true;
       } catch (err) {
         throw err;
-      } finally {
-        setLoading(false);
       }
     },
-    [fetchCurrentUser]
+    []
   );
 
   const logout = useCallback(async () => {

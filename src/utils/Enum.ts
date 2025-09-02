@@ -13,3 +13,13 @@ export enum GenerationTypeEnum {
   TEXT = 'text',
   AUDIO = 'audio',
 }
+
+export enum VerificationStatus {
+  Pending = "pending",
+  Verified = "verified"
+}
+
+export enum OTPPurpose {
+  Register = "register",
+  Forgot = "forgot",
+}

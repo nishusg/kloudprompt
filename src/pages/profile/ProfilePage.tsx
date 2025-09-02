@@ -14,6 +14,7 @@ import {
   Grid,
   CircularProgress,
   Stack,
+  Chip,
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProfilePromptCard from '../../components/prompts/ProfilePromptCard';
@@ -174,10 +175,24 @@ const ProfilePage: React.FC = () => {
                 {loggedInUser.fullName || loggedInUser.userName || 'Unnamed User'}
               </Typography>
               <Typography
-                variant="body2"
-                sx={{ color: 'rgba(255,255,255,0.6)' }}
+                variant="body1"
+                sx={{
+                  color: 'rgba(255,255,255,0.6)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                }}
               >
                 {loggedInUser.email || 'No email provided'}
+                  {/* Verification Chip */}
+                  {loggedInUser.verificationStatus && (
+                    <Chip
+                      label={loggedInUser.verificationStatus ? "Verified" : "Unverified"}
+                      size="small"
+                      color={loggedInUser.verificationStatus ? "success" : "error"}
+                      sx={{ fontSize: '0.60rem' }}
+                    />
+                  )}
               </Typography>
 
               {/* Phone */}

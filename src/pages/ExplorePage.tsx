@@ -22,7 +22,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { getPrompts } from '../services/PromptService';
 import { Prompt } from '../models/Prompt';
 import ExplorePromptCard from '../components/prompts/ExplorePromptCard';
-import { GenerationTypeEnum, ProviderTypeEnum } from '../models/Enum';
+import { GenerationTypeEnum, ProviderTypeEnum } from '../utils/Enum';
 
 
 const ExplorePage: React.FC = () => {
