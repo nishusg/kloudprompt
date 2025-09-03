@@ -67,13 +67,13 @@ const RegisterPage: React.FC = () => {
         // Prevent next if live validation errors
         if (errors.userName || errors.email || errors.password || errors.confirmPassword) return;
 
-        setStep(1);
         
         const res = await register(userName, email, password);
         if (res) {
           await requestOtp(email, OTPPurpose.Register);
           showSnackbar('OTP sent to your email!', 'success');
         }
+        setStep(1);
       } else if (step === 1) {
         if (!otp.trim()) {
           setErrors(prev => ({ ...prev, otp: 'OTP is required' }));

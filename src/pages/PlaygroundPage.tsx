@@ -150,13 +150,24 @@ const PlaygroundPage: React.FC = () => {
               inputRef={modelRef}
               defaultValue={ProviderTypeEnum.CHATGPT}
               InputLabelProps={{ style: { color: '#bbb' } }}
-              sx={{
+              sx={{                
                 '& .MuiInputBase-input': { color: '#fff' },
                 '& .MuiOutlinedInput-root': {
                   '& fieldset': { borderColor: '#555' },
                   '&:hover fieldset': { borderColor: '#777' },
                   '&.Mui-focused fieldset': { borderColor: '#90caf9' },
                   borderRadius: 1.5,
+                },
+              }}
+              InputProps={{
+                sx: { color: "white" },
+              }}
+              SelectProps={{
+                MenuProps: {
+                  PaperProps: {
+                    sx: { bgcolor: "#1e1e1e", color: "#fff" },
+                  },
+                  disableScrollLock: true,
                 },
               }}
             >

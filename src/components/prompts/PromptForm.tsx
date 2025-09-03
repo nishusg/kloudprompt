@@ -9,11 +9,13 @@ import {
   Typography,
   Box,
   MenuItem,
-  Grid
+  Grid,
+  Alert
 } from "@mui/material";
 import { CreatePromptDto } from "../../models/Prompt";
 import { validatePrompt } from "../../utils/Validators";
-import { GenerationTypeEnum, ProviderTypeEnum } from "../../utils/Enum";
+import { GenerationTypeEnum, ProviderTypeEnum, VerificationStatus } from "../../utils/Enum";
+import { useAuth } from "../../context/AuthContext";
 
 interface PromptFormProps {
   initialData?: CreatePromptDto;
@@ -33,6 +35,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
   onSubmit,
   isLoading = false,
 }) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState<CreatePromptDto>(initialData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [tagInput, setTagInput] = useState("");
@@ -101,6 +104,12 @@ const PromptForm: React.FC<PromptFormProps> = ({
       onSubmit={handleSubmit}
     >
       <Stack spacing={3}>
+        {/* Info message if user not verified */}
+        {user?.verificationStatus !== VerificationStatus.Verified && (
+          <Alert severity="info" sx={{ bgcolor: "#1e1e1e", color: "#90caf9" }}>
+            You cannot create a new prompt until you verify your email.
+          </Alert>
+        )}
         <Typography variant="h5" fontWeight="bold">
           Create a New Prompt
         </Typography>
@@ -279,11 +288,20 @@ const PromptForm: React.FC<PromptFormProps> = ({
 
         {/* Submit */}
         <Box display="flex" justifyContent="flex-end">
+          {/* Submit button with tooltip */}
           <Button
             type="submit"
             variant="contained"
             color="primary"
-            disabled={isLoading}
+            disabled={
+              isLoading || user?.verificationStatus !== VerificationStatus.Verified
+            }
+            sx={{
+              "&.Mui-disabled": {
+                backgroundColor: "gray", // custom disabled color
+                color: "#fff",
+              },
+            }}
           >
             {isLoading ? "Submitting..." : "Submit Prompt"}
           </Button>

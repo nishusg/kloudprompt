@@ -38,6 +38,7 @@ const PromptDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
+  const [enhanceLoading, setEnhanceLoading] = useState(false);
   const [enhanceDialogOpen, setEnhanceDialogOpen] = useState(false);
   const [enhancedContent, setEnhancedContent] = useState<string | null>(null);
   
@@ -116,6 +117,7 @@ const PromptDetailPage: React.FC = () => {
       apiKey: apiKeyRef.current?.value || '',
       promptContent: prompt.content,
     };
+    setEnhanceLoading(true);
     try {
       const response: EnhancePromptResponse = await enhancePrompt(payload);
       setEnhancedContent(response.enhancedText);
@@ -124,6 +126,8 @@ const PromptDetailPage: React.FC = () => {
       showSnackbar('Prompt enhanced successfully!', 'success');
     } catch (err) {
       showSnackbar('Failed to enhance prompt', 'error');
+    }finally{
+      setEnhanceLoading(false);
     }
   };
 
@@ -309,6 +313,17 @@ const PromptDetailPage: React.FC = () => {
                     borderRadius: 1.5,
                   },
                 }}
+                InputProps={{
+                  sx: { color: "white" },
+                }}
+                SelectProps={{
+                  MenuProps: {
+                    PaperProps: {
+                      sx: { bgcolor: "#1e1e1e", color: "#fff" },
+                    },
+                    disableScrollLock: true,
+                  },
+                }}
               >
                 {Object.values(ProviderTypeEnum).map((model) => (
                   <MenuItem key={model} value={model}>
@@ -354,6 +369,7 @@ const PromptDetailPage: React.FC = () => {
             <Button
               variant="contained"
               onClick={async () => handleEnhancePrompt()}
+              disabled={enhanceLoading}
               sx={{
                 bgcolor: '#42a5f5',
                 '&:hover': { bgcolor: '#1e88e5' },
