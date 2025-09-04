@@ -13,7 +13,11 @@ const ContactPage: React.FC = () => {
             variant="h3"
             align="center"
             gutterBottom
-            sx={{ fontWeight: "bold", color: "#42a5f5" }}
+            sx={{ 
+              fontWeight: "bold", 
+              color: "#42a5f5",
+              fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.5rem", lg: "3rem" },
+            }}
           >
             Contact Us
           </Typography>

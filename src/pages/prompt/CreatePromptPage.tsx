@@ -77,7 +77,7 @@ const CreatePromptPage: React.FC = () => {
             >
               <CreateIcon
                 sx={{
-                  fontSize: 50,
+                  fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
                   color: '#ffffffff',
                   transition: 'transform 0.3s ease',
                   '&:hover': { transform: 'rotate(-5deg) scale(1.05)' },
@@ -91,6 +91,7 @@ const CreatePromptPage: React.FC = () => {
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   letterSpacing: 1,
+                  fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
                 }}
               >
                 Create Prompt

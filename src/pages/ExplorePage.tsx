@@ -99,16 +99,32 @@ const ExplorePage: React.FC = () => {
         <Box
           sx={{
             py: { xs: 6, md: 8 },
+            px: { xs: 2, sm: 4 },
             textAlign: 'center',
             background: '#0a0a0a',
             color: '#fff',
             borderBottom: '1px solid rgba(255,255,255,0.05)',
           }}
         >
-          <Typography variant="h3" fontWeight="bold" gutterBottom>
+          <Typography
+            variant="h3"
+            fontWeight="bold"
+            gutterBottom
+            sx={{
+              fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, // responsive heading
+            }}
+          >
             Explore Prompts
           </Typography>
-          <Typography variant="body1" color="grey.400" maxWidth="sm" mx="auto">
+          <Typography
+            variant="body1"
+            color="grey.400"
+            sx={{
+              maxWidth: { xs: "100%", sm: "600px" },
+              mx: "auto",
+              lineHeight: 1.6,
+            }}
+          >
             Discover creative prompts shared by the community. Search by keyword, model type, or generation type.
           </Typography>
         </Box>
@@ -168,30 +184,30 @@ const ExplorePage: React.FC = () => {
           {/* Filters + Reset */}
           <Box
             sx={{
-              textAlign: 'center',
+              textAlign: "center",
               mb: 4,
-              display: 'flex',
-              justifyContent: 'center',
-              gap: 3,
-              flexWrap: 'wrap',
+              display: "flex",
+              justifyContent: "center",
+              gap: 2,
+              flexWrap: { xs: "nowrap", sm: "wrap" }, // prevent wrapping on small screens
+              overflowX: { xs: "auto", sm: "visible" }, // allow horizontal scroll if needed
             }}
           >
             {/* Model Type */}
-            <FormControl sx={{ minWidth: 200 }} size="small">
-              <InputLabel sx={{ color: '#ccc' }}>Model Type</InputLabel>
+            <FormControl sx={{ minWidth: { xs: 160, sm: 200 } }} size="small">
+              <InputLabel sx={{ color: "#ccc" }}>Model Type</InputLabel>
               <Select
-                value={modelType || ''}
+                value={modelType || ""}
                 onChange={(e) => setModelType(e.target.value || null)}
                 sx={{
-                  bgcolor: 'rgba(40, 40, 40, 0.8)',
-                  borderRadius: '12px',
-                  color: '#fff',
-                  '& .MuiSelect-icon': { color: '#fff' },
+                  bgcolor: "rgba(40, 40, 40, 0.8)",
+                  borderRadius: "12px",
+                  color: "#fff",
+                  minWidth: { xs: 120 },
+                  "& .MuiSelect-icon": { color: "#fff" },
                 }}
                 MenuProps={{
-                  PaperProps: {
-                    sx: { bgcolor: '#1e1e1e', color: '#fff' },
-                  },
+                  PaperProps: { sx: { bgcolor: "#1e1e1e", color: "#fff" } },
                   disableScrollLock: true,
                 }}
               >
@@ -205,21 +221,20 @@ const ExplorePage: React.FC = () => {
             </FormControl>
 
             {/* Generation Type */}
-            <FormControl sx={{ minWidth: 200 }} size="small">
-              <InputLabel sx={{ color: '#ccc' }}>Generation Type</InputLabel>
+            <FormControl sx={{ minWidth: { xs: 160, sm: 200 } }} size="small">
+              <InputLabel sx={{ color: "#ccc" }}>Generation Type</InputLabel>
               <Select
-                value={generationType || ''}
+                value={generationType || ""}
                 onChange={(e) => setGenerationType(e.target.value || null)}
                 sx={{
-                  bgcolor: 'rgba(40, 40, 40, 0.8)',
-                  borderRadius: '12px',
-                  color: '#fff',
-                  '& .MuiSelect-icon': { color: '#fff' },
+                  bgcolor: "rgba(40, 40, 40, 0.8)",
+                  borderRadius: "12px",
+                  color: "#fff",
+                  minWidth: { xs: 120 },
+                  "& .MuiSelect-icon": { color: "#fff" },
                 }}
                 MenuProps={{
-                  PaperProps: {
-                    sx: { bgcolor: '#1e1e1e', color: '#fff' },
-                  },
+                  PaperProps: { sx: { bgcolor: "#1e1e1e", color: "#fff" } },
                   disableScrollLock: true,
                 }}
               >
@@ -242,10 +257,11 @@ const ExplorePage: React.FC = () => {
                   setGenerationType(null);
                 }}
                 sx={{
-                  color: '#fff',
-                  bgcolor: 'rgba(40, 40, 40, 0.8)',
-                  borderRadius: '12px',
-                  borderColor: '#555',
+                  color: "#fff",
+                  bgcolor: "rgba(40, 40, 40, 0.8)",
+                  borderRadius: "12px",
+                  borderColor: "#555",
+                  whiteSpace: "nowrap",
                 }}
               >
                 Clear Filters

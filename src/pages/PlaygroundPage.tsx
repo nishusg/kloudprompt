@@ -97,7 +97,7 @@ const PlaygroundPage: React.FC = () => {
       <Container maxWidth="md">
         {/* Info Notice */}
         <Paper 
-          sx={{ p: 2, bgcolor: '#262626', mb: 3, borderRadius: 2, display: 'flex', alignItems: 'center', gap: 1 }}
+          sx={{ p: 2, bgcolor: '#121212', mb: 3, borderRadius: 2, display: 'flex', alignItems: 'center', gap: 1 }}
         >
           <InfoIcon sx={{ color: '#90caf9' }} />
           <Typography variant="body2" sx={{ color: '#ccc' }}>
@@ -114,7 +114,7 @@ const PlaygroundPage: React.FC = () => {
         </Typography>
 
         {/* Prompt Content */}
-        <Paper sx={{ p: 3, bgcolor: '#1a1a1a', mb: 4, borderRadius: 2 }}>
+        <Paper sx={{ p: 3, bgcolor: '#121212', mb: 4, borderRadius: 2 }}>
           <Typography variant="subtitle2" sx={{ mb: 1, color: '#90caf9', fontWeight: 600 }}>
             Prompt Content
           </Typography>
@@ -140,7 +140,7 @@ const PlaygroundPage: React.FC = () => {
         </Typography>
       
         {/* Settings Panel */}
-        <Paper sx={{ p: 3, bgcolor: '#1a1a1a', mb: 4, borderRadius: 2 }}>
+        <Paper sx={{ p: 3, bgcolor: '#121212', mb: 4, borderRadius: 2 }}>
           <Stack spacing={3}>
             {/* Provider Dropdown */}
             <TextField

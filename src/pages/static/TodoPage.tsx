@@ -81,7 +81,11 @@ const TodoPage: React.FC = () => {
             variant="h4"
             gutterBottom
             fontWeight="bold"
-            sx={{ color: "white" }}
+            sx={{
+              color: "white",
+              fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+              letterSpacing: { xs: 0.5, md: 1 },
+            }}
           >
             🚀 Future Roadmap / Todos
           </Typography>

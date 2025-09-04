@@ -22,7 +22,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
       sx={{
         p: 2,
         mb: 1,
-        bgcolor: "#1e1e1e",
+        bgcolor: "#121212",
         border: "1px solid #333",
         borderRadius: 2,
       }}

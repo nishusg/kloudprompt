@@ -189,9 +189,9 @@ const ProfilePage: React.FC = () => {
                   {/* Verification Chip */}
                   {loggedInUser.verificationStatus && (
                     <Chip
-                      label={loggedInUser.verificationStatus == VerificationStatus.Verified ? "Verified" : "Pending"}
+                      label={loggedInUser.verificationStatus === VerificationStatus.Verified ? "Verified" : "Pending"}
                       size="small"
-                      color={loggedInUser.verificationStatus == VerificationStatus.Verified ? "success" : "error"}
+                      color={loggedInUser.verificationStatus === VerificationStatus.Verified ? "success" : "error"}
                       sx={{ fontSize: '0.60rem' }}
                     />
                   )}
@@ -250,7 +250,11 @@ const ProfilePage: React.FC = () => {
               <hr style={{ border: '0.5px solid rgba(255,255,255,0.1)', margin: '12px 0' }} />
 
               {/* Actions */}
-              <Stack direction="row" spacing={1}>
+              <Stack 
+                direction={{ xs: "column", sm: "row" }} 
+                spacing={1}
+                alignItems={{ xs: "stretch", sm: "center" }}
+              >
                 <Button
                   variant="outlined"
                   size="small"
@@ -296,13 +300,13 @@ const ProfilePage: React.FC = () => {
                     size="small"
                     sx={{
                       mt: 1.5,
-                      borderColor: '#42a5f5',
-                      color: '#42a5f5',
+                      borderColor: 'green',
+                      color: 'green',
                       fontWeight: { xs: 400, sm: 500, md: 600 },
                       borderRadius: '50px',
                       px: 2,
                       '&:hover': {
-                        borderColor: '#42a5f5',
+                        borderColor: 'green',
                         backgroundColor: 'rgba(144,202,249,0.1)',
                       },
                     }}
@@ -320,7 +324,7 @@ const ProfilePage: React.FC = () => {
         <PromptActivityGraph prompts={prompts} />
 
         {/* Toggle Buttons */}
-        <Stack direction="row" spacing={2} mb={3}>
+        <Stack direction="row" spacing={2} mb={3} justifyContent="center">
           <Button
             variant={view === 'prompts' ? 'contained' : 'outlined'}
             sx={{

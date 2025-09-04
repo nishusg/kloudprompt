@@ -58,8 +58,12 @@ const HomePage: React.FC = () => {
         <Typography
           component="h1"
           sx={{
-            fontWeight: 'bold',
-            fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4.5rem', lg: '5.5rem' },
+            fontWeight: "bold",
+            fontSize: { xs: "2rem", sm: "3rem", md: "4rem" },
+            lineHeight: { xs: 1.2, sm: 1.2, md: 1.1 },
+            textAlign: "center", 
+            color: "#42a5f5",
+            letterSpacing: { xs: 0.5, md: 1 },
           }}
         >
           Prompt Collection

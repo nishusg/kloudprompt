@@ -111,7 +111,7 @@ export const CommentList: React.FC<CommentListProps> = ({ promptId, limit = 5 })
           sx={{
             p: 2,
             borderRadius: 2,
-            bgcolor: "#1e1e1e",
+            bgcolor: "#121212",
             borderColor: "#333",
             mb: 2,
           }}

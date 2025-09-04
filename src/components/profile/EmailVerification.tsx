@@ -1,6 +1,6 @@
 // src/components/EmailVerification.tsx
 import React, { useState } from 'react';
-import { Box, Button, Container, Paper, Typography, Stack, TextField, CircularProgress, Alert } from '@mui/material';
+import { Box, Button, Container, Paper, Typography, Stack, TextField } from '@mui/material';
 import { useSnackbar } from '../../context/SnackbarContext';
 import { useAuth } from '../../context/AuthContext';
 import { requestOtp, verifyOtp } from '../../services/OtpService';
@@ -14,7 +14,6 @@ const EmailVerification: React.FC = () => {
   const email = loggedInUser?.email || '';
 
   const [loading, setLoading] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
 
   // Send OTP
@@ -24,7 +23,6 @@ const EmailVerification: React.FC = () => {
     try {
       await requestOtp(email, OTPPurpose.Register);
       showSnackbar('Verification email sent!', 'success');
-      setOtpSent(true);
     } catch (error: any) {
       showSnackbar(
         error?.response?.data?.msg || (error instanceof Error ? error.message : 'Failed to send verification email'),
