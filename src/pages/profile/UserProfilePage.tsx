@@ -11,12 +11,14 @@ import {
   Avatar,
   Stack,
   Link,
+  Chip,
 } from '@mui/material';
 import { getUserById, getUserPrompts } from '../../services/UserService';
 import { User } from '../../models/User';
 import { Prompt } from '../../models/Prompt';
 import ProfilePromptCard from '../../components/prompts/ProfilePromptCard';
 import { DefaultUserName } from '../../utils/Constants';
+import { VerificationStatus } from '../../utils/Enum';
 
 const UserProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -65,8 +67,17 @@ const UserProfilePage: React.FC = () => {
       <Container maxWidth="md">
         {/* User Info */}
         <Paper sx={{ p: 3, mb: 4, bgcolor: '#111', borderRadius: 2 }}>
-          <Stack direction="row" spacing={2} alignItems="flex-start">
-            <Avatar sx={{ width: 64, height: 64, bgcolor: '#42a5f5', color: '#fff' }}>
+          <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems="center">
+            <Avatar
+              alt={user.userName || DefaultUserName}
+              sx={{
+                width: { xs: 80, sm: 90, md: 100 },
+                height: { xs: 80, sm: 90, md: 100 },
+                bgcolor: '#42a5f5',
+                color: '#fff',
+                fontSize: '2rem',
+              }}
+            >
               {(user.userName || DefaultUserName).charAt(0).toUpperCase()}
             </Avatar>
             <Box>
@@ -79,8 +90,26 @@ const UserProfilePage: React.FC = () => {
 
               {/* Email */}
               {user.email && (
-                <Typography variant="body2" sx={{ color: '#bbb', mt: 1 }}>
+                <Typography
+                  component={'div'}
+                  variant="body2"
+                  sx={{
+                    color: 'rgba(255,255,255,0.6)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                  }}
+                >
                   {user.email}
+                  {/* Verification Chip */}
+                  {user.verificationStatus && (
+                    <Chip
+                      label={user.verificationStatus === VerificationStatus.Verified ? "Verified" : "Pending"}
+                      size="small"
+                      color={user.verificationStatus === VerificationStatus.Verified ? "success" : "error"}
+                      sx={{ fontSize: '0.60rem' }}
+                    />
+                  )}
                 </Typography>
               )}
 

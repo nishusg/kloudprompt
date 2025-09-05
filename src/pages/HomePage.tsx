@@ -6,19 +6,17 @@ import { Link } from 'react-router-dom';
 const words = ['designers', 'creators', 'developers', 'innovators', 'artists', 'thinkers'];
 
 const HomePage: React.FC = () => {
-  const [index, setIndex] = useState(0);        // Which word
-  const [subIndex, setSubIndex] = useState(0);  // Which letter
+  const [index, setIndex] = useState(0);        
+  const [subIndex, setSubIndex] = useState(0);  
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (subIndex === words[index].length + 1 && !deleting) {
-      // Pause at full word before deleting
       setTimeout(() => setDeleting(true), 1000);
       return;
     }
 
     if (subIndex === 0 && deleting) {
-      // Move to next word after deleting
       setDeleting(false);
       setIndex((prev) => (prev + 1) % words.length);
       return;
@@ -26,7 +24,7 @@ const HomePage: React.FC = () => {
 
     const timeout = setTimeout(() => {
       setSubIndex((prev) => prev + (deleting ? -1 : 1));
-    }, deleting ? 50 : 150); // typing slower, deleting faster
+    }, deleting ? 50 : 150);
 
     return () => clearTimeout(timeout);
   }, [subIndex, deleting, index]);
@@ -35,13 +33,13 @@ const HomePage: React.FC = () => {
     <Box
       sx={{
         backgroundColor: '#0a0a0a',
-        minHeight: { xs: '85dvh', md: '85vh' },
+        minHeight: { xs: '80vh', md: '85vh' },
         display: 'flex',
-        justifyContent: 'center',   // ✅ vertical centering
-        alignItems: 'center',       // ✅ horizontal centering
+        justifyContent: 'center',
+        alignItems: 'center',
         textAlign: 'center',
         color: 'white',
-        p: 2,
+        p: { xs: 2, sm: 3, md: 4 },
       }}
     >
       <Box
@@ -49,9 +47,9 @@ const HomePage: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: 6,
+          gap: { xs: 4, sm: 6 },
           maxWidth: '1000px',
-          px: { xs: 2, sm: 4 }, // responsive padding
+          width: '100%',
         }}
       >
         {/* Title */}
@@ -60,23 +58,33 @@ const HomePage: React.FC = () => {
           sx={{
             fontWeight: "bold",
             fontSize: { xs: "2rem", sm: "3rem", md: "4rem" },
-            lineHeight: { xs: 1.2, sm: 1.2, md: 1.1 },
+            lineHeight: 1.2,
             textAlign: "center", 
             color: "#42a5f5",
             letterSpacing: { xs: 0.5, md: 1 },
+            px: { xs: 1, sm: 0 },
           }}
         >
           Prompt Collection
         </Typography>
 
         {/* Typing tagline */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: { xs: 1, sm: 2 },
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            px: { xs: 1, sm: 0 },
+          }}
+        >
           <Box
-            component="span" // or "p", "h1", etc., depending on semantics
+            component="span"
             sx={{
               opacity: 0.6,
               fontWeight: 500,
-              fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem', lg: '3rem' },
+              fontSize: { xs: '1.2rem', sm: '1.8rem', md: '2.2rem' },
             }}
           >
             A platform for
@@ -86,9 +94,9 @@ const HomePage: React.FC = () => {
             sx={{
               py: 0.5,
               borderRadius: 3,
-              minWidth: '80px',
+              minWidth: 'fit-content',
               fontWeight: 'bold',
-              fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem', lg: '3rem' },
+              fontSize: { xs: '1.2rem', sm: '1.8rem', md: '2.2rem' },
               userSelect: 'none',
             }}
           >
@@ -112,26 +120,40 @@ const HomePage: React.FC = () => {
           sx={{
             opacity: 0.7,
             fontWeight: 400,
-            maxWidth: '900px',
-            fontSize: { xs: '1rem', sm: '1.2rem', md: '1.4rem' },
+            maxWidth: '800px',
+            fontSize: { xs: '0.95rem', sm: '1.1rem', md: '1.3rem' },
+            lineHeight: 1.6,
+            px: { xs: 1.5, sm: 0 },
           }}
         >
           Discover, share, and get inspired by creative prompts from around the world.
         </Typography>
 
         {/* Buttons */}
-        <Box sx={{ display: 'flex', gap: 3, mt: 4, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: { xs: 2, sm: 3 },
+            mt: { xs: 3, sm: 4 },
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            flexDirection: { xs: 'column', sm: 'row' },
+            width: '100%',
+            maxWidth: { xs: '250px', sm: '100%' },
+          }}
+        >
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               component={Link}
               to="/explore"
+              fullWidth
               variant="contained"
               sx={{
                 background: 'linear-gradient(90deg, #1976d2, #42a5f5)',
                 color: 'white',
                 fontWeight: 'bold',
                 px: 3,
-                transition: 'background 0.4s ease',
+                py: 1.2,
                 '&:hover': { background: 'linear-gradient(90deg, #42a5f5, #1976d2)' },
               }}
             >
@@ -143,13 +165,14 @@ const HomePage: React.FC = () => {
             <Button
               component={Link}
               to="/create"
+              fullWidth
               variant="outlined"
               sx={{
                 borderColor: '#1976d2',
                 color: '#1976d2',
                 fontWeight: 'bold',
                 px: 3,
-                transition: 'all 0.4s ease',
+                py: 1.2,
                 '&:hover': {
                   backgroundColor: 'rgba(25, 118, 210, 0.1)',
                   borderColor: '#42a5f5',

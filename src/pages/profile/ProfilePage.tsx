@@ -173,8 +173,13 @@ const ProfilePage: React.FC = () => {
                   fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' },
                 }}
               >
-                {loggedInUser.fullName || loggedInUser.userName || 'Unnamed User'}
+                {loggedInUser.userName || 'Unnamed User'}
               </Typography>
+              {loggedInUser.fullName && (
+                <Typography variant="body2" sx={{ color: '#bbb' }}>
+                  {loggedInUser.fullName}
+                </Typography>
+              )}
               <Typography
                 component={'div'}
                 variant="body2"
