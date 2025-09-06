@@ -22,6 +22,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import AddCircle from '@mui/icons-material/AddCircle';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const Header: React.FC = () => {
   const { user, logout, loading } = useAuth();
@@ -130,6 +131,12 @@ const Header: React.FC = () => {
                     <ExploreIcon fontSize="small" />
                   </ListItemIcon>
                   Explore
+                </MenuItem>
+                <MenuItem onClick={() => handleNavigate('/notifications')}>
+                  <ListItemIcon>
+                    <NotificationsIcon fontSize="small" />
+                  </ListItemIcon>
+                  Notification
                 </MenuItem>
                 <MenuItem onClick={() => handleNavigate('/trending')}>
                   <ListItemIcon>

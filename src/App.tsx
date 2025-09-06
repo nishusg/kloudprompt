@@ -26,6 +26,7 @@ import { SnackbarProvider } from './context/SnackbarContext';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import EmailVerification from './components/profile/EmailVerification';
 import LeaderboardPage from './pages/LeaderboardPage';
+import NotificationsPage from './pages/NotificationsPage';
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -60,6 +61,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/change-password" element={<ChangePasswordPage />} />
             <Route path="/email-verification" element={<EmailVerification />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
           </Route>
 
           {/* Redirect auth users away from login/register */}

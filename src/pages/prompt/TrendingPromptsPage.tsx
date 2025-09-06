@@ -101,9 +101,9 @@ const TrendingPromptsPage = () => {
             </Typography>
           </Paper>
         ) : (
-          prompts.map((p, index) => (
+          prompts.map((prompt, index) => (
             <Paper
-              key={p._id}
+              key={index}
               elevation={4}
               sx={{
                 mb: 3,
@@ -119,7 +119,7 @@ const TrendingPromptsPage = () => {
                   borderColor: "#90caf9",
                 },
               }}
-              onClick={() => handlePromptClick(p._id)}
+              onClick={() => handlePromptClick(prompt._id)}
             >
               <ListItem alignItems="flex-start" disableGutters>
                 <ListItemText
@@ -142,21 +142,22 @@ const TrendingPromptsPage = () => {
                         component="span"
                         sx={{ mb: 1 }}
                       >
-                        {p.title}
+                        {prompt.title}
                       </Typography>
                     </Stack>
                   }
+                  primaryTypographyProps={{ component: "span" }}
                   secondary={
                     <Stack spacing={1.2}>
                       {/* Description */}
                       <Typography
                         variant="body2"
-                        component="div"
+                        component="span"
                         sx={{ display: "block", color: "#b0b0b0" }}
                       >
-                        {p.description && p.description.length > 80
-                          ? `${p.description.slice(0, 80)}...`
-                          : p.description}
+                        {prompt.description && prompt.description.length > 80
+                          ? `${prompt.description.slice(0, 80)}...`
+                          : prompt.description}
                       </Typography>
 
                       {/* Author + Views row */}
@@ -174,17 +175,23 @@ const TrendingPromptsPage = () => {
                             fontSize: "0.8rem",
                           }}
                         >
-                          {p.author?.userName?.charAt(0).toUpperCase() || "A"}
+                          {prompt.author?.userName?.charAt(0).toUpperCase() || "A"}
                         </Avatar>
 
                         <Typography
                           variant="caption"
                           component="span"
                           sx={{ color: "#aaa" }}
+                          onClick={(e) => {
+                            if(prompt.author?._id){
+                              e.stopPropagation();
+                              navigate(`/users/${prompt.author?._id}`);
+                            }
+                          }}
                         >
-                          By{" "}
-                          <Box component="span" sx={{ color: "#fff" }}>
-                            {p.author?.userName || DefaultUserName}
+                          By {" "}
+                          <Box component="span" sx={{ color: prompt.author?._id ? "#42a5f5" : "#aaa" }}>
+                            {prompt.author?.userName || DefaultUserName}
                           </Box>
                         </Typography>
 
@@ -193,11 +200,12 @@ const TrendingPromptsPage = () => {
                           component="span"
                           sx={{ color: "#888", ml: "auto" }}
                         >
-                          👁 {p.views ?? 0} views
+                          👁 {prompt.views ?? 0} views
                         </Typography>
                       </Stack>
                     </Stack>
                   }
+                  secondaryTypographyProps={{ component: "span" }}
                 />
               </ListItem>
             </Paper>

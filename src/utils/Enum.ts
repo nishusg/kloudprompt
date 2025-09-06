@@ -24,6 +24,10 @@ export enum OTPPurpose {
   Forgot = "Forgot",
 }
 
+export enum NotificationTypeEnum {
+  COMMENT = "Comment"
+}
+
 export enum PromptCategoryEnum {
   Writing = "Writing",
   Copywriting = "Copywriting",
