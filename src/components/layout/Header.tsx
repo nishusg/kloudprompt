@@ -17,6 +17,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import ExploreIcon from '@mui/icons-material/Explore';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -136,6 +137,12 @@ const Header: React.FC = () => {
                     <WhatshotIcon fontSize="small" />
                   </ListItemIcon>
                   Trending
+                </MenuItem>
+                <MenuItem onClick={() => handleNavigate('/leaderboard')}>
+                  <ListItemIcon>
+                    <LeaderboardIcon fontSize="small" />
+                  </ListItemIcon>
+                  Leaderboard
                 </MenuItem>
                 <MenuItem onClick={() => handleNavigate('/todo')}>
                   <ListItemIcon>

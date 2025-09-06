@@ -1,7 +1,7 @@
 import apiClient from './ApiClient';
 import { Prompt, CreatePromptDto, UpdatePromptDto } from '../models/Prompt';
 import { handleApiError } from './UtilsService';
-import { EnhancePromptRequest, EnhancePromptResponse } from '../models';
+import { EnhancePromptRequest, EnhancePromptResponse, LeaderboardResponse } from '../models';
 
 export interface PaginatedPrompts {
   data: Prompt[];
@@ -60,6 +60,16 @@ export const getTrendingPrompts = async (limit: number = 10): Promise<Prompt[]> 
     return response.data.data.prompts;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch trending prompts");
+    throw new Error(message);
+  }
+};
+
+export const getLeaderboard = async (limit: number = 10): Promise<LeaderboardResponse[]> => {
+  try {
+    const response = await apiClient.get(`/prompts/leaderboard?limit=${limit}`);
+    return response.data.data.leaderboards;
+  } catch (err) {
+    const message = handleApiError(err, "Failed to fetch leaderboard prompts");
     throw new Error(message);
   }
 };

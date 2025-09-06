@@ -26,6 +26,7 @@ import TodoPage from './pages/static/TodoPage';
 import { SnackbarProvider } from './context/SnackbarContext';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import EmailVerification from './components/profile/EmailVerification';
+import LeaderboardPage from './pages/LeaderboardPage';
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -60,6 +61,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/change-password" element={<ChangePasswordPage />} />
             <Route path="/todo" element={<TodoPage />} />
             <Route path="/email-verification" element={<EmailVerification />} />
+            <Route path="/leaderboard" element={<LeaderboardPage />} />
           </Route>
 
           {/* Redirect auth users away from login/register */}
