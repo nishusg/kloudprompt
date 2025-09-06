@@ -1,26 +1,27 @@
 // ===== Enums =====
 export enum ProviderTypeEnum {
-  GEMINI = 'gemini',
-  CHATGPT = 'chatgpt',
-  GROK = 'grok',
-  OPENROUTER = 'openrouter',
-  TOGETHER = 'together',
+  GEMINI = 'Gemini',
+  CHATGPT = 'Chatgpt',
+  GROK = 'Grok',
+  OPENROUTER = 'Openrouter',
+  TOGETHER = 'Together',
 }
 
 export enum GenerationTypeEnum {
-  IMAGE = 'image',
-  VIDEO = 'video',
-  TEXT = 'text',
+  IMAGE = 'Image',
+  VIDEO = 'Video',
+  TEXT = 'Text',
+  AUDIO = 'Audio',
 }
 
 export enum VerificationStatus {
-  Pending = "pending",
-  Verified = "verified"
+  Pending = "Pending",
+  Verified = "Verified"
 }
 
 export enum OTPPurpose {
-  Register = "register",
-  Forgot = "forgot",
+  Register = "Register",
+  Forgot = "Forgot",
 }
 
 export enum PromptCategoryEnum {

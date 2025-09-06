@@ -299,7 +299,7 @@ const ProfilePage: React.FC = () => {
                 >
                   Change Password
                 </Button>
-                {loggedInUser.verificationStatus === 'pending' && (
+                {loggedInUser.verificationStatus === VerificationStatus.Pending && (
                   <Button
                     variant="outlined"
                     size="small"
