@@ -48,7 +48,7 @@ const EmailVerification: React.FC = () => {
 
       setTimeout(() => navigate('/profile/' + loggedInUser?._id), 1500);
     } catch (error: any) {
-      showSnackbar(error?.response?.data?.msg || (error instanceof Error ? error.message : 'OTP verification failed'), 'error');
+      showSnackbar(error?.message || 'OTP verification failed', 'error');
     } finally {
       setLoading(false);
     }

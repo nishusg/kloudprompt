@@ -48,7 +48,7 @@ const LoginPage: React.FC = () => {
       await login(formData.email, formData.password);
       showSnackbar('Logged in successfully!', 'success');
     } catch (error: any) {
-      showSnackbar(error instanceof Error ? error.message : 'Login failed', 'error');
+      showSnackbar(error?.message || 'Login failed', 'error');
     }
   };
 

@@ -22,8 +22,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { getPrompts } from '../services/PromptService';
 import { Prompt } from '../models/Prompt';
 import ExplorePromptCard from '../components/prompts/ExplorePromptCard';
-import { GenerationTypeEnum, ProviderTypeEnum } from '../utils/Enum';
-
+import { GenerationTypeEnum, ProviderTypeEnum, PromptCategoryEnum } from '../utils/Enum';
 
 const ExplorePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -34,6 +33,7 @@ const ExplorePage: React.FC = () => {
 
   const [modelType, setModelType] = useState<string | null>(null);
   const [generationType, setGenerationType] = useState<string | null>(null);
+  const [category, setCategory] = useState<string | null>(null); // ✅ NEW state
 
   const [page, setPage] = useState(1);
   const rowsPerPage = 9;
@@ -71,13 +71,14 @@ const ExplorePage: React.FC = () => {
       const matchesModelType = !modelType || prompt.modelType === modelType;
       const matchesGenerationType =
         !generationType || prompt.generationType === generationType;
+      const matchesCategory = !category || prompt.category === category;
 
-      return (titleMatch || contentMatch) && matchesModelType && matchesGenerationType;
+      return (titleMatch || contentMatch) && matchesModelType && matchesGenerationType && matchesCategory;
     });
 
     setFilteredPrompts(results);
     setPage(1);
-  }, [debouncedSearch, allPrompts, modelType, generationType]);
+  }, [debouncedSearch, allPrompts, modelType, generationType, category]);
 
   const paginatedPrompts = filteredPrompts.slice(
     (page - 1) * rowsPerPage,
@@ -111,7 +112,7 @@ const ExplorePage: React.FC = () => {
             fontWeight="bold"
             gutterBottom
             sx={{
-              fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" }, // responsive heading
+              fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
             }}
           >
             Explore Prompts
@@ -125,7 +126,7 @@ const ExplorePage: React.FC = () => {
               lineHeight: 1.6,
             }}
           >
-            Discover creative prompts shared by the community. Search by keyword, model type, or generation type.
+            Discover creative prompts shared by the community. Search by keyword, model type, generation type, or category.
           </Typography>
         </Box>
 
@@ -181,20 +182,24 @@ const ExplorePage: React.FC = () => {
             />
           </Paper>
 
-          {/* Filters + Reset */}
+          {/* Filters */}
           <Box
             sx={{
               textAlign: "center",
               mb: 4,
               display: "flex",
+              flexDirection: { xs: "column", sm: "row" }, // ✅ stacked on mobile, row on larger screens
               justifyContent: "center",
               gap: 2,
-              flexWrap: { xs: "nowrap", sm: "wrap" }, // prevent wrapping on small screens
-              overflowX: { xs: "auto", sm: "visible" }, // allow horizontal scroll if needed
+              flexWrap: "wrap",
+              alignItems: { xs: "stretch", sm: "center" }, // full width on mobile
             }}
           >
             {/* Model Type */}
-            <FormControl sx={{ minWidth: { xs: 160, sm: 200 } }} size="small">
+            <FormControl
+              sx={{ minWidth: { xs: "100%", sm: 160, md: 200 } }} // ✅ full width on mobile
+              size="small"
+            >
               <InputLabel sx={{ color: "#ccc" }}>Model Type</InputLabel>
               <Select
                 value={modelType || ""}
@@ -203,7 +208,6 @@ const ExplorePage: React.FC = () => {
                   bgcolor: "rgba(40, 40, 40, 0.8)",
                   borderRadius: "12px",
                   color: "#fff",
-                  minWidth: { xs: 120 },
                   "& .MuiSelect-icon": { color: "#fff" },
                 }}
                 MenuProps={{
@@ -221,7 +225,10 @@ const ExplorePage: React.FC = () => {
             </FormControl>
 
             {/* Generation Type */}
-            <FormControl sx={{ minWidth: { xs: 160, sm: 200 } }} size="small">
+            <FormControl
+              sx={{ minWidth: { xs: "100%", sm: 160, md: 200 } }}
+              size="small"
+            >
               <InputLabel sx={{ color: "#ccc" }}>Generation Type</InputLabel>
               <Select
                 value={generationType || ""}
@@ -230,7 +237,6 @@ const ExplorePage: React.FC = () => {
                   bgcolor: "rgba(40, 40, 40, 0.8)",
                   borderRadius: "12px",
                   color: "#fff",
-                  minWidth: { xs: 120 },
                   "& .MuiSelect-icon": { color: "#fff" },
                 }}
                 MenuProps={{
@@ -247,25 +253,71 @@ const ExplorePage: React.FC = () => {
               </Select>
             </FormControl>
 
-            {/* Clear Filters */}
-            {(modelType || generationType) && (
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => {
-                  setModelType(null);
-                  setGenerationType(null);
-                }}
+            {/* Category */}
+            <FormControl
+              sx={{ minWidth: { xs: "100%", sm: 160, md: 200 } }}
+              size="small"
+            >
+              <InputLabel sx={{ color: "#ccc" }}>Category</InputLabel>
+              <Select
+                value={category || ""}
+                onChange={(e) => setCategory(e.target.value || null)}
                 sx={{
-                  color: "#fff",
                   bgcolor: "rgba(40, 40, 40, 0.8)",
                   borderRadius: "12px",
-                  borderColor: "#555",
-                  whiteSpace: "nowrap",
+                  color: "#fff",
+                  "& .MuiSelect-icon": { color: "#fff" },
+                }}
+                MenuProps={{
+                  PaperProps: { sx: { bgcolor: "#1e1e1e", color: "#fff" } },
+                  disableScrollLock: true,
                 }}
               >
-                Clear Filters
-              </Button>
+                <MenuItem value="">All</MenuItem>
+                {Object.values(PromptCategoryEnum).map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+
+          <Box
+            sx={{
+              textAlign: "center",
+              mb: 4,
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" }, 
+              justifyContent: "center",
+              gap: 2,
+              flexWrap: "wrap",
+              alignItems: { xs: "stretch", sm: "center" },
+            }}
+          >
+            {/* Clear Filters - always below all filters */}
+            {(modelType || generationType || category) && (
+              <Box sx={{ width: { xs: "100%", sm: "auto" }, mt: { xs: 1, sm: 0 } }}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  fullWidth={true} // ✅ full width on mobile
+                  onClick={() => {
+                    setModelType(null);
+                    setGenerationType(null);
+                    setCategory(null);
+                  }}
+                  sx={{
+                    color: "#fff",
+                    bgcolor: "rgba(40, 40, 40, 0.8)",
+                    borderRadius: "12px",
+                    borderColor: "#555",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              </Box>
             )}
           </Box>
 

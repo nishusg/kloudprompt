@@ -85,7 +85,7 @@ const RegisterPage: React.FC = () => {
         await login(email, password);
       }
     } catch (error: any) {
-      showSnackbar(error instanceof Error ? error.message : 'Something went wrong', 'error');
+      showSnackbar(error?.message || 'Something went wrong', 'error');
     } finally {
       setLoading(false);
     }

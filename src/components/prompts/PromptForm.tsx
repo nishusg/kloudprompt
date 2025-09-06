@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { CreatePromptDto } from "../../models/Prompt";
 import { validatePrompt } from "../../utils/Validators";
-import { GenerationTypeEnum, ProviderTypeEnum, VerificationStatus } from "../../utils/Enum";
+import { GenerationTypeEnum, ProviderTypeEnum, VerificationStatus, PromptCategoryEnum } from "../../utils/Enum"; // ✅ import PromptCategory
 import { useAuth } from "../../context/AuthContext";
 import InfoIcon from '@mui/icons-material/Info';
 
@@ -29,7 +29,8 @@ const PromptForm: React.FC<PromptFormProps> = ({
     content: "",
     description: "",
     modelType: ProviderTypeEnum.CHATGPT,
-    generationType: GenerationTypeEnum.TEXT,
+    generationType: GenerationTypeEnum.IMAGE,
+    category: PromptCategoryEnum.Productivity,
     tags: [],
   },
   onSubmit,
@@ -120,6 +121,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
           <TextField
             label="Title"
             name="title"
+            required
             value={formData.title || ""}
             onChange={handleChange}
             error={!!errors.title}
@@ -133,16 +135,17 @@ const PromptForm: React.FC<PromptFormProps> = ({
             InputLabelProps={{ sx: { color: "#ccc" } }}
           />
 
-          {/* Model & Generation in one row always */}
+          {/* Model, Generation, Category in one row */}
           <Box>
             <Grid container spacing={2}>
               {/* Model Type */}
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <TextField
                   select
                   fullWidth
                   label="Model Type"
                   name="modelType"
+                  required
                   value={formData.modelType || ""}
                   onChange={handleChange}
                   variant="outlined"
@@ -161,7 +164,6 @@ const PromptForm: React.FC<PromptFormProps> = ({
                     },
                   }}
                 >
-                  <MenuItem value="">All</MenuItem>
                   {Object.values(ProviderTypeEnum).map((type) => (
                     <MenuItem key={type} value={type}>
                       {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -171,12 +173,13 @@ const PromptForm: React.FC<PromptFormProps> = ({
               </Grid>
 
               {/* Generation Type */}
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <TextField
                   select
                   fullWidth
                   label="Generation Type"
                   name="generationType"
+                  required
                   value={formData.generationType || ""}
                   onChange={handleChange}
                   variant="outlined"
@@ -195,7 +198,6 @@ const PromptForm: React.FC<PromptFormProps> = ({
                     },
                   }}
                 >
-                  <MenuItem value="">All</MenuItem>
                   {Object.values(GenerationTypeEnum).map((type) => (
                     <MenuItem key={type} value={type}>
                       {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -203,14 +205,48 @@ const PromptForm: React.FC<PromptFormProps> = ({
                   ))}
                 </TextField>
               </Grid>
+
+              {/* Category */}
+              <Grid item xs={4}>
+                <TextField
+                  select
+                  fullWidth
+                  label="Category"
+                  name="category"
+                  required
+                  value={formData.category || ""}
+                  onChange={handleChange}
+                  variant="outlined"
+                  InputProps={{
+                    sx: { color: "white" },
+                  }}
+                  InputLabelProps={{
+                    sx: { color: "#ccc" },
+                  }}
+                  SelectProps={{
+                    MenuProps: {
+                      PaperProps: {
+                        sx: { bgcolor: "#1e1e1e", color: "#fff" },
+                      },
+                      disableScrollLock: true,
+                    },
+                  }}
+                >
+                  {Object.values(PromptCategoryEnum).map((type) => (
+                    <MenuItem key={type} value={type}>
+                      {type}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
             </Grid>
           </Box>
-
 
           {/* Description */}
           <TextField
             label="Description"
             name="description"
+            required
             value={formData.description}
             onChange={handleChange}
             error={!!errors.description}
@@ -230,6 +266,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
           <TextField
             label="Prompt Content"
             name="content"
+            required
             value={formData.content}
             onChange={handleChange}
             error={!!errors.content}
@@ -290,7 +327,6 @@ const PromptForm: React.FC<PromptFormProps> = ({
 
           {/* Submit */}
           <Box display="flex" justifyContent="flex-end">
-            {/* Submit button with tooltip */}
             <Button
               type="submit"
               variant="contained"
@@ -300,7 +336,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
               }
               sx={{
                 "&.Mui-disabled": {
-                  backgroundColor: "gray", // custom disabled color
+                  backgroundColor: "gray",
                   color: "#fff",
                 },
               }}

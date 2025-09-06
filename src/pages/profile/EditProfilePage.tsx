@@ -65,7 +65,7 @@ const EditProfilePage: React.FC = () => {
       setUser?.(updatedUser);
       setTimeout(() => navigate("/profile/" + updatedUser._id), 1500);
     } catch (error: any) {
-      showSnackbar(error?.response?.data?.message || "Failed to update profile", "error");
+      showSnackbar(error?.message || "Failed to update profile", "error");
     } finally {
       setLoading(false);
     }

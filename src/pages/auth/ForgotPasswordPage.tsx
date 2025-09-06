@@ -47,7 +47,7 @@ const ForgotPasswordPage: React.FC = () => {
         navigate("/login");
       }
     } catch (error: any) {
-      showSnackbar(error instanceof Error ? error.message : 'Operation failed', 'error');
+      showSnackbar(error?.message || 'Operation failed', 'error');
     } finally {
       setLoading(false);
     }
