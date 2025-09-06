@@ -70,29 +70,31 @@ const CreatePromptPage: React.FC = () => {
             {/* Header */}
             <Box
               sx={{
-                display: 'flex',
-                alignItems: 'center',
-                mb: 2,
-                gap: 2,
+                display: "flex",
+                alignItems: "center",
+                mb: 3,
+                gap: { xs: 1.5, sm: 2 },
+                flexWrap: "wrap",
               }}
             >
               <CreateIcon
                 sx={{
-                  fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
-                  color: '#ffffffff',
-                  transition: 'transform 0.3s ease',
-                  '&:hover': { transform: 'rotate(-5deg) scale(1.05)' },
+                  fontSize: { xs: 28, sm: 44, md: 50 },
+                  color: "#fff",
+                  transition: "transform 0.3s ease",
+                  "&:hover": { transform: "rotate(-5deg) scale(1.05)" },
                 }}
               />
               <Typography
                 variant="h3"
                 fontWeight="bold"
+                component="h1"
                 sx={{
-                  background: '#ffffffff',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  letterSpacing: 1,
-                  fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+                  fontSize: { xs: "1.6rem", sm: "2rem", md: "2.5rem" },
+                  background: "#fff",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  letterSpacing: { xs: 0.5, md: 1 },
                 }}
               >
                 Create Prompt

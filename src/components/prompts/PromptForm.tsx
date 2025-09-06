@@ -139,7 +139,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
           <Box>
             <Grid container spacing={2}>
               {/* Model Type */}
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={6} md={4}>
                 <TextField
                   select
                   fullWidth
@@ -173,7 +173,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
               </Grid>
 
               {/* Generation Type */}
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={6} md={4}>
                 <TextField
                   select
                   fullWidth
@@ -207,7 +207,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
               </Grid>
 
               {/* Category */}
-              <Grid item xs={4}>
+              <Grid item xs={12} sm={12} md={4}>
                 <TextField
                   select
                   fullWidth

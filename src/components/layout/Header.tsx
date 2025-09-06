@@ -22,7 +22,6 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import AddCircle from '@mui/icons-material/AddCircle';
-import { RocketLaunch } from '@mui/icons-material';
 
 const Header: React.FC = () => {
   const { user, logout, loading } = useAuth();
@@ -143,12 +142,6 @@ const Header: React.FC = () => {
                     <LeaderboardIcon fontSize="small" />
                   </ListItemIcon>
                   Leaderboard
-                </MenuItem>
-                <MenuItem onClick={() => handleNavigate('/todo')}>
-                  <ListItemIcon>
-                    <RocketLaunch fontSize="small" />
-                  </ListItemIcon>
-                  Future todos
                 </MenuItem>
 
                 {/* Account Section */}
