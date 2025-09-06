@@ -8,6 +8,7 @@ import {
   ListItemText,
   Box,
   Stack,
+  Button,
 } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import CircleIcon from "@mui/icons-material/Circle";
@@ -20,23 +21,48 @@ import { Notification } from "../models/Notification";
 import { DefaultUserName } from "../utils/Constants";
 import { useAuth } from "../context/AuthContext";
 
+const PAGE_LIMIT = 1;
+
 const NotificationsPage = () => {
   const { user: loggedInUser } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
+  const fetchNotifications = async (pageNumber: number) => {
+    if (!loggedInUser?._id) return;
+    setLoading(true);
+    try {
+      const { notifications: newNotifications, totalPages: tp } = await getUserNotifications(
+        loggedInUser._id,
+        pageNumber,
+        PAGE_LIMIT
+      );
+
+      setNotifications((prev) => [...prev, ...newNotifications]);
+      setTotalPages(tp);
+    } catch (err) {
+      console.error('Failed to fetch notifications:', err);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchNotifications = async () => {
-      if (!loggedInUser?._id) return;
-      try {
-        const data = await getUserNotifications(loggedInUser._id);
-        setNotifications(data || []);
-      } catch (err) {
-        console.error("Failed to fetch notifications:", err);
-      }
-    };
-    fetchNotifications();
+    setNotifications([]);
+    setPage(1);
+    fetchNotifications(1);
   }, [loggedInUser?._id]);
+
+  const handleLoadMore = () => {
+    if (page < totalPages) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchNotifications(nextPage);
+    }
+  };
 
   const handleClick = async (notification: Notification) => {
     if (notification.promptId) {
@@ -101,82 +127,68 @@ const NotificationsPage = () => {
               >
                 No notifications yet 🔔
               </Typography>
-              <Typography variant="body2" sx={{ color: "#aaa" }}>
+              <Typography variant="body2" sx={{ color: '#aaa' }}>
                 Engage with posts and your notifications will appear here!
               </Typography>
             </Paper>
           ) : (
             notifications.map((notification, index) => (
-                <Paper
-                    key={index}
-                    elevation={4}
-                    sx={{
-                        mb: 3,
-                        p: 2.5,
-                        borderRadius: 3,
-                        cursor: "pointer",
-                        bgcolor: "#1e1e1e",
-                        color: "#e0e0e0",
-                    }}
-                    onClick={() => handleClick(notification)}
-                >
-                    <ListItem alignItems="flex-start" disableGutters>
-                    <ListItemText
-                        primary={
-                            <Stack direction="row" alignItems="center" spacing={1}>
-                                {!notification.isRead && (
-                                <CircleIcon sx={{ fontSize: 10, color: "#42a5f5" }} />
-                                )}
-                                <Typography
-                                variant="subtitle1"
-                                fontWeight="600"
-                                color="#fff"
-                                component="span"
-                                sx={{ mb: 1 }}
-                                >
-                                {notification.message}
-                                </Typography>
-                            </Stack>
-                        }
-                        primaryTypographyProps={{ component: "span" }}
-                        secondary={
-                            <Stack
-                                direction="row"
-                                alignItems="center"
-                                spacing={1.5}
-                                sx={{ mt: 0.5 }}
-                            >
-                                <Typography
-                                    variant="caption"
-                                    component="span"
-                                    sx={{ color: "#aaa", cursor: "pointer" }}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        navigate(`/users/${notification.senderId?._id}`);
-                                    }}
-                                    >
-                                    From{" "}
-                                    <Box component="span" sx={{ color: "#42a5f5", fontWeight: 600 }}>
-                                        {notification.senderId?.userName || DefaultUserName}
-                                    </Box>
-                                </Typography>
+              <Paper
+                key={index}
+                elevation={4}
+                sx={{ mb: 3, p: 2.5, borderRadius: 3, cursor: 'pointer', bgcolor: '#1e1e1e', color: '#e0e0e0' }}
+                onClick={() => handleClick(notification)}
+              >
+                <ListItem alignItems="flex-start" disableGutters>
+                  <ListItemText
+                    primary={
+                      <Stack direction="row" alignItems="center" spacing={1}>
+                        {!notification.isRead && <CircleIcon sx={{ fontSize: 10, color: '#42a5f5' }} />}
+                        <Typography variant="subtitle1" fontWeight="600" color="#fff" component="span">
+                          {notification.message}
+                        </Typography>
+                      </Stack>
+                    }
+                    primaryTypographyProps={{ component: 'span' }}
+                    secondary={
+                      <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mt: 0.5 }}>
+                        <Typography
+                          variant="caption"
+                          component="span"
+                          sx={{ color: '#aaa', cursor: 'pointer' }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/users/${notification.senderId?._id}`);
+                          }}
+                        >
+                          From <Box component="span" sx={{ color: '#42a5f5', fontWeight: 600 }}>{notification.senderId?.userName || DefaultUserName}</Box>
+                        </Typography>
 
-                                <Typography
-                                variant="caption"
-                                component="span"
-                                sx={{ color: "#888", ml: "auto", fontStyle: "italic" }}
-                                >
-                                {new Date(notification.createdAt).toLocaleString()}
-                                </Typography>
-                            </Stack>
-                        }
-                        secondaryTypographyProps={{ component: "span" }}
-                    />
-                    </ListItem>
-                </Paper>
+                        <Typography variant="caption" component="span" sx={{ color: '#888', ml: 'auto', fontStyle: 'italic' }}>
+                          {new Date(notification.createdAt).toLocaleString()}
+                        </Typography>
+                      </Stack>
+                    }
+                    secondaryTypographyProps={{ component: 'span' }}
+                  />
+                </ListItem>
+              </Paper>
             ))
           )}
         </List>
+
+        {/* Load More button */}
+        {page < totalPages && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                onClick={handleLoadMore} disabled={loading}>
+                {loading ? 'Loading...' : 'Load More'}
+            </Button>
+          </Box>
+        )}
       </Container>
     </Box>
   );
