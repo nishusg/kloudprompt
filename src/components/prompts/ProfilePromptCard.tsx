@@ -43,7 +43,7 @@ const ProfilePromptCard: React.FC<{
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           display: '-webkit-box',
-          WebkitLineClamp: 4,
+          WebkitLineClamp: 2,
           WebkitBoxOrient: 'vertical',
         }}
       >

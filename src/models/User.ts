@@ -23,3 +23,8 @@ export interface UpdateUserDto {
   bio?: string;
   socialLinks?: { [key: string]: string };
 }
+
+export interface UserStats{
+    totalPrompts: string,
+    totalViews: string
+}

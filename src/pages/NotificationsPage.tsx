@@ -21,7 +21,7 @@ import { Notification } from "../models/Notification";
 import { DefaultUserName } from "../utils/Constants";
 import { useAuth } from "../context/AuthContext";
 
-const PAGE_LIMIT = 1;
+const PAGE_LIMIT = 10;
 
 const NotificationsPage = () => {
   const { user: loggedInUser } = useAuth();
@@ -116,7 +116,7 @@ const NotificationsPage = () => {
                 p: 4,
                 textAlign: "center",
                 borderRadius: 3,
-                bgcolor: "#1e1e1e",
+                bgcolor: "#121212",
                 color: "#bbb",
               }}
             >
@@ -136,7 +136,7 @@ const NotificationsPage = () => {
               <Paper
                 key={index}
                 elevation={4}
-                sx={{ mb: 3, p: 2.5, borderRadius: 3, cursor: 'pointer', bgcolor: '#1e1e1e', color: '#e0e0e0' }}
+                sx={{ mb: 3, p: 2.5, borderRadius: 3, cursor: 'pointer', bgcolor: '#121212', color: '#e0e0e0' }}
                 onClick={() => handleClick(notification)}
               >
                 <ListItem alignItems="flex-start" disableGutters>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getUserPrompts, deletePrompt, toggleBookmarkPrompt } from '../../services/PromptService';
 import { getUserBookmarks } from '../../services/BookmarkService';
-import { Prompt } from '../../models';
+import { Prompt, UserStats } from '../../models';
 import {
   Container,
   Box,
@@ -22,6 +22,7 @@ import PromptActivityGraph from '../../components/prompts/PromptActivityGraph';
 import { DefaultUserName } from '../../utils/Constants';
 import { useSnackbar } from '../../context/SnackbarContext';
 import { VerificationStatus } from '../../utils/Enum';
+import { getUserStats } from '../../services/UserService';
 
 const ProfilePage: React.FC = () => {
   const { user: loggedInUser, loading: authLoading } = useAuth();
@@ -30,6 +31,7 @@ const ProfilePage: React.FC = () => {
 
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [bookmarkedPrompts, setBookmarkedPrompts] = useState<Prompt[]>([]);
+  const [userStats, setUserStats] = useState<UserStats>();
   const [loadingData, setLoadingData] = useState(true);
   const [view, setView] = useState<'prompts' | 'bookmarks'>('prompts');
 
@@ -38,12 +40,14 @@ const ProfilePage: React.FC = () => {
       if (loggedInUser?._id) {
         try {
           setLoadingData(true);
-          const [userPrompts, bookmarks] = await Promise.all([
+          const [userPrompts, bookmarks, stats] = await Promise.all([
             getUserPrompts(loggedInUser._id),
             getUserBookmarks(loggedInUser._id),
+            getUserStats(loggedInUser._id)
           ]);
           setPrompts(userPrompts);
           setBookmarkedPrompts(bookmarks);
+          setUserStats(stats);
         } catch (error) {
           console.error('Failed to fetch profile data:', error);
         } finally {
@@ -325,6 +329,46 @@ const ProfilePage: React.FC = () => {
           </Stack>
         </Paper>
 
+        <Box sx={{ display: 'flex', gap: 3, mt: 2, mb: 3 }}>
+          <Paper
+            sx={{
+              p: 2,
+              borderRadius: 2,
+              textAlign: 'center',
+              flex: 1,
+              bgcolor: '#121212',
+              color: '#fff',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
+            }}
+          >
+            <Typography variant="h6" color="#aaa">
+              Total Prompts
+            </Typography>
+            <Typography variant="h5" fontWeight="bold">
+              {userStats?.totalPrompts || 0}
+            </Typography>
+          </Paper>
+
+          <Paper
+            sx={{
+              p: 2,
+              borderRadius: 2,
+              textAlign: 'center',
+              flex: 1,
+              bgcolor: '#121212',
+              color: '#fff',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
+            }}
+          >
+            <Typography variant="h6" color="#aaa">
+              Total Views
+            </Typography>
+            <Typography variant="h5" fontWeight="bold">
+              {userStats?.totalViews || 0}
+            </Typography>
+          </Paper>
+        </Box>
+
         {/* Prompt Activity Graph */}
         <PromptActivityGraph prompts={prompts} />
 
@@ -360,14 +404,14 @@ const ProfilePage: React.FC = () => {
               px: 3,
               fontWeight: 600,
               textTransform: 'none',
-              bgcolor: view === 'bookmarks' ? '#42a5f5' : 'transparent', // Medium-light gray
-              color: view === 'bookmarks' ? '#000' : '#e0e0e0',           // Light gray text
+              bgcolor: view === 'bookmarks' ? '#42a5f5' : 'transparent',
+              color: view === 'bookmarks' ? '#000' : '#e0e0e0',
               borderColor: '#42a5f5',
               boxShadow: view === 'bookmarks'
                 ? '0 4px 14px rgba(158,158,158,0.4)'
                 : 'none',
               '&:hover': {
-                bgcolor: '#42a5f5',                                      // Slightly lighter on hover
+                bgcolor: '#42a5f5',
                 color: '#000',
                 boxShadow: '0 6px 20px rgba(189,189,189,0.5)',
               },

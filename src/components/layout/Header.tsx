@@ -109,7 +109,7 @@ const Header: React.FC = () => {
                 disableScrollLock 
                 PaperProps={{
                   sx: {
-                    bgcolor: '#1e1e1e',
+                    bgcolor: '#121212',
                     color: '#fff',
                     borderRadius: 2,
                     border: '1px solid #333',

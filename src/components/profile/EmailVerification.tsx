@@ -4,11 +4,11 @@ import { Box, Button, Container, Paper, Typography, Stack, TextField } from '@mu
 import { useSnackbar } from '../../context/SnackbarContext';
 import { useAuth } from '../../context/AuthContext';
 import { requestOtp, verifyOtp } from '../../services/OtpService';
-import { OTPPurpose } from '../../utils/Enum';
+import { OTPPurpose, VerificationStatus } from '../../utils/Enum';
 import { useNavigate } from 'react-router-dom';
 
 const EmailVerification: React.FC = () => {
-  const { user: loggedInUser } = useAuth();
+  const { user: loggedInUser, setUser } = useAuth();
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const email = loggedInUser?.email || '';
@@ -45,6 +45,10 @@ const EmailVerification: React.FC = () => {
     try {
       await verifyOtp(email, otp, OTPPurpose.Register);
       showSnackbar('Email verified successfully!', 'success');
+
+      if (loggedInUser && setUser) {
+        setUser({ ...loggedInUser, verificationStatus: VerificationStatus.Verified });
+      }
 
       setTimeout(() => navigate('/profile/' + loggedInUser?._id), 1500);
     } catch (error: any) {

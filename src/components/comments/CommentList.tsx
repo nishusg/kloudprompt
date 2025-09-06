@@ -148,7 +148,7 @@ export const CommentList: React.FC<CommentListProps> = ({ promptId, limit = 5 })
         <Alert
           severity="info"
           sx={{
-            bgcolor: "#1e1e1e",
+            bgcolor: "#121212",
             color: "#fff",
             border: "1px solid #333",
             mb: 2,

@@ -104,7 +104,7 @@ const LeaderboardPage = () => {
                     px: { xs: 2, sm: 3 },
                     py: { xs: 1.5, sm: 2 },
                     borderRadius: 3,
-                    bgcolor: "#1e1e1e",
+                    bgcolor: "#121212",
                     color: "#e0e0e0",
                     display: "flex",
                     flexDirection: "row",

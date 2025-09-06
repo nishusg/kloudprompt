@@ -110,7 +110,7 @@ const TrendingPromptsPage = () => {
                 p: 2.5,
                 borderRadius: 3,
                 cursor: "pointer",
-                bgcolor: "#1e1e1e",
+                bgcolor: "#121212",
                 color: "#e0e0e0",
                 transition: "0.3s",
                 border: "1px solid transparent",

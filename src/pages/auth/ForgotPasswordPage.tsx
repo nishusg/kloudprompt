@@ -56,7 +56,7 @@ const ForgotPasswordPage: React.FC = () => {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', py: 4 }}>
       <Container component="main" maxWidth="xs">
-        <Card sx={{ bgcolor: '#1E1E1E', color: '#fff', borderRadius: 3 }}>
+        <Card sx={{ bgcolor: '#121212', color: '#fff', borderRadius: 3 }}>
           <CardContent sx={{ p: 4 }}>
             <Typography component="h1" variant="h5" align="center" gutterBottom sx={{ fontWeight: 'bold' }}>
               Forgot Password
@@ -76,7 +76,7 @@ const ForgotPasswordPage: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
                   variant="outlined"
-                  InputProps={{ style: { color: '#fff', backgroundColor: '#1e1e1e' } }}
+                  InputProps={{ style: { color: '#fff', backgroundColor: '#121212' } }}
                   InputLabelProps={{ style: { color: '#bbb' } }}
                 />
               )}
@@ -92,7 +92,7 @@ const ForgotPasswordPage: React.FC = () => {
                   onChange={(e) => setOtp(e.target.value)}
                   disabled={loading}
                   variant="outlined"
-                  InputProps={{ style: { color: '#fff', backgroundColor: '#1e1e1e' } }}
+                  InputProps={{ style: { color: '#fff', backgroundColor: '#121212' } }}
                   InputLabelProps={{ style: { color: '#bbb' } }}
                 />
               )}
@@ -110,7 +110,7 @@ const ForgotPasswordPage: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={loading}
                     variant="outlined"
-                    InputProps={{ style: { color: '#fff', backgroundColor: '#1e1e1e' } }}
+                    InputProps={{ style: { color: '#fff', backgroundColor: '#121212' } }}
                     InputLabelProps={{ style: { color: '#bbb' } }}
                   />
                   <TextField
@@ -124,7 +124,7 @@ const ForgotPasswordPage: React.FC = () => {
                     onChange={(e) => setConfirm(e.target.value)}
                     disabled={loading}
                     variant="outlined"
-                    InputProps={{ style: { color: '#fff', backgroundColor: '#1e1e1e' } }}
+                    InputProps={{ style: { color: '#fff', backgroundColor: '#121212' } }}
                     InputLabelProps={{ style: { color: '#bbb' } }}
                   />
                 </>

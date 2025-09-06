@@ -158,7 +158,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
                   SelectProps={{
                     MenuProps: {
                       PaperProps: {
-                        sx: { bgcolor: "#1e1e1e", color: "#fff" },
+                        sx: { bgcolor: "#121212", color: "#fff" },
                       },
                       disableScrollLock: true,
                     },
@@ -192,7 +192,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
                   SelectProps={{
                     MenuProps: {
                       PaperProps: {
-                        sx: { bgcolor: "#1e1e1e", color: "#fff" },
+                        sx: { bgcolor: "#121212", color: "#fff" },
                       },
                       disableScrollLock: true,
                     },
@@ -226,7 +226,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
                   SelectProps={{
                     MenuProps: {
                       PaperProps: {
-                        sx: { bgcolor: "#1e1e1e", color: "#fff" },
+                        sx: { bgcolor: "#121212", color: "#fff" },
                       },
                       disableScrollLock: true,
                     },

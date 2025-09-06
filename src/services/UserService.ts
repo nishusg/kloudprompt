@@ -1,5 +1,5 @@
 import apiClient from './ApiClient';
-import { User, UpdateUserDto } from '../models/User';
+import { User, UpdateUserDto, UserStats } from '../models/User';
 import { Prompt } from '../models/Prompt';
 import { handleApiError } from './UtilsService';
 import { AuthResponse } from '../context/AuthContext';
@@ -92,6 +92,16 @@ export const getUserPrompts = async (userId: string): Promise<Prompt[]> => {
   try {
     const response = await apiClient.get(`/users/${userId}/prompts`);
     return response.data.data.prompts;
+  } catch (err) {
+    const message = handleApiError(err, "Failed to fetch user prompts");
+    throw new Error(message);
+  }
+};
+
+export const getUserStats = async (userId: string): Promise<UserStats> => {
+  try {
+    const response = await apiClient.get(`/users/${userId}/userStats`);
+    return response.data.data.stats;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch user prompts");
     throw new Error(message);

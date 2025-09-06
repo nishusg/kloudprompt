@@ -205,13 +205,13 @@ const ExplorePage: React.FC = () => {
                 value={modelType || ""}
                 onChange={(e) => setModelType(e.target.value || null)}
                 sx={{
-                  bgcolor: "rgba(40, 40, 40, 0.8)",
+                  bgcolor: "#121212",
                   borderRadius: "12px",
                   color: "#fff",
                   "& .MuiSelect-icon": { color: "#fff" },
                 }}
                 MenuProps={{
-                  PaperProps: { sx: { bgcolor: "#1e1e1e", color: "#fff" } },
+                  PaperProps: { sx: { bgcolor: "#121212", color: "#fff" } },
                   disableScrollLock: true,
                 }}
               >
@@ -234,13 +234,13 @@ const ExplorePage: React.FC = () => {
                 value={generationType || ""}
                 onChange={(e) => setGenerationType(e.target.value || null)}
                 sx={{
-                  bgcolor: "rgba(40, 40, 40, 0.8)",
+                  bgcolor: "#121212",
                   borderRadius: "12px",
                   color: "#fff",
                   "& .MuiSelect-icon": { color: "#fff" },
                 }}
                 MenuProps={{
-                  PaperProps: { sx: { bgcolor: "#1e1e1e", color: "#fff" } },
+                  PaperProps: { sx: { bgcolor: "#121212", color: "#fff" } },
                   disableScrollLock: true,
                 }}
               >
@@ -263,13 +263,13 @@ const ExplorePage: React.FC = () => {
                 value={category || ""}
                 onChange={(e) => setCategory(e.target.value || null)}
                 sx={{
-                  bgcolor: "rgba(40, 40, 40, 0.8)",
+                  bgcolor: "#121212",
                   borderRadius: "12px",
                   color: "#fff",
                   "& .MuiSelect-icon": { color: "#fff" },
                 }}
                 MenuProps={{
-                  PaperProps: { sx: { bgcolor: "#1e1e1e", color: "#fff" } },
+                  PaperProps: { sx: { bgcolor: "#121212", color: "#fff" } },
                   disableScrollLock: true,
                 }}
               >

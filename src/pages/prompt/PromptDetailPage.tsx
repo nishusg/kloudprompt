@@ -275,7 +275,7 @@ const PromptDetailPage: React.FC = () => {
           fullWidth
           PaperProps={{
             sx: {
-              bgcolor: '#1c1c1c', // darker background
+              bgcolor: '#121212', // darker background
               color: '#fff',
               borderRadius: 2,
               boxShadow: '0 0 20px rgba(0,0,0,0.5)',
@@ -294,7 +294,7 @@ const PromptDetailPage: React.FC = () => {
             Enhance Prompt
           </DialogTitle>
 
-          <DialogContent dividers sx={{ bgcolor: '#1c1c1c', py: 3 }}>
+          <DialogContent dividers sx={{ bgcolor: '#121212', py: 3 }}>
             <Stack spacing={3}>
               {/* Provider Dropdown */}
               <TextField
@@ -319,7 +319,7 @@ const PromptDetailPage: React.FC = () => {
                 SelectProps={{
                   MenuProps: {
                     PaperProps: {
-                      sx: { bgcolor: "#1e1e1e", color: "#fff" },
+                      sx: { bgcolor: "#121212", color: "#fff" },
                     },
                     disableScrollLock: true,
                   },
@@ -352,7 +352,7 @@ const PromptDetailPage: React.FC = () => {
             </Stack>
           </DialogContent>
 
-          <DialogActions sx={{ bgcolor: '#1c1c1c', px: 3, py: 2 }}>
+          <DialogActions sx={{ bgcolor: '#121212', px: 3, py: 2 }}>
             <Button
               onClick={() => setEnhanceDialogOpen(false)}
               sx={{

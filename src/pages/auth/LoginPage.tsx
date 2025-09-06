@@ -55,7 +55,7 @@ const LoginPage: React.FC = () => {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', py: 4 }}>
       <Container component="main" maxWidth="xs">
-        <Card sx={{ bgcolor: '#1E1E1E', color: '#fff', borderRadius: 3 }}>
+        <Card sx={{ bgcolor: '#121212', color: '#fff', borderRadius: 3 }}>
           <CardContent sx={{ p: 4 }}>
             <Typography component="h1" variant="h5" align="center" gutterBottom sx={{ fontWeight: 'bold' }}>
               Sign in to your account
@@ -80,7 +80,7 @@ const LoginPage: React.FC = () => {
                 helperText={fieldErrors.email}
                 disabled={loading}
                 variant="outlined"
-                InputProps={{ style: { color: '#fff', backgroundColor: '#1e1e1e' } }}
+                InputProps={{ style: { color: '#fff', backgroundColor: '#121212' } }}
                 InputLabelProps={{ style: { color: '#bbb' } }}
               />
 
@@ -100,7 +100,7 @@ const LoginPage: React.FC = () => {
                 disabled={loading}
                 InputLabelProps={{ style: { color: '#bbb' } }}
                 InputProps={{
-                  style: { color: '#fff', backgroundColor: '#1e1e1e' },
+                  style: { color: '#fff', backgroundColor: '#121212' },
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={() => setShowPassword(prev => !prev)} edge="end" sx={{ color: '#ccc' }} type="button">
