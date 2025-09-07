@@ -37,6 +37,7 @@ export const getPromptById = async (id: string): Promise<Prompt> => {
     const response = await apiClient.get(`/prompts/${id}`);
     const promptData = response.data.data.prompt;
     promptData.isBookmarkedByCurrentUser = response.data.data.isBookmarked;
+    promptData.normalizeCount = response.data.data.normalizeCount;
     return promptData;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch prompt");

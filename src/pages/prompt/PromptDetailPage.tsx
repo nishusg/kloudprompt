@@ -187,7 +187,7 @@ const PromptDetailPage: React.FC = () => {
         {/* Stats */}
         <Stack direction="row" spacing={2} justifyContent="center" sx={{ mb: 3 }}>
           <Stack direction="row" spacing={1} alignItems="center" sx={{ color: '#aaa' }}>
-            <VisibilityIcon fontSize="small" /> <Typography variant="body2">{prompt.views} views</Typography>
+            <VisibilityIcon fontSize="small" /> <Typography variant="body2">{prompt.normalizeCount} views</Typography>
           </Stack>
         </Stack>
 

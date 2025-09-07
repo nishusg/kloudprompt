@@ -13,8 +13,8 @@ import {
   Link,
   Chip,
 } from '@mui/material';
-import { getUserById, getUserPrompts } from '../../services/UserService';
-import { User } from '../../models/User';
+import { getUserById, getUserPrompts, getUserStats } from '../../services/UserService';
+import { User, UserStats } from '../../models/User';
 import { Prompt } from '../../models/Prompt';
 import ProfilePromptCard from '../../components/prompts/ProfilePromptCard';
 import { DefaultUserName } from '../../utils/Constants';
@@ -26,18 +26,21 @@ const UserProfilePage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userStats, setUserStats] = useState<UserStats>();
 
   useEffect(() => {
     if (!userId) return;
 
     const fetchData = async () => {
       try {
-        const [userData, userPrompts] = await Promise.all([
+        const [userData, userPrompts, stats] = await Promise.all([
           getUserById(userId),
           getUserPrompts(userId),
+          getUserStats(userId)
         ]);
         setUser(userData);
         setPrompts(userPrompts);
+        setUserStats(stats);
       } catch (err) {
         console.error(err);
       } finally {
@@ -167,6 +170,46 @@ const UserProfilePage: React.FC = () => {
             </Box>
           </Stack>
         </Paper>
+
+        <Box sx={{ display: 'flex', gap: 3, mt: 2, mb: 3 }}>
+          <Paper
+            sx={{
+              p: 2,
+              borderRadius: 2,
+              textAlign: 'center',
+              flex: 1,
+              bgcolor: '#121212',
+              color: '#fff',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
+            }}
+          >
+            <Typography variant="h6" color="#aaa">
+              Total Prompts
+            </Typography>
+            <Typography variant="h5" fontWeight="bold">
+              {userStats?.totalPrompts || 0}
+            </Typography>
+          </Paper>
+
+          <Paper
+            sx={{
+              p: 2,
+              borderRadius: 2,
+              textAlign: 'center',
+              flex: 1,
+              bgcolor: '#121212',
+              color: '#fff',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
+            }}
+          >
+            <Typography variant="h6" color="#aaa">
+              Total Views
+            </Typography>
+            <Typography variant="h5" fontWeight="bold">
+              {userStats?.totalViews || 0}
+            </Typography>
+          </Paper>
+        </Box>
 
         {/* User Prompts */}
         <Typography variant="h6" sx={{ mb: 2, color: '#90caf9' }}>

@@ -200,7 +200,7 @@ const TrendingPromptsPage = () => {
                           component="span"
                           sx={{ color: "#888", ml: "auto" }}
                         >
-                          👁 {prompt.views ?? 0} views
+                          👁 {prompt.normalizeCount ?? 0} views
                         </Typography>
                       </Stack>
                     </Stack>
