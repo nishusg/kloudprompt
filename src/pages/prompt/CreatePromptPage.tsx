@@ -10,7 +10,7 @@ import {
   CircularProgress,
   Divider,
 } from '@mui/material';
-import CreateIcon from '@mui/icons-material/Create';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import PromptForm from '../../components/prompts/PromptForm';
 import { createPrompt } from '../../services/PromptService';
 import { useAuth } from '../../context/AuthContext';
@@ -77,7 +77,7 @@ const CreatePromptPage: React.FC = () => {
                 flexWrap: "wrap",
               }}
             >
-              <CreateIcon
+              <AddCircleIcon
                 sx={{
                   fontSize: { xs: 28, sm: 44, md: 50 },
                   color: "#fff",
@@ -97,7 +97,7 @@ const CreatePromptPage: React.FC = () => {
                   letterSpacing: { xs: 0.5, md: 1 },
                 }}
               >
-                Create Prompt
+                Add new prompt
               </Typography>
             </Box>
 
