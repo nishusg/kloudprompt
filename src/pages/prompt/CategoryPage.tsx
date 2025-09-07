@@ -13,7 +13,7 @@ import {
 import { Prompt } from "../../models";
 import { getPromptsByCategory } from "../../services/PromptService";
 
-const PromptCategoryPage = () => {
+const CategoryPage = () => {
   const { category } = useParams<{ category: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const [prompts, setPrompts] = useState<Prompt[]>([]);
@@ -27,9 +27,9 @@ const PromptCategoryPage = () => {
     const fetchPrompts = async () => {
       try {
         setLoading(true);
-        const data = await getPromptsByCategory(category, 12, page);
+        const data = await getPromptsByCategory(category, 6, page);
         setPrompts(data.prompts);
-        // setTotalPages(data.totalPages);
+        setTotalPages(Number(data.totalPages));
       } catch (err) {
         console.error("Failed to load prompts:", err);
       } finally {
@@ -151,4 +151,4 @@ const PromptCategoryPage = () => {
   );
 };
 
-export default PromptCategoryPage;
+export default CategoryPage;

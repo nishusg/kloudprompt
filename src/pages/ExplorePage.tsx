@@ -1,172 +1,371 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
 import {
-  Box,
   Container,
   Typography,
+  Box,
+  Grid,
+  Alert,
+  TextField,
+  InputAdornment,
+  IconButton,
   Paper,
-  Stack,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Pagination,
   Button,
-  Avatar,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { getPromptsByCategory } from "../services/PromptService";
-import { PromptCategoryEnum } from "../utils/Enum";
-import { Prompt } from "../models/Prompt";
-import ExploreIcon from '@mui/icons-material/Explore';
+  Skeleton
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import ExploreIcon from "@mui/icons-material/Explore";
+import ClearIcon from '@mui/icons-material/Clear';
+import { getPrompts } from '../services/PromptService';
+import { Prompt } from '../models/Prompt';
+import ExplorePromptCard from '../components/prompts/ExplorePromptCard';
+import { GenerationTypeEnum, ProviderTypeEnum, PromptCategoryEnum } from '../utils/Enum';
 
-const ExplorePage = () => {
-  const [categoryPrompts, setCategoryPrompts] = useState<
-    Record<string, Prompt[]>
-  >({});
-  const navigate = useNavigate();
+const ExplorePage: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [allPrompts, setAllPrompts] = useState<Prompt[]>([]);
+  const [filteredPrompts, setFilteredPrompts] = useState<Prompt[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [modelType, setModelType] = useState<string | null>(null);
+  const [generationType, setGenerationType] = useState<string | null>(null);
+  const [category, setCategory] = useState<string | null>(null); // ✅ NEW state
+
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 9;
+
+  // Debounced search state
+  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedSearch(searchTerm), 400);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAllPrompts = async () => {
       try {
-        const results: Record<string, Prompt[]> = {};
-        for (const category of Object.values(PromptCategoryEnum)) {
-          const data = await getPromptsByCategory(category, 6); // fetch top 6 for each category
-          results[category] = data.prompts || [];
-        }
-        setCategoryPrompts(results);
+        setLoading(true);
+        const promptsData = await getPrompts();
+        setAllPrompts(promptsData);
+        setFilteredPrompts(promptsData);
       } catch (err) {
-        console.error("Failed to fetch prompts by category:", err);
+        setError('Failed to load prompts. Please try again later.');
+      } finally {
+        setLoading(false);
       }
     };
-    fetchData();
+    fetchAllPrompts();
   }, []);
 
-  const handleCardClick = (id: string) => {
-    navigate(`/prompts/${id}`);
-  };
+  useEffect(() => {
+    if (!allPrompts) return;
+    const lowerTerm = debouncedSearch.toLowerCase();
+
+    const results = allPrompts.filter((prompt) => {
+      const titleMatch = prompt.title.toLowerCase().includes(lowerTerm);
+      const contentMatch = prompt.content.toLowerCase().includes(lowerTerm);
+      const matchesModelType = !modelType || prompt.modelType === modelType;
+      const matchesGenerationType =
+        !generationType || prompt.generationType === generationType;
+      const matchesCategory = !category || prompt.category === category;
+
+      return (titleMatch || contentMatch) && matchesModelType && matchesGenerationType && matchesCategory;
+    });
+
+    setFilteredPrompts(results);
+    setPage(1);
+  }, [debouncedSearch, allPrompts, modelType, generationType, category]);
+
+  const paginatedPrompts = filteredPrompts.slice(
+    (page - 1) * rowsPerPage,
+    page * rowsPerPage
+  );
 
   return (
-    <Box sx={{ bgcolor: "#0a0a0a", minHeight: "100vh", py: 4 }}>
-      <Container maxWidth="md">
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            mb: 3,
-            gap: { xs: 1.5, sm: 2 },
-            flexWrap: "wrap",
-          }}
-        >
-          <ExploreIcon
+    <Box sx={{ minHeight: "80vh", bgcolor: "#0a0a0a", py: 4 }}>        
+        {/* Main Content */}
+        <Container maxWidth="md">
+
+          {/* Header */}
+          <Box
             sx={{
-              fontSize: { xs: 28, sm: 44, md: 50 },
-              color: "#fff",
-              transition: "transform 0.3s ease",
-              "&:hover": { transform: "rotate(-5deg) scale(1.05)" },
-            }}
-          />
-          <Typography
-            variant="h3"
-            fontWeight="bold"
-            component="h1"
-            sx={{
-              fontSize: { xs: "1.6rem", sm: "2rem", md: "2.5rem" },
-              background: "#fff",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              letterSpacing: { xs: 0.5, md: 1 },
+              display: "flex",
+              alignItems: "center",
+              mb: 3,
+              gap: { xs: 1.5, sm: 2 },
+              flexWrap: "wrap",
             }}
           >
-            Explore Prompts
-          </Typography>
-        </Box>
+            <ExploreIcon
+              sx={{
+                fontSize: { xs: 28, sm: 44, md: 50 },
+                color: "#fff",
+                transition: "transform 0.3s ease",
+                "&:hover": { transform: "rotate(-5deg) scale(1.05)" },
+              }}
+            />
+            <Typography
+              variant="h3"
+              fontWeight="bold"
+              component="h1"
+              sx={{
+                fontSize: { xs: "1.6rem", sm: "2rem", md: "2.5rem" },
+                background: "#fff",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                letterSpacing: { xs: 0.5, md: 1 },
+              }}
+            >
+              Explore Prompts
+            </Typography>
+          </Box>
 
-        {Object.entries(categoryPrompts).map(([category, prompts]) =>
-          prompts.length > 0 ? (
-            <Box key={category} sx={{ mb: 6 }}>
-              {/* Section Header */}
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{ mb: 2 }}
-              >
-                <Typography
-                  variant="h5"
-                  fontWeight="600"
-                  sx={{ color: "#fff" }}
-                >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </Typography>
-                <Button
-                  variant="text"
-                  sx={{ color: "#42a5f5" }}
-                  onClick={() => navigate(`/categories/${category}`)}
-                >
-                  See All →
-                </Button>
-              </Stack>
 
-              {/* Horizontal Scrollable Row */}
-              <Box
+          {/* Search */}
+          <Paper
+            elevation={3}
+            sx={{
+              maxWidth: 200,
+              mx: 'auto',
+              mb: 3,
+              p: 1,
+              borderRadius: 50,
+              backgroundColor: '#121212',
+              backdropFilter: 'blur(6px)',
+            }}
+          >
+            <TextField
+              fullWidth
+              placeholder="Search prompts..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              variant="standard"
+              InputProps={{
+                disableUnderline: true,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: '#fff' }} />
+                  </InputAdornment>
+                ),
+                endAdornment: searchTerm && (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setSearchTerm('')}
+                      size="small"
+                      sx={{ color: '#fff' }}
+                    >
+                      <ClearIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                px: 2,
+                color: '#fff',
+                '& .MuiInputBase-input': { color: '#fff' },
+                '& .MuiInputBase-input::placeholder': {
+                  color: '#fff',
+                  opacity: 0.8,
+                },
+              }}
+            />
+          </Paper>
+
+          {/* Filters */}
+          <Box
+            sx={{
+              textAlign: "center",
+              mb: 4,
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" }, // ✅ stacked on mobile, row on larger screens
+              justifyContent: "center",
+              gap: 2,
+              flexWrap: "wrap",
+              alignItems: { xs: "stretch", sm: "center" }, // full width on mobile
+            }}
+          >
+            {/* Model Type */}
+            <FormControl
+              sx={{ minWidth: { xs: "100%", sm: 160, md: 200 } }} // ✅ full width on mobile
+              size="small"
+            >
+              <InputLabel sx={{ color: "#ccc" }}>Model Type</InputLabel>
+              <Select
+                value={modelType || ""}
+                onChange={(e) => setModelType(e.target.value || null)}
                 sx={{
-                  display: "flex",
-                  gap: 2,
-                  overflowX: "auto",
-                  pb: 1,
-                  "&::-webkit-scrollbar": { display: "none" },
+                  bgcolor: "#121212",
+                  borderRadius: "12px",
+                  color: "#fff",
+                  "& .MuiSelect-icon": { color: "#fff" },
+                }}
+                MenuProps={{
+                  PaperProps: { sx: { bgcolor: "#121212", color: "#fff" } },
+                  disableScrollLock: true,
                 }}
               >
-                {prompts.map((p) => (
-                  <Paper
-                    key={p._id}
-                    onClick={() => handleCardClick(p._id)}
+                <MenuItem value="">All</MenuItem>
+                {Object.values(ProviderTypeEnum).map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Generation Type */}
+            <FormControl
+              sx={{ minWidth: { xs: "100%", sm: 160, md: 200 } }}
+              size="small"
+            >
+              <InputLabel sx={{ color: "#ccc" }}>Generation Type</InputLabel>
+              <Select
+                value={generationType || ""}
+                onChange={(e) => setGenerationType(e.target.value || null)}
+                sx={{
+                  bgcolor: "#121212",
+                  borderRadius: "12px",
+                  color: "#fff",
+                  "& .MuiSelect-icon": { color: "#fff" },
+                }}
+                MenuProps={{
+                  PaperProps: { sx: { bgcolor: "#121212", color: "#fff" } },
+                  disableScrollLock: true,
+                }}
+              >
+                <MenuItem value="">All</MenuItem>
+                {Object.values(GenerationTypeEnum).map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Category */}
+            <FormControl
+              sx={{ minWidth: { xs: "100%", sm: 160, md: 200 } }}
+              size="small"
+            >
+              <InputLabel sx={{ color: "#ccc" }}>Category</InputLabel>
+              <Select
+                value={category || ""}
+                onChange={(e) => setCategory(e.target.value || null)}
+                sx={{
+                  bgcolor: "#121212",
+                  borderRadius: "12px",
+                  color: "#fff",
+                  "& .MuiSelect-icon": { color: "#fff" },
+                }}
+                MenuProps={{
+                  PaperProps: { sx: { bgcolor: "#121212", color: "#fff" } },
+                  disableScrollLock: true,
+                }}
+              >
+                <MenuItem value="">All</MenuItem>
+                {Object.values(PromptCategoryEnum).map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+
+          <Box
+            sx={{
+              textAlign: "center",
+              mb: 4,
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" }, 
+              justifyContent: "center",
+              gap: 2,
+              flexWrap: "wrap",
+              alignItems: { xs: "stretch", sm: "center" },
+            }}
+          >
+            {/* Clear Filters - always below all filters */}
+            {(modelType || generationType || category) && (
+              <Box sx={{ width: { xs: "100%", sm: "auto" }, mt: { xs: 1, sm: 0 } }}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  fullWidth={true} // ✅ full width on mobile
+                  onClick={() => {
+                    setModelType(null);
+                    setGenerationType(null);
+                    setCategory(null);
+                  }}
+                  sx={{
+                    color: "#fff",
+                    bgcolor: "rgba(40, 40, 40, 0.8)",
+                    borderRadius: "12px",
+                    borderColor: "#555",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              </Box>
+            )}
+          </Box>
+
+          {/* Results */}
+          {loading ? (
+            <Grid container spacing={4}>
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <Grid item xs={12} sm={6} md={4} key={idx}>
+                  <Skeleton variant="rectangular" height={160} sx={{ borderRadius: 3 }} />
+                </Grid>
+              ))}
+            </Grid>
+          ) : error ? (
+            <Alert severity="error">{error}</Alert>
+          ) : (
+            <>
+              <Grid container spacing={4}>
+                {paginatedPrompts.length > 0 ? (
+                  paginatedPrompts.map((prompt) => (
+                    <ExplorePromptCard key={prompt._id} prompt={prompt} />
+                  ))
+                ) : (
+                  <Grid item xs={12}>
+                    <Typography
+                      align="center"
+                      color="grey.500"
+                      sx={{ mt: 4, fontStyle: 'italic' }}
+                    >
+                      No prompts found. Try changing your search or filters!
+                    </Typography>
+                  </Grid>
+                )}
+              </Grid>
+
+              {/* Pagination */}
+              {filteredPrompts.length > rowsPerPage && (
+                <Box display="flex" justifyContent="center" mt={4}>
+                  <Pagination
+                    count={Math.ceil(filteredPrompts.length / rowsPerPage)}
+                    page={page}
+                    onChange={(_, value) => setPage(value)}
+                    color="primary"
                     sx={{
-                      flex: "0 0 260px",
-                      p: 2,
-                      borderRadius: 3,
-                      bgcolor: "#1e1e1e",
-                      color: "#fff",
-                      cursor: "pointer",
-                      transition: "0.3s",
-                      "&:hover": {
-                        transform: "translateY(-4px)",
-                        boxShadow: "0 8px 20px rgba(66,165,245,0.3)",
+                      '& .MuiPaginationItem-root': {
+                        color: '#fff',
+                        borderColor: 'rgba(255,255,255,0.2)',
                       },
                     }}
-                  >
-                    <Typography
-                      variant="subtitle1"
-                      fontWeight="600"
-                      sx={{ mb: 1 }}
-                    >
-                      {p.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#bbb", mb: 1 }}
-                    >
-                      {p.description.length > 60
-                        ? `${p.description.slice(0, 60)}...`
-                        : p.description}
-                    </Typography>
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                      <Avatar
-                        sx={{
-                          width: 28,
-                          height: 28,
-                          bgcolor: "#42a5f5",
-                          fontSize: "0.8rem",
-                        }}
-                      >
-                        {p.author?.userName?.charAt(0).toUpperCase() || "U"}
-                      </Avatar>
-                      <Typography variant="caption" sx={{ color: "#aaa" }}>
-                        {p.author?.userName || "Anonymous"}
-                      </Typography>
-                    </Stack>
-                  </Paper>
-                ))}
-              </Box>
-            </Box>
-          ) : null
-        )}
-      </Container>
+                  />
+                </Box>
+              )}
+            </>
+          )}
+        </Container>
     </Box>
   );
 };

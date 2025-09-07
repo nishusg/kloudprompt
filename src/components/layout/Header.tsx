@@ -23,6 +23,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import AddCircle from '@mui/icons-material/AddCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import CategoryIcon from '@mui/icons-material/Category';
 
 const Header: React.FC = () => {
   const { user, logout, loading } = useAuth();
@@ -149,6 +150,12 @@ const Header: React.FC = () => {
                     <LeaderboardIcon fontSize="small" />
                   </ListItemIcon>
                   Leaderboard
+                </MenuItem>
+                <MenuItem onClick={() => handleNavigate('/categories')}>
+                  <ListItemIcon>
+                    <CategoryIcon fontSize="small" />
+                  </ListItemIcon>
+                  Categories
                 </MenuItem>
 
                 {/* Account Section */}

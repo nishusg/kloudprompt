@@ -27,7 +27,8 @@ import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import EmailVerification from './components/profile/EmailVerification';
 import LeaderboardPage from './pages/LeaderboardPage';
 import NotificationsPage from './pages/NotificationsPage';
-import PromptCategoryPage from './pages/prompt/PromptCategoryPage';
+import CategoryPage from './pages/prompt/CategoryPage';
+import AllCategoriesPage from './pages/prompt/AllCategoriesPage';
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -63,7 +64,8 @@ const AppRoutes: React.FC = () => {
             <Route path="/email-verification" element={<EmailVerification />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
-            <Route path="/categories/:category" element={<PromptCategoryPage />} />
+            <Route path="/categories" element={<AllCategoriesPage />} />
+            <Route path="/categories/:category" element={<CategoryPage />} />
           </Route>
 
           {/* Redirect auth users away from login/register */}
