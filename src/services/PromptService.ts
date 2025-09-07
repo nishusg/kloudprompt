@@ -3,31 +3,31 @@ import { Prompt, CreatePromptDto, UpdatePromptDto } from '../models/Prompt';
 import { handleApiError } from './UtilsService';
 import { EnhancePromptRequest, EnhancePromptResponse, LeaderboardResponse } from '../models';
 
-export interface PaginatedPrompts {
-  data: Prompt[];
-  page: number;
-  totalPages: number;
-  totalPrompts: number;
+interface GetPromptsParams {
+  search?: string;
+  modelType?: string;
+  generationType?: string;
+  category?: string;
+  page?: number;
+  limit?: number;
 }
 
-export const getPrompts = async (params: {
-  search?: string;
-  tags?: string[];
-  sort?: string;
-  limit?: number;
-  page?: number;
-} = {}): Promise<Prompt[]> => {
+export const getPrompts = async (params: GetPromptsParams = {}): Promise<{ prompts: Prompt[]; total: number; }> => {
   try {
-    const apiParams: any = { ...params };
-    if (params.tags && params.tags.length > 0) {
-      apiParams.tags = params.tags.join(',');
-    }
+    const response = await apiClient.get('/prompts', {
+      params: {
+        search: params.search || '',
+        modelType: params.modelType || '',
+        generationType: params.generationType || '',
+        category: params.category || '',
+        page: params.page || 1,
+        limit: params.limit || 9,
+      },
+    });
 
-    const response = await apiClient.get('/prompts', { params: apiParams });
-
-    return response.data.data.prompts.prompts;
+    return response.data.data;
   } catch (err) {
-    const message = handleApiError(err, "Failed to fetch prompts");
+    const message = handleApiError(err, 'Failed to fetch prompts');
     throw new Error(message);
   }
 };
@@ -88,16 +88,6 @@ export const getLeaderboard = async (limit: number = 10): Promise<LeaderboardRes
     return response.data.data.leaderboards;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch leaderboard prompts");
-    throw new Error(message);
-  }
-};
-
-export const getUserPrompts = async (userId: string): Promise<Prompt[]> => {
-  try {
-    const response = await apiClient.get(`/users/${userId}/prompts`);
-    return response.data.data.prompts;
-  } catch (err) {
-    const message = handleApiError(err, "Failed to fetch user prompts");
     throw new Error(message);
   }
 };

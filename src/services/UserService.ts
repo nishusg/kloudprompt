@@ -88,10 +88,22 @@ export const updateUser = async (id: string, data: UpdateUserDto): Promise<User>
   }
 };
 
-export const getUserPrompts = async (userId: string): Promise<Prompt[]> => {
+export const getUserPrompts = async (
+  userId: string,
+  page: number = 1,
+  limit: number = 5
+): Promise<{ prompts: Prompt[]; totalPages: number }> => {
   try {
-    const response = await apiClient.get(`/users/${userId}/prompts`);
-    return response.data.data.prompts;
+    const response = await apiClient.get(`/users/${userId}/prompts`, {
+      params: { page, limit },
+    });
+
+    const data = response.data.data;
+
+    return {
+      prompts: data.prompts || [],
+      totalPages: data.totalPages || 1, // backend should return total pages
+    };
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch user prompts");
     throw new Error(message);

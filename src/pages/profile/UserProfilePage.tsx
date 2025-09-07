@@ -1,4 +1,3 @@
-// src/pages/UserProfilePage.tsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -12,6 +11,7 @@ import {
   Stack,
   Link,
   Chip,
+  Pagination,
 } from '@mui/material';
 import { getUserById, getUserPrompts, getUserStats } from '../../services/UserService';
 import { User, UserStats } from '../../models/User';
@@ -23,33 +23,40 @@ import { VerificationStatus } from '../../utils/Enum';
 const UserProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
+
   const [user, setUser] = useState<User | null>(null);
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [loading, setLoading] = useState(true);
   const [userStats, setUserStats] = useState<UserStats>();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const PROMPTS_PER_PAGE = 5; // change as needed
+
+  const fetchData = async (page = 1) => {
+    if (!userId) return;
+    setLoading(true);
+    try {
+      const [userData, userPromptsPage, stats] = await Promise.all([
+        getUserById(userId),
+        getUserPrompts(userId, page, PROMPTS_PER_PAGE),
+        getUserStats(userId)
+      ]);
+
+      setUser(userData);
+      setPrompts(userPromptsPage.prompts);
+      setTotalPages(userPromptsPage.totalPages || 1);
+      setUserStats(stats);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!userId) return;
-
-    const fetchData = async () => {
-      try {
-        const [userData, userPrompts, stats] = await Promise.all([
-          getUserById(userId),
-          getUserPrompts(userId),
-          getUserStats(userId)
-        ]);
-        setUser(userData);
-        setPrompts(userPrompts);
-        setUserStats(stats);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [userId]);
+    fetchData(currentPage);
+  }, [userId, currentPage]);
 
   if (loading)
     return (
@@ -91,7 +98,7 @@ const UserProfilePage: React.FC = () => {
                 Joined on {new Date(user.createdAt).toLocaleDateString()}
               </Typography>
 
-              {/* Email */}
+              {/* Email & Verification */}
               {user.email && (
                 <Typography
                   component={'div'}
@@ -104,7 +111,6 @@ const UserProfilePage: React.FC = () => {
                   }}
                 >
                   {user.email}
-                  {/* Verification Chip */}
                   {user.verificationStatus && (
                     <Chip
                       label={user.verificationStatus === VerificationStatus.Verified ? "Verified" : "Pending"}
@@ -171,43 +177,24 @@ const UserProfilePage: React.FC = () => {
           </Stack>
         </Paper>
 
+        {/* User Stats */}
         <Box sx={{ display: 'flex', gap: 3, mt: 2, mb: 3 }}>
-          <Paper
-            sx={{
-              p: 2,
-              borderRadius: 2,
-              textAlign: 'center',
-              flex: 1,
-              bgcolor: '#121212',
-              color: '#fff',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
-            }}
-          >
-            <Typography variant="h6" color="#aaa">
-              Total Prompts
-            </Typography>
-            <Typography variant="h5" fontWeight="bold">
-              {userStats?.totalPrompts || 0}
-            </Typography>
+          <Paper sx={{
+            p: 2, borderRadius: 2, textAlign: 'center',
+            flex: 1, bgcolor: '#121212', color: '#fff',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.5)'
+          }}>
+            <Typography variant="h6" color="#aaa">Total Prompts</Typography>
+            <Typography variant="h5" fontWeight="bold">{userStats?.totalPrompts || 0}</Typography>
           </Paper>
 
-          <Paper
-            sx={{
-              p: 2,
-              borderRadius: 2,
-              textAlign: 'center',
-              flex: 1,
-              bgcolor: '#121212',
-              color: '#fff',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
-            }}
-          >
-            <Typography variant="h6" color="#aaa">
-              Total Views
-            </Typography>
-            <Typography variant="h5" fontWeight="bold">
-              {userStats?.totalViews || 0}
-            </Typography>
+          <Paper sx={{
+            p: 2, borderRadius: 2, textAlign: 'center',
+            flex: 1, bgcolor: '#121212', color: '#fff',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.5)'
+          }}>
+            <Typography variant="h6" color="#aaa">Total Views</Typography>
+            <Typography variant="h5" fontWeight="bold">{userStats?.totalViews || 0}</Typography>
           </Paper>
         </Box>
 
@@ -219,16 +206,43 @@ const UserProfilePage: React.FC = () => {
         {prompts.length === 0 ? (
           <Typography sx={{ color: '#bbb' }}>No prompts found.</Typography>
         ) : (
-          <Grid container spacing={3}>
-            {prompts.map((prompt) => (
-              <Grid item xs={12} key={prompt._id}>
-                <ProfilePromptCard
-                  prompt={prompt}
-                  onView={() => navigate(`/prompts/${prompt._id}`)}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          <>
+            <Grid container spacing={3}>
+              {prompts.map((prompt) => (
+                <Grid item xs={12} key={prompt._id}>
+                  <ProfilePromptCard
+                    prompt={prompt}
+                    onView={() => navigate(`/prompts/${prompt._id}`)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+
+            {/* Pagination */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+              <Pagination
+                count={totalPages}
+                page={currentPage}
+                onChange={(_, page) => setCurrentPage(page)}
+                sx={{
+                  '& .MuiPaginationItem-root': {
+                    color: '#e0e0e0',
+                    borderColor: 'rgba(255,255,255,0.1)',
+                  },
+                  '& .MuiPaginationItem-root.Mui-selected': {
+                    bgcolor: '#42a5f5',
+                    color: '#000',
+                  },
+                  '& .MuiPaginationItem-root:hover': {
+                    bgcolor: 'rgba(66,165,245,0.2)',
+                  },
+                  '& .MuiPaginationItem-ellipsis': {
+                    color: '#aaa',
+                  },
+                }}
+              />
+            </Box>
+          </>
         )}
       </Container>
     </Box>
