@@ -1,3 +1,4 @@
+// src/pages/ExplorePage.tsx
 import React, { useState, useEffect } from 'react';
 import {
   Container,
@@ -20,12 +21,17 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import ExploreIcon from "@mui/icons-material/Explore";
 import ClearIcon from '@mui/icons-material/Clear';
+import { useSearchParams } from 'react-router-dom';
 import { getPrompts } from '../services/PromptService';
 import { Prompt } from '../models/Prompt';
 import ExplorePromptCard from '../components/prompts/ExplorePromptCard';
 import { GenerationTypeEnum, ProviderTypeEnum, PromptCategoryEnum } from '../utils/Enum';
 
 const ExplorePage: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const initialPage = Number(searchParams.get("page")) || 1;
+
   const [searchTerm, setSearchTerm] = useState('');
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,8 +42,16 @@ const ExplorePage: React.FC = () => {
   const [category, setCategory] = useState<string | null>(null);
   const [totalPrompts, setTotalPrompts] = useState(0);
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(initialPage);
   const rowsPerPage = 9;
+
+  useEffect(() => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("page", page.toString());
+      return newParams;
+    });
+  }, [page, setSearchParams]);
 
   // Debounced search
   const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
@@ -60,7 +74,6 @@ const ExplorePage: React.FC = () => {
           generationType: generationType || undefined,
           category: category || undefined
         });
-
 
         setPrompts(prompts);
         setTotalPrompts(total);
@@ -114,7 +127,7 @@ const ExplorePage: React.FC = () => {
         <Paper
           elevation={3}
           sx={{
-            maxWidth: 200,
+            maxWidth: 300,
             mx: 'auto',
             mb: 3,
             p: 1,
@@ -129,32 +142,34 @@ const ExplorePage: React.FC = () => {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              setPage(1); // reset to first page on search
+              setPage(1);
             }}
             variant="standard"
             InputProps={{
               disableUnderline: true,
               startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: '#fff' }} />
+                <InputAdornment position="start" sx={{ mr: 0.5 }}>
+                  <SearchIcon sx={{ color: '#fff', fontSize: 20 }} />
                 </InputAdornment>
               ),
-              endAdornment: searchTerm && (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => setSearchTerm('')}
-                    size="small"
-                    sx={{ color: '#fff' }}
-                  >
-                    <ClearIcon />
-                  </IconButton>
+              endAdornment: (
+                <InputAdornment position="end" sx={{mr: 0.5}}>
+                  {searchTerm && (
+                    <IconButton
+                      onClick={() => setSearchTerm('')}
+                      size="small"
+                      sx={{ color: '#fff', p: 0.3 }}
+                    >
+                      <ClearIcon fontSize="small" />
+                    </IconButton>
+                  )}
                 </InputAdornment>
               ),
             }}
             sx={{
-              px: 2,
+              px: 1,
               color: '#fff',
-              '& .MuiInputBase-input': { color: '#fff' },
+              '& .MuiInputBase-input': { color: '#fff', py: 0.5 },
               '& .MuiInputBase-input::placeholder': {
                 color: '#fff',
                 opacity: 0.8,

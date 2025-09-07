@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { deletePrompt, toggleBookmarkPrompt } from '../../services/PromptService';
 import { getUserBookmarks } from '../../services/BookmarkService';
@@ -29,6 +29,7 @@ const ProfilePage: React.FC = () => {
   const { user: loggedInUser, loading: authLoading } = useAuth();
   const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [bookmarkedPrompts, setBookmarkedPrompts] = useState<Prompt[]>([]);
@@ -36,9 +37,18 @@ const ProfilePage: React.FC = () => {
   const [loadingData, setLoadingData] = useState(true);
   const [view, setView] = useState<'prompts' | 'bookmarks'>('prompts');
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const initialPage = Number(searchParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 5; // prompts per page
+
+  useEffect(() => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("page", currentPage.toString());
+      return newParams;
+    });
+  }, [currentPage, setSearchParams]);
 
   useEffect(() => {
     const fetchData = async () => {

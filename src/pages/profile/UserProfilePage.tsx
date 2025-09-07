@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -23,15 +23,19 @@ import { VerificationStatus } from '../../utils/Enum';
 const UserProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const initialPage = parseInt(queryParams.get("page") || "1", 10);
 
   const [user, setUser] = useState<User | null>(null);
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [loading, setLoading] = useState(true);
   const [userStats, setUserStats] = useState<UserStats>();
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
 
-  const PROMPTS_PER_PAGE = 5; // change as needed
+  const PROMPTS_PER_PAGE = 5;
 
   const fetchData = async (page = 1) => {
     if (!userId) return;
@@ -57,6 +61,11 @@ const UserProfilePage: React.FC = () => {
   useEffect(() => {
     fetchData(currentPage);
   }, [userId, currentPage]);
+
+  const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
+    setCurrentPage(page);
+    navigate(`/users/${userId}?page=${page}`);
+  };
 
   if (loading)
     return (
@@ -223,7 +232,7 @@ const UserProfilePage: React.FC = () => {
               <Pagination
                 count={totalPages}
                 page={currentPage}
-                onChange={(_, page) => setCurrentPage(page)}
+                onChange={handlePageChange}
                 siblingCount={0}
                 boundaryCount={1}
                 sx={{
