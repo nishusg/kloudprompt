@@ -32,6 +32,23 @@ export const getPrompts = async (params: {
   }
 };
 
+export const getPromptsByCategory = async (
+  category: string,
+  limit: number = 10,
+  page: number = 1
+): Promise<{prompts: Prompt[], totalPages: string}> => {
+  try {
+    
+    const res = await apiClient.get(`/prompts/category/${category}?limit=${limit}&page=${page}`);
+    const { prompts, totalPages } = res.data.data;
+    return { prompts, totalPages };
+  } catch (err) {
+    
+    const message = handleApiError(err, "Failed to fetch prompts");
+    throw new Error(message);
+  }
+};
+
 export const getPromptById = async (id: string): Promise<Prompt> => {
   try {
     const response = await apiClient.get(`/prompts/${id}`);
