@@ -133,6 +133,8 @@ const CategoryPage = () => {
                 count={totalPages}
                 page={page}
                 onChange={handlePageChange}
+                siblingCount={0}
+                boundaryCount={1}
                 sx={{
                   "& .MuiPaginationItem-root": {
                     color: "#fff",

@@ -224,6 +224,8 @@ const UserProfilePage: React.FC = () => {
                 count={totalPages}
                 page={currentPage}
                 onChange={(_, page) => setCurrentPage(page)}
+                siblingCount={0}
+                boundaryCount={1}
                 sx={{
                   '& .MuiPaginationItem-root': {
                     color: '#e0e0e0',

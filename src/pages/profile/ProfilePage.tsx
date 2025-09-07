@@ -244,6 +244,8 @@ const ProfilePage: React.FC = () => {
                     count={totalPages}
                     page={currentPage}
                     onChange={(_, page) => setCurrentPage(page)}
+                    siblingCount={0}
+                    boundaryCount={1}
                     sx={{
                       '& .MuiPaginationItem-root': {
                         color: '#fff',           // default page color
@@ -295,6 +297,8 @@ const ProfilePage: React.FC = () => {
                     count={totalPages}
                     page={currentPage}
                     onChange={(_, page) => setCurrentPage(page)}
+                    siblingCount={0}
+                    boundaryCount={1}
                     sx={{
                       '& .MuiPaginationItem-root': {
                         color: '#e0e0e0', // light grey for normal pages

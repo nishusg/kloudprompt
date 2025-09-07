@@ -181,7 +181,6 @@ const LeaderboardPage = () => {
                     <Typography variant="body2">👁 {user.totalViews} views</Typography>
                 </Stack>
             </Paper>
-
             ))
           )}
         </List>

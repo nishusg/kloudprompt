@@ -326,6 +326,8 @@ const ExplorePage: React.FC = () => {
                   count={Math.ceil(totalPrompts / rowsPerPage)}
                   page={page}
                   onChange={(_, value) => setPage(value)}
+                  siblingCount={0}
+                  boundaryCount={1}
                   sx={{
                     '& .MuiPaginationItem-root': { color: '#fff' },
                     '& .MuiPaginationItem-root.Mui-selected': {
