@@ -9,7 +9,7 @@ import {
   Stack,
   Chip,
 } from "@mui/material";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import { DefaultUserName } from "../utils/Constants";
 import { getLeaderboard } from "../services/PromptService";
 import { LeaderboardResponse } from "../models";
@@ -47,7 +47,7 @@ const LeaderboardPage = () => {
             flexWrap: "wrap",
           }}
         >
-          <EmojiEventsIcon
+          <LeaderboardIcon
             sx={{
               fontSize: { xs: 28, sm: 44, md: 50 },
               color: "#fff",

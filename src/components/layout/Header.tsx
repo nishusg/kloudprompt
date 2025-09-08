@@ -121,7 +121,7 @@ const Header: React.FC = () => {
                       },
                     },
                     '& .MuiListItemIcon-root': {
-                      color: '#90caf9',
+                      color: '#42a5f5',
                     },
                   },
                 }}

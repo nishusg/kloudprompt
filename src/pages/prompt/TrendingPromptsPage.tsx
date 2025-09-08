@@ -116,7 +116,7 @@ const TrendingPromptsPage = () => {
                 border: "1px solid transparent",
                 "&:hover": {
                   boxShadow: "0 8px 24px rgba(144,202,249,0.3)",
-                  borderColor: "#90caf9",
+                  borderColor: "#42a5f5",
                 },
               }}
               onClick={() => handlePromptClick(prompt._id)}

@@ -27,7 +27,7 @@ const CategoryPage = () => {
     const fetchPrompts = async () => {
       try {
         setLoading(true);
-        const data = await getPromptsByCategory(category, 6, page);
+        const data = await getPromptsByCategory(category, 9, page);
         setPrompts(data.prompts);
         setTotalPages(Number(data.totalPages));
       } catch (err) {
