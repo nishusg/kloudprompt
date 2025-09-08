@@ -8,7 +8,6 @@ import {
   ListItemText,
   Box,
   Stack,
-  Avatar,
   Chip,
 } from "@mui/material";
 import WhatshotIcon from "@mui/icons-material/Whatshot";

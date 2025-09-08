@@ -115,6 +115,10 @@ const AllCategoriesPage = () => {
             Explore by categories
           </Typography>
         </Box>
+        
+        <Typography variant="body2" sx={{ color: "#888", textAlign: "center", mt: 2 }}>
+          Loaded {currentIndex} of {categories.length} categories
+        </Typography>
 
         {/* Category Sections */}
         {visibleCategories.map((category) => (

@@ -1,6 +1,6 @@
 // src/pages/CategoryPage.tsx
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams, Link as RouterLink } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import {
   Box,
   Container,
@@ -20,6 +20,7 @@ const CategoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"));
   const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!category) return;
@@ -39,6 +40,10 @@ const CategoryPage = () => {
 
     fetchPrompts();
   }, [category, page]);
+
+  const handleCategoryClick = (id: string) => {
+    if (id) navigate(`/prompts/${id}`);
+  };
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -95,12 +100,11 @@ const CategoryPage = () => {
                       transition: "0.3s",
                       "&:hover": { border: "1px solid #42a5f5" },
                     }}
+                    onClick={() => handleCategoryClick(prompt._id)}
                   >
                     <Typography
                       variant="h6"
                       fontWeight={600}
-                      component={RouterLink}
-                      to={`/prompts/${prompt._id}`}
                       sx={{
                         color: "#fff",
                         textDecoration: "none",
