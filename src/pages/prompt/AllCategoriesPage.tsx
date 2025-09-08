@@ -6,7 +6,6 @@ import {
   Paper,
   Stack,
   Button,
-  Avatar,
   Skeleton,
   IconButton,
 } from "@mui/material";
@@ -17,6 +16,7 @@ import { Prompt } from "../../models/Prompt";
 import CategoryIcon from '@mui/icons-material/Category';
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { DefaultUserName } from "../../utils/Constants";
 
 const AllCategoriesPage = () => {
   const [categoryPrompts, setCategoryPrompts] = useState<Record<string, Prompt[]>>({});
@@ -206,19 +206,35 @@ const AllCategoriesPage = () => {
                           ? `${p.description.slice(0, 60)}...`
                           : p.description}
                       </Typography>
-                      <Stack direction="row" alignItems="center" spacing={1}>
-                        <Avatar
-                          sx={{
-                            width: 28,
-                            height: 28,
-                            bgcolor: "#42a5f5",
-                            fontSize: "0.8rem",
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={1.5}
+                        sx={{ mt: 0.5 }}
+                      >
+                        <Typography
+                          variant="caption"
+                          component="span"
+                          sx={{ color: "#aaa" }}
+                          onClick={(e) => {
+                            if(p.author?._id){
+                              e.stopPropagation();
+                              navigate(`/users/${p.author?._id}`);
+                            }
                           }}
                         >
-                          {p.author?.userName?.charAt(0).toUpperCase() || "U"}
-                        </Avatar>
-                        <Typography variant="caption" sx={{ color: "#aaa" }}>
-                          {p.author?.userName || "Anonymous"}
+                          By {" "}
+                          <Box component="span" sx={{ color: p.author?._id ? "#42a5f5" : "#aaa" }}>
+                            {p.author?.userName || DefaultUserName}
+                          </Box>
+                        </Typography>
+
+                        <Typography
+                          variant="caption"
+                          component="span"
+                          sx={{ color: "#888", ml: "auto" }}
+                        >
+                          👁 {p.views ?? 0} views
                         </Typography>
                       </Stack>
                     </Paper>

@@ -105,6 +105,7 @@ const LeaderboardPage = () => {
                     py: { xs: 1.5, sm: 2 },
                     borderRadius: 3,
                     bgcolor: "#121212",
+                    cursor: "pointer",
                     color: "#e0e0e0",
                     display: "flex",
                     flexDirection: "row",

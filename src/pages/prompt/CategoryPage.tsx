@@ -9,9 +9,11 @@ import {
   Paper,
   Pagination,
   CircularProgress,
+  Stack,
 } from "@mui/material";
 import { Prompt } from "../../models";
 import { getPromptsByCategory } from "../../services/PromptService";
+import { DefaultUserName } from "../../utils/Constants";
 
 const CategoryPage = () => {
   const { category } = useParams<{ category: string }>();
@@ -95,6 +97,7 @@ const CategoryPage = () => {
                     sx={{
                       p: 2,
                       bgcolor: "#1e1e1e",
+                      cursor: "pointer",
                       borderRadius: 3,
                       border: "1px solid #333",
                       transition: "0.3s",
@@ -120,12 +123,37 @@ const CategoryPage = () => {
                     >
                       {prompt.description}
                     </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{ color: "#888", mt: 2, display: "block" }}
-                    >
-                      👁 {prompt.views} views
-                    </Typography>
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={1.5}
+                        sx={{ mt: 0.5 }}
+                      >
+                        <Typography
+                          variant="caption"
+                          component="span"
+                          sx={{ color: "#aaa" }}
+                          onClick={(e) => {
+                            if(prompt.author?._id){
+                              e.stopPropagation();
+                              navigate(`/users/${prompt.author?._id}`);
+                            }
+                          }}
+                        >
+                          By {" "}
+                          <Box component="span" sx={{ color: prompt.author?._id ? "#42a5f5" : "#aaa" }}>
+                            {prompt.author?.userName || DefaultUserName}
+                          </Box>
+                        </Typography>
+
+                        <Typography
+                          variant="caption"
+                          component="span"
+                          sx={{ color: "#888", ml: "auto" }}
+                        >
+                          👁 {prompt.views ?? 0} views
+                        </Typography>
+                      </Stack>
                   </Paper>
                 </Grid>
               ))}
