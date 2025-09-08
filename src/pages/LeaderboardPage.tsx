@@ -115,9 +115,8 @@ const LeaderboardPage = () => {
                     transition: "0.3s",
                     border: "1px solid transparent",
                     "&:hover": {
-                    boxShadow: "0 6px 20px rgba(66,165,245,0.25)",
-                    borderColor: "#42a5f5",
-                    transform: "translateY(-2px)",
+                      boxShadow: "0 6px 20px rgba(66,165,245,0.25)",
+                      borderColor: "#42a5f5",
                     },
                 }}
                 onClick={() => handleLeaderboardClick(user.userId)}

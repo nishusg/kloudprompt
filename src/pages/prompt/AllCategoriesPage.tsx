@@ -8,12 +8,15 @@ import {
   Button,
   Avatar,
   Skeleton,
+  IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getPromptsByCategory } from "../../services/PromptService";
 import { PromptCategoryEnum } from "../../utils/Enum";
 import { Prompt } from "../../models/Prompt";
 import CategoryIcon from '@mui/icons-material/Category';
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 const AllCategoriesPage = () => {
   const [categoryPrompts, setCategoryPrompts] = useState<Record<string, Prompt[]>>({});
@@ -123,12 +126,30 @@ const AllCategoriesPage = () => {
               justifyContent="space-between"
               sx={{ mb: 2 }}
             >
-              <Typography variant="h5" fontWeight="600" sx={{ color: "#fff" }}>
-                {category.charAt(0).toUpperCase() + category.slice(1)}
+              <Typography
+                variant="h5"
+                fontWeight="600"
+                sx={{
+                  color: "#fff",
+                  textTransform: "capitalize",
+                  letterSpacing: 0.5,
+                }}
+              >
+                {category}
               </Typography>
               <Button
-                variant="text"
-                sx={{ color: "#42a5f5" }}
+                variant="outlined"
+                size="small"
+                sx={{
+                  color: "#42a5f5",
+                  borderColor: "#42a5f5",
+                  borderRadius: 3,
+                  textTransform: "none",
+                  "&:hover": {
+                    bgcolor: "rgba(66,165,245,0.1)",
+                    borderColor: "#64b5f6",
+                  },
+                }}
                 onClick={() => navigate(`/categories/${category}`)}
               >
                 See All →
@@ -156,14 +177,16 @@ const AllCategoriesPage = () => {
                       sx={{
                         flex: "0 0 260px",
                         p: 2,
-                        borderRadius: 3,
+                        borderRadius: 4,
                         bgcolor: "#1e1e1e",
                         color: "#fff",
                         cursor: "pointer",
-                        transition: "0.3s",
-                        "&:hover": {
-                          transform: "translateY(-4px)",
-                          boxShadow: "0 8px 20px rgba(66,165,245,0.3)",
+                        transition: 'all 0.3s ease',
+                        border: '1px solid rgba(144,202,249,0.15)',
+                        boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+                        '&:hover': {
+                          boxShadow: '0 8px 24px rgba(144,202,249,0.3)',
+                          borderColor: '#42a5f5',
                         },
                       }}
                     >
@@ -214,44 +237,42 @@ const AllCategoriesPage = () => {
               </Box>
 
               {/* Left/Right Scroll Buttons */}
-              <Button
+              <IconButton
                 onClick={() => {
                   const row = document.getElementById(`scroll-row-${category}`);
                   if (row) row.scrollBy({ left: -300, behavior: "smooth" });
                 }}
                 sx={{
                   position: "absolute",
-                  left: 0,
+                  left: -16,
                   top: "50%",
                   transform: "translateY(-50%)",
                   zIndex: 10,
-                  minWidth: "30px",
-                  bgcolor: "rgba(0,0,0,0.5)",
+                  bgcolor: "rgba(0,0,0,0.7)",
                   color: "#fff",
-                  "&:hover": { bgcolor: "rgba(66,165,245,0.7)" },
+                  "&:hover": { bgcolor: "rgba(66,165,245,0.9)" },
                 }}
               >
-                ◀
-              </Button>
-              <Button
+                <ChevronLeftIcon />
+              </IconButton>
+              <IconButton
                 onClick={() => {
                   const row = document.getElementById(`scroll-row-${category}`);
                   if (row) row.scrollBy({ left: 300, behavior: "smooth" });
                 }}
                 sx={{
                   position: "absolute",
-                  right: 0,
+                  right: -16,
                   top: "50%",
                   transform: "translateY(-50%)",
                   zIndex: 10,
-                  minWidth: "30px",
-                  bgcolor: "rgba(0,0,0,0.5)",
+                  bgcolor: "rgba(0,0,0,0.7)",
                   color: "#fff",
-                  "&:hover": { bgcolor: "rgba(66,165,245,0.7)" },
+                  "&:hover": { bgcolor: "rgba(66,165,245,0.9)" },
                 }}
               >
-                ▶
-              </Button>
+                <ChevronRightIcon />
+              </IconButton>
             </Box>
           </Box>
         ))}

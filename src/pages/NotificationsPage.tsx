@@ -136,7 +136,21 @@ const NotificationsPage = () => {
               <Paper
                 key={index}
                 elevation={4}
-                sx={{ mb: 3, p: 2.5, borderRadius: 3, cursor: 'pointer', bgcolor: '#121212', color: '#e0e0e0' }}
+                sx={{ 
+                  mb: 3, 
+                  p: 2.5, 
+                  borderRadius: 3, 
+                  cursor: 'pointer', 
+                  bgcolor: '#121212', 
+                  color: '#e0e0e0',
+                  transition: 'all 0.3s ease',
+                  border: '1px solid rgba(144,202,249,0.15)',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+                  '&:hover': {
+                    boxShadow: '0 8px 24px rgba(144,202,249,0.3)',
+                    borderColor: '#42a5f5',
+                  },
+                }}
                 onClick={() => handleClick(notification)}
               >
                 <ListItem alignItems="flex-start" disableGutters>

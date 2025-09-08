@@ -167,17 +167,6 @@ const TrendingPromptsPage = () => {
                         spacing={1.5}
                         sx={{ mt: 0.5 }}
                       >
-                        <Avatar
-                          sx={{
-                            width: 28,
-                            height: 28,
-                            bgcolor: "#42a5f5",
-                            fontSize: "0.8rem",
-                          }}
-                        >
-                          {prompt.author?.userName?.charAt(0).toUpperCase() || "A"}
-                        </Avatar>
-
                         <Typography
                           variant="caption"
                           component="span"

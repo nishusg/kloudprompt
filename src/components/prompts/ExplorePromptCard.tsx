@@ -52,7 +52,7 @@ const ExplorePromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
             {prompt.content}
           </Typography>
           <Typography variant="caption" color="grey.500">
-            by @{prompt.author?.userName || DefaultUserName}
+            By @{prompt.author?.userName || DefaultUserName}
           </Typography>
         </CardContent>
       </Card>
