@@ -14,15 +14,18 @@ const PromptActivityGraph: React.FC<Props> = ({ prompts }) => {
   const streakCount = useMemo(() => {
     if (!prompts.length) return 0;
 
-    // Sort prompts by date descending
-    const sortedDates = Array.from(new Set(prompts.map(p => new Date(p.createdAt).toDateString())))
-      .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+    // Normalize dates to local date string (YYYY-MM-DD)
+    const uniqueDates = Array.from(
+      new Set(prompts.map((p) => new Date(p.createdAt).toLocaleDateString('en-CA')))
+    ).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
 
     let streak = 0;
-    let today = new Date();
-    for (let dateStr of sortedDates) {
+    const today = new Date();
+    for (let dateStr of uniqueDates) {
       const date = new Date(dateStr);
-      const diff = Math.floor((today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+      const diff = Math.floor(
+        (today.setHours(0, 0, 0, 0) - date.getTime()) / (1000 * 60 * 60 * 24)
+      );
       if (diff === streak) streak++;
       else break;
     }
@@ -31,26 +34,29 @@ const PromptActivityGraph: React.FC<Props> = ({ prompts }) => {
 
   // Prepare chart data based on selected time range
   const chartData = useMemo(() => {
+    if (!prompts.length) return [];
+
     const today = new Date();
-    let dates: string[] = [];
+    let labels: string[] = [];
 
     if (timeRange === 'daily') {
+      // Last 24 hours
       for (let i = 23; i >= 0; i--) {
         const d = new Date(today);
-        d.setHours(today.getHours() - i);
-        dates.push(d.getHours().toString().padStart(2, '0') + ':00');
+        d.setHours(today.getHours() - i, 0, 0, 0);
+        labels.push(d.toLocaleString('en-CA', { hour: '2-digit', hour12: false }) + ':00');
       }
     } else if (timeRange === 'weekly') {
       for (let i = 6; i >= 0; i--) {
         const d = new Date(today);
         d.setDate(today.getDate() - i);
-        dates.push(d.toISOString().split('T')[0]);
+        labels.push(d.toLocaleDateString('en-CA')); // YYYY-MM-DD
       }
     } else if (timeRange === 'monthly') {
       for (let i = 29; i >= 0; i--) {
         const d = new Date(today);
         d.setDate(today.getDate() - i);
-        dates.push(d.toISOString().split('T')[0]);
+        labels.push(d.toLocaleDateString('en-CA'));
       }
     }
 
@@ -58,13 +64,24 @@ const PromptActivityGraph: React.FC<Props> = ({ prompts }) => {
     prompts.forEach((p) => {
       const dateObj = new Date(p.createdAt);
       let key = '';
-      if (timeRange === 'daily') key = dateObj.getHours().toString().padStart(2, '0') + ':00';
-      else key = dateObj.toISOString().split('T')[0];
+
+      if (timeRange === 'daily') {
+        key =
+          dateObj.toLocaleDateString('en-CA') +
+          ' ' +
+          dateObj.toLocaleString('en-CA', { hour: '2-digit', hour12: false }) +
+          ':00';
+      } else {
+        key = dateObj.toLocaleDateString('en-CA');
+      }
 
       counts[key] = (counts[key] || 0) + 1;
     });
 
-    return dates.map((date) => ({ date, count: counts[date] || 0 }));
+    return labels.map((label) => ({
+      date: label,
+      count: counts[label] || 0,
+    }));
   }, [prompts, timeRange]);
 
   return (
@@ -111,7 +128,7 @@ const PromptActivityGraph: React.FC<Props> = ({ prompts }) => {
             <CartesianGrid stroke="#333" strokeDasharray="3 3" />
             <XAxis dataKey="date" tick={{ fill: '#fff', fontSize: 12 }} />
             <YAxis tick={{ fill: '#fff', fontSize: 12 }} allowDecimals={false} />
-            <Tooltip contentStyle={{ backgroundColor: '#222', borderRadius: 8, border: 'none' }} itemStyle={{ color: '#fff' }} />
+            <Tooltip contentStyle={{ backgroundColor: '#222', color: '#fff', borderRadius: 8, border: 'none' }} itemStyle={{ color: '#fff' }} />
             <Line type="monotone" dataKey="count" stroke="#42a5f5" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
           </LineChart>
         </ResponsiveContainer>

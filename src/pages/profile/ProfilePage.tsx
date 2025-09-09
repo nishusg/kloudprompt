@@ -40,6 +40,8 @@ const ProfilePage: React.FC = () => {
   const initialPage = Number(searchParams.get("page")) || 1;
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
+  const MemoizedGraph = React.memo(PromptActivityGraph);
+
   const limit = 5; // prompts per page
 
   useEffect(() => {
@@ -51,37 +53,56 @@ const ProfilePage: React.FC = () => {
   }, [currentPage, setSearchParams]);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchData = async () => {
       if (!loggedInUser?._id) return;
 
       try {
         setLoadingData(true);
 
-        if (view === 'prompts') {
+        if (view === "prompts") {
           const { prompts, totalPages } = await getUserPrompts(loggedInUser._id, currentPage, limit);
-          setPrompts(prompts);
-          setTotalPages(totalPages);
+          if (isMounted) {
+            setPrompts(prompts);
+            setTotalPages(totalPages);
+          }
         } else {
           const { prompts, totalPages } = await getUserBookmarks(loggedInUser._id, currentPage, limit);
-          setBookmarkedPrompts(prompts);
-          setTotalPages(totalPages);
+          if (isMounted) {
+            setBookmarkedPrompts(prompts);
+            setTotalPages(totalPages);
+          }
         }
-
-        // Always fetch user stats once
-        if (!userStats) {
-          const stats = await getUserStats(loggedInUser._id);
-          setUserStats(stats);
-        }
-
       } catch (error) {
-        console.error('Failed to fetch profile data:', error);
+        console.error("Failed to fetch profile data:", error);
       } finally {
-        setLoadingData(false);
+        if (isMounted) setLoadingData(false);
       }
     };
 
     if (!authLoading) fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [loggedInUser, authLoading, currentPage, view]);
+
+
+  useEffect(() => {
+    if (!loggedInUser?._id) return;
+
+    const fetchStats = async () => {
+      try {
+        const stats = await getUserStats(loggedInUser._id);
+        setUserStats(stats);
+      } catch (err) {
+        console.error("Failed to fetch stats:", err);
+      }
+    };
+
+    fetchStats();
+  }, [loggedInUser]);
 
   const handleDeletePrompt = async (promptId: string) => {
     if (window.confirm('Are you sure you want to delete this prompt?')) {
@@ -201,7 +222,9 @@ const ProfilePage: React.FC = () => {
         </Box>
 
         {/* Prompt Activity Graph */}
-        <PromptActivityGraph prompts={prompts} />
+        {prompts?.length > 0 && (
+          <MemoizedGraph prompts={prompts} />
+        )}
 
         {/* Toggle Buttons */}
         <Stack direction="row" spacing={2} mb={3} justifyContent="center">
@@ -224,7 +247,12 @@ const ProfilePage: React.FC = () => {
         {/* Animated Content */}
         <AnimatePresence mode="wait">
           {view === 'prompts' && (
-            <motion.div key="prompts" initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} transition={{ duration: 0.3 }}>
+              <motion.div
+                key="prompts"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
               <Grid container spacing={3}>
                 {prompts.length > 0 ? (
                   prompts.map((prompt) => (
@@ -277,7 +305,12 @@ const ProfilePage: React.FC = () => {
           )}
 
           {view === 'bookmarks' && (
-            <motion.div key="bookmarks" initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }} transition={{ duration: 0.3 }}>
+            <motion.div
+              key="bookmarks"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
               <Grid container spacing={3}>
                 {bookmarkedPrompts.length > 0 ? (
                   bookmarkedPrompts.map((prompt) => (
