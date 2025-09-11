@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import {
   Box,
   Container,
@@ -10,57 +10,40 @@ import {
   IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { getPromptsByCategory } from "../../services/PromptService";
 import { PromptCategoryEnum } from "../../utils/Enum";
-import { Prompt } from "../../models/Prompt";
-import CategoryIcon from '@mui/icons-material/Category';
+import { DefaultUserName } from "../../utils/Constants";
+import CategoryIcon from "@mui/icons-material/Category";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { DefaultUserName } from "../../utils/Constants";
+
+// Redux
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { fetchCategoryPrompts } from "../../store/allCategorySlice";
+
 
 const AllCategoriesPage = () => {
-  const [categoryPrompts, setCategoryPrompts] = useState<Record<string, Prompt[]>>({});
-  const [visibleCategories, setVisibleCategories] = useState<string[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
   const observerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const { categoryPrompts, visibleCategories, currentIndex, loading } =
+    useAppSelector((state) => state.allCategories);
 
   const categories = Object.values(PromptCategoryEnum);
 
-  // Fetch prompts for a category
-  const fetchCategoryData = useCallback(async (category: string) => {
-    try {
-      setLoading(true);
-      const data = await getPromptsByCategory(category, 6);
-      setCategoryPrompts((prev) => ({
-        ...prev,
-        [category]: data.prompts || [],
-      }));
-    } catch (err) {
-      console.error("Failed to fetch prompts:", err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // IntersectionObserver for infinite loading
+  // IntersectionObserver for infinite category loading
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         const target = entries[0];
         if (target.isIntersecting) {
-          setCurrentIndex((prevIndex) => {
-            if (prevIndex < categories.length) {
-              const nextCategory = categories[prevIndex];
-              setVisibleCategories((prev) =>
-                prev.includes(nextCategory) ? prev : [...prev, nextCategory]
-              );
-              fetchCategoryData(nextCategory);
-              return prevIndex + 1;
+          if (currentIndex < categories.length) {
+            const nextCategory = categories[currentIndex];
+            // Only dispatch if not already loaded
+            if (!categoryPrompts[nextCategory]) {
+              dispatch(fetchCategoryPrompts(nextCategory as string));
             }
-            return prevIndex;
-          });
+          }
         }
       },
       { threshold: 0.3 }
@@ -73,7 +56,8 @@ const AllCategoriesPage = () => {
       if (sentinel) observer.unobserve(sentinel);
       observer.disconnect();
     };
-  }, [categories, fetchCategoryData]);
+  }, [categories, currentIndex, dispatch, categoryPrompts]);
+
 
   const handleCardClick = (id: string) => {
     navigate(`/prompts/${id}`);
@@ -115,8 +99,11 @@ const AllCategoriesPage = () => {
             Explore by categories
           </Typography>
         </Box>
-        
-        <Typography variant="body2" sx={{ color: "#888", textAlign: "center", mt: 2 }}>
+
+        <Typography
+          variant="body2"
+          sx={{ color: "#888", textAlign: "center", mt: 2 }}
+        >
           Loaded {currentIndex} of {categories.length} categories
         </Typography>
 
@@ -185,12 +172,12 @@ const AllCategoriesPage = () => {
                         bgcolor: "#1e1e1e",
                         color: "#fff",
                         cursor: "pointer",
-                        transition: 'all 0.3s ease',
-                        border: '1px solid rgba(144,202,249,0.15)',
-                        boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
-                        '&:hover': {
-                          boxShadow: '0 8px 24px rgba(144,202,249,0.3)',
-                          borderColor: '#42a5f5',
+                        transition: "all 0.3s ease",
+                        border: "1px solid rgba(144,202,249,0.15)",
+                        boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
+                        "&:hover": {
+                          boxShadow: "0 8px 24px rgba(144,202,249,0.3)",
+                          borderColor: "#42a5f5",
                         },
                       }}
                     >
@@ -201,7 +188,10 @@ const AllCategoriesPage = () => {
                       >
                         {p.title}
                       </Typography>
-                      <Typography variant="body2" sx={{ color: "#bbb", mb: 1 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "#bbb", mb: 1 }}
+                      >
                         {p.description.length > 60
                           ? `${p.description.slice(0, 60)}...`
                           : p.description}
@@ -217,14 +207,19 @@ const AllCategoriesPage = () => {
                           component="span"
                           sx={{ color: "#aaa" }}
                           onClick={(e) => {
-                            if(p.author?._id){
+                            if (p.author?._id) {
                               e.stopPropagation();
                               navigate(`/users/${p.author?._id}`);
                             }
                           }}
                         >
-                          By {" "}
-                          <Box component="span" sx={{ color: p.author?._id ? "#42a5f5" : "#aaa" }}>
+                          By{" "}
+                          <Box
+                            component="span"
+                            sx={{
+                              color: p.author?._id ? "#42a5f5" : "#aaa",
+                            }}
+                          >
                             {p.author?.userName || DefaultUserName}
                           </Box>
                         </Typography>

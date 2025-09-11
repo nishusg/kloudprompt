@@ -1,5 +1,4 @@
-// src/pages/CategoryPage.tsx
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -11,44 +10,42 @@ import {
   CircularProgress,
   Stack,
 } from "@mui/material";
-import { Prompt } from "../../models";
-import { getPromptsByCategory } from "../../services/PromptService";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { fetchCategoryPrompts } from "../../store/categorySlice";
 import { DefaultUserName } from "../../utils/Constants";
 
 const CategoryPage = () => {
   const { category } = useParams<{ category: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [prompts, setPrompts] = useState<Prompt[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"));
-  const [totalPages, setTotalPages] = useState(1);
+  const page = parseInt(searchParams.get("page") || "1");
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const categoryState = useAppSelector((state) =>
+    category ? state.category[category] : undefined
+  );
 
   useEffect(() => {
-    if (!category) return;
-
-    const fetchPrompts = async () => {
-      try {
-        setLoading(true);
-        const data = await getPromptsByCategory(category, 9, page);
-        setPrompts(data.prompts);
-        setTotalPages(Number(data.totalPages));
-      } catch (err) {
-        console.error("Failed to load prompts:", err);
-      } finally {
-        setLoading(false);
+    if (category) {
+      if (
+        !categoryState ||
+        categoryState.currentPage !== page ||
+        categoryState.prompts.length === 0
+      ) {
+        dispatch(fetchCategoryPrompts({ category, page }));
       }
-    };
-
-    fetchPrompts();
+    }
   }, [category, page]);
+
+  const prompts = categoryState?.prompts ?? [];
+  const loading = categoryState?.loading ?? true;
+  const totalPages = categoryState?.totalPages ?? 1;
 
   const handleCategoryClick = (id: string) => {
     if (id) navigate(`/prompts/${id}`);
   };
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
     setSearchParams({ page: String(value) });
   };
 
@@ -105,61 +102,37 @@ const CategoryPage = () => {
                     }}
                     onClick={() => handleCategoryClick(prompt._id)}
                   >
-                    <Typography
-                      variant="h6"
-                      fontWeight={600}
-                      sx={{
-                        color: "#fff",
-                        textDecoration: "none",
-                        "&:hover": { color: "#90caf9" },
-                      }}
-                    >
+                    <Typography variant="h6" fontWeight={600} sx={{ color: "#fff" }}>
                       {prompt.title}
                     </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#bbb", mt: 1 }}
-                      noWrap
-                    >
+                    <Typography variant="body2" sx={{ color: "#bbb", mt: 1 }} noWrap>
                       {prompt.description}
                     </Typography>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing={1.5}
-                        sx={{ mt: 0.5 }}
+                    <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mt: 0.5 }}>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: "#aaa" }}
+                        onClick={(e) => {
+                          if (prompt.author?._id) {
+                            e.stopPropagation();
+                            navigate(`/users/${prompt.author?._id}`);
+                          }
+                        }}
                       >
-                        <Typography
-                          variant="caption"
-                          component="span"
-                          sx={{ color: "#aaa" }}
-                          onClick={(e) => {
-                            if(prompt.author?._id){
-                              e.stopPropagation();
-                              navigate(`/users/${prompt.author?._id}`);
-                            }
-                          }}
-                        >
-                          By {" "}
-                          <Box component="span" sx={{ color: prompt.author?._id ? "#42a5f5" : "#aaa" }}>
-                            {prompt.author?.userName || DefaultUserName}
-                          </Box>
-                        </Typography>
-
-                        <Typography
-                          variant="caption"
-                          component="span"
-                          sx={{ color: "#888", ml: "auto" }}
-                        >
-                          👁 {prompt.views ?? 0} views
-                        </Typography>
-                      </Stack>
+                        By{" "}
+                        <Box component="span" sx={{ color: prompt.author?._id ? "#42a5f5" : "#aaa" }}>
+                          {prompt.author?.userName || DefaultUserName}
+                        </Box>
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: "#888", ml: "auto" }}>
+                        👁 {prompt.views ?? 0} views
+                      </Typography>
+                    </Stack>
                   </Paper>
                 </Grid>
               ))}
             </Grid>
 
-            {/* Pagination */}
             <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
               <Pagination
                 count={totalPages}
@@ -168,13 +141,8 @@ const CategoryPage = () => {
                 siblingCount={0}
                 boundaryCount={1}
                 sx={{
-                  "& .MuiPaginationItem-root": {
-                    color: "#fff",
-                  },
-                  "& .Mui-selected": {
-                    bgcolor: "#42a5f5 !important",
-                    color: "#000",
-                  },
+                  "& .MuiPaginationItem-root": { color: "#fff" },
+                  "& .Mui-selected": { bgcolor: "#42a5f5 !important", color: "#000" },
                 }}
               />
             </Box>
