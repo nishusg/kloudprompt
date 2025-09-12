@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import categoryReducer from "./categorySlice";
 import allCategoryReducer from "./allCategorySlice";
+import exploreReducer from "./exploreSlice";
 
 export const store = configureStore({
   reducer: {
     category: categoryReducer,
-    allCategories: allCategoryReducer, // 👈 added
+    allCategories: allCategoryReducer,
+    explore: exploreReducer
   },
 });
 

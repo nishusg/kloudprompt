@@ -1,5 +1,4 @@
-// src/pages/ExplorePage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Typography,
@@ -16,75 +15,59 @@ import {
   InputLabel,
   Pagination,
   Button,
-  Skeleton
-} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+  Skeleton,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import ExploreIcon from "@mui/icons-material/Explore";
-import ClearIcon from '@mui/icons-material/Clear';
-import { useSearchParams } from 'react-router-dom';
-import { getPrompts } from '../services/PromptService';
-import { Prompt } from '../models/Prompt';
-import ExplorePromptCard from '../components/prompts/ExplorePromptCard';
-import { GenerationTypeEnum, ProviderTypeEnum, PromptCategoryEnum } from '../utils/Enum';
+import ClearIcon from "@mui/icons-material/Clear";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../store";
+import {
+  setSearch,
+  clearSearch,
+  setModelType,
+  setGenerationType,
+  setCategory,
+  clearFilters,
+  setPage,
+  fetchExplorePrompts,
+} from "../store/exploreSlice";
+import ExplorePromptCard from "../components/prompts/ExplorePromptCard";
+import {
+  GenerationTypeEnum,
+  ProviderTypeEnum,
+  PromptCategoryEnum,
+} from "../utils/Enum";
+import { Prompt } from "../models";
 
 const ExplorePage: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const initialPage = Number(searchParams.get("page")) || 1;
-
-  const [searchTerm, setSearchTerm] = useState('');
-  const [prompts, setPrompts] = useState<Prompt[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const [modelType, setModelType] = useState<string | null>(null);
-  const [generationType, setGenerationType] = useState<string | null>(null);
-  const [category, setCategory] = useState<string | null>(null);
-  const [totalPrompts, setTotalPrompts] = useState(0);
-
-  const [page, setPage] = useState(initialPage);
-  const rowsPerPage = 9;
-
-  useEffect(() => {
-    setSearchParams((prev) => {
-      const newParams = new URLSearchParams(prev);
-      newParams.set("page", page.toString());
-      return newParams;
-    });
-  }, [page, setSearchParams]);
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    prompts,
+    loading,
+    error,
+    search,
+    modelType,
+    generationType,
+    category,
+    page,
+    limit,
+    total,
+  } = useSelector((state: RootState) => state.explore);
 
   // Debounced search
-  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+  const [localSearch, setLocalSearch] = useState(search);
   useEffect(() => {
-    const handler = setTimeout(() => setDebouncedSearch(searchTerm), 400);
+    const handler = setTimeout(() => {
+      dispatch(setSearch(localSearch));
+    }, 400);
     return () => clearTimeout(handler);
-  }, [searchTerm]);
+  }, [localSearch, dispatch]);
 
-  // Fetch prompts from server when filters/page/search change
+  // Fetch prompts when filters/page/search change
   useEffect(() => {
-    const fetchPrompts = async () => {
-      try {
-        setLoading(true);
-
-        const { prompts, total } = await getPrompts({
-          page,
-          limit: rowsPerPage,
-          search: debouncedSearch || undefined,
-          modelType: modelType || undefined,
-          generationType: generationType || undefined,
-          category: category || undefined
-        });
-
-        setPrompts(prompts);
-        setTotalPrompts(total);
-      } catch (err) {
-        setError('Failed to load prompts. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPrompts();
-  }, [page, debouncedSearch, modelType, generationType, category]);
+    dispatch(fetchExplorePrompts());
+  }, [dispatch, search, modelType, generationType, category, page]);
 
   return (
     <Box sx={{ minHeight: "80vh", bgcolor: "#0a0a0a", py: 4 }}>
@@ -128,37 +111,40 @@ const ExplorePage: React.FC = () => {
           elevation={3}
           sx={{
             maxWidth: 300,
-            mx: 'auto',
+            mx: "auto",
             mb: 3,
             p: 1,
             borderRadius: 50,
-            backgroundColor: '#121212',
-            backdropFilter: 'blur(6px)',
+            backgroundColor: "#121212",
+            backdropFilter: "blur(6px)",
           }}
         >
           <TextField
             fullWidth
             placeholder="Search prompts..."
-            value={searchTerm}
+            value={localSearch}
             onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setPage(1);
+              setLocalSearch(e.target.value);
+              dispatch(setPage(1));
             }}
             variant="standard"
             InputProps={{
               disableUnderline: true,
               startAdornment: (
                 <InputAdornment position="start" sx={{ mr: 0.5 }}>
-                  <SearchIcon sx={{ color: '#fff', fontSize: 20 }} />
+                  <SearchIcon sx={{ color: "#fff", fontSize: 20 }} />
                 </InputAdornment>
               ),
               endAdornment: (
-                <InputAdornment position="end" sx={{mr: 0.5}}>
-                  {searchTerm && (
+                <InputAdornment position="end" sx={{ mr: 0.5 }}>
+                  {localSearch && (
                     <IconButton
-                      onClick={() => setSearchTerm('')}
+                      onClick={() => {
+                        setLocalSearch("");
+                        dispatch(clearSearch());
+                      }}
                       size="small"
-                      sx={{ color: '#fff', p: 0.3 }}
+                      sx={{ color: "#fff", p: 0.3 }}
                     >
                       <ClearIcon fontSize="small" />
                     </IconButton>
@@ -168,10 +154,10 @@ const ExplorePage: React.FC = () => {
             }}
             sx={{
               px: 1,
-              color: '#fff',
-              '& .MuiInputBase-input': { color: '#fff', py: 0.5 },
-              '& .MuiInputBase-input::placeholder': {
-                color: '#fff',
+              color: "#fff",
+              "& .MuiInputBase-input": { color: "#fff", py: 0.5 },
+              "& .MuiInputBase-input::placeholder": {
+                color: "#fff",
                 opacity: 0.8,
               },
             }}
@@ -192,13 +178,15 @@ const ExplorePage: React.FC = () => {
           }}
         >
           {/* Model Type */}
-          <FormControl sx={{ minWidth: { xs: "100%", sm: 160, md: 200 } }} size="small">
+          <FormControl
+            sx={{ minWidth: { xs: "100%", sm: 160, md: 200 } }}
+            size="small"
+          >
             <InputLabel sx={{ color: "#ccc" }}>Model Type</InputLabel>
             <Select
               value={modelType || ""}
               onChange={(e) => {
-                setModelType(e.target.value || null);
-                setPage(1);
+                dispatch(setModelType(e.target.value || null));
               }}
               sx={{
                 bgcolor: "#121212",
@@ -221,13 +209,15 @@ const ExplorePage: React.FC = () => {
           </FormControl>
 
           {/* Generation Type */}
-          <FormControl sx={{ minWidth: { xs: "100%", sm: 160, md: 200 } }} size="small">
+          <FormControl
+            sx={{ minWidth: { xs: "100%", sm: 160, md: 200 } }}
+            size="small"
+          >
             <InputLabel sx={{ color: "#ccc" }}>Generation Type</InputLabel>
             <Select
               value={generationType || ""}
               onChange={(e) => {
-                setGenerationType(e.target.value || null);
-                setPage(1);
+                dispatch(setGenerationType(e.target.value || null));
               }}
               sx={{
                 bgcolor: "#121212",
@@ -250,13 +240,15 @@ const ExplorePage: React.FC = () => {
           </FormControl>
 
           {/* Category */}
-          <FormControl sx={{ minWidth: { xs: "100%", sm: 160, md: 200 } }} size="small">
+          <FormControl
+            sx={{ minWidth: { xs: "100%", sm: 160, md: 200 } }}
+            size="small"
+          >
             <InputLabel sx={{ color: "#ccc" }}>Category</InputLabel>
             <Select
               value={category || ""}
               onChange={(e) => {
-                setCategory(e.target.value || null);
-                setPage(1);
+                dispatch(setCategory(e.target.value || null));
               }}
               sx={{
                 bgcolor: "#121212",
@@ -285,12 +277,7 @@ const ExplorePage: React.FC = () => {
             <Button
               variant="outlined"
               size="small"
-              onClick={() => {
-                setModelType(null);
-                setGenerationType(null);
-                setCategory(null);
-                setPage(1);
-              }}
+              onClick={() => dispatch(clearFilters())}
               sx={{
                 color: "#fff",
                 bgcolor: "rgba(40, 40, 40, 0.8)",
@@ -308,7 +295,11 @@ const ExplorePage: React.FC = () => {
           <Grid container spacing={4}>
             {Array.from({ length: 6 }).map((_, idx) => (
               <Grid item xs={12} sm={6} md={4} key={idx}>
-                <Skeleton variant="rectangular" height={160} sx={{ borderRadius: 3 }} />
+                <Skeleton
+                  variant="rectangular"
+                  height={160}
+                  sx={{ borderRadius: 3 }}
+                />
               </Grid>
             ))}
           </Grid>
@@ -318,7 +309,7 @@ const ExplorePage: React.FC = () => {
           <>
             <Grid container spacing={4}>
               {prompts.length > 0 ? (
-                prompts.map((prompt) => (
+                prompts.map((prompt: Prompt) => (
                   <ExplorePromptCard key={prompt._id} prompt={prompt} />
                 ))
               ) : (
@@ -326,7 +317,7 @@ const ExplorePage: React.FC = () => {
                   <Typography
                     align="center"
                     color="grey.500"
-                    sx={{ mt: 4, fontStyle: 'italic' }}
+                    sx={{ mt: 4, fontStyle: "italic" }}
                   >
                     No prompts found. Try changing your search or filters!
                   </Typography>
@@ -335,19 +326,19 @@ const ExplorePage: React.FC = () => {
             </Grid>
 
             {/* Pagination */}
-            {totalPrompts > rowsPerPage && (
+            {total > limit && (
               <Box display="flex" justifyContent="center" mt={4}>
                 <Pagination
-                  count={Math.ceil(totalPrompts / rowsPerPage)}
+                  count={Math.ceil(total / limit)}
                   page={page}
-                  onChange={(_, value) => setPage(value)}
+                  onChange={(_, value) => dispatch(setPage(value))}
                   siblingCount={0}
                   boundaryCount={1}
                   sx={{
-                    '& .MuiPaginationItem-root': { color: '#fff' },
-                    '& .MuiPaginationItem-root.Mui-selected': {
-                      bgcolor: '#42a5f5',
-                      color: '#000',
+                    "& .MuiPaginationItem-root": { color: "#fff" },
+                    "& .MuiPaginationItem-root.Mui-selected": {
+                      bgcolor: "#42a5f5",
+                      color: "#000",
                     },
                   }}
                 />
