@@ -29,18 +29,18 @@ const ContactPage: React.FC = () => {
           <Stack spacing={2} sx={{ mt: 2 }}>
             <Typography>
               📧 Email:{" "}
-              <Link href="mailto:contact@example.com" underline="hover" color="#42a5f5">
-                contact@example.com
+              <Link href="mailto:nishantsg218@gmail.com" underline="hover" color="#42a5f5">
+                nishantsg218@gmail.com
               </Link>
             </Typography>
             <Typography>
               📞 Phone:{" "}
-              <Link href="tel:+1234567890" underline="hover" color="#42a5f5">
-                +1 234 567 890
+              <Link href="tel:+918791941719" underline="hover" color="#42a5f5">
+                +91 87919 41719
               </Link>
             </Typography>
             <Typography>
-              🏢 Address: 123 Main Street, City, Country
+              🏢 Location: Regus, 5th Floor, Tower C, Green Boulevard, Block-B, Sector 62, Noida (UP) India - 201309
             </Typography>
           </Stack>
         </Paper>

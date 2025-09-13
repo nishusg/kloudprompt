@@ -15,9 +15,12 @@ import {
   CircularProgress,
   Stack,
   Chip,
-  Pagination
+  Pagination,
+  Tooltip,
+  IconButton
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
+import ShareIcon from '@mui/icons-material/Share';
 import ProfilePromptCard from '../../components/prompts/ProfilePromptCard';
 import PromptActivityGraph from '../../components/prompts/PromptActivityGraph';
 import { DefaultUserName } from '../../utils/Constants';
@@ -103,6 +106,16 @@ const ProfilePage: React.FC = () => {
 
     fetchStats();
   }, [loggedInUser]);
+
+  const handleShare = async () => {
+    try {
+      const shareUrl = `${window.location.origin}/users/${loggedInUser?._id}`;
+      await navigator.clipboard.writeText(shareUrl);
+      showSnackbar('Link copied to clipboard!', 'success');
+    } catch (err: any) {
+      showSnackbar(err?.message || 'Failed to copy link', 'error');
+    }
+  };
 
   const handleDeletePrompt = async (promptId: string) => {
     if (window.confirm('Are you sure you want to delete this prompt?')) {
@@ -192,19 +205,92 @@ const ProfilePage: React.FC = () => {
               <hr style={{ border: '0.5px solid rgba(255,255,255,0.1)', margin: '12px 0' }} />
 
               {/* Actions */}
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={1} alignItems={{ xs: "stretch", sm: "center" }}>
-                <Button variant="outlined" size="small" sx={{ mt: 1.5, borderColor: '#42a5f5', color: '#42a5f5', fontWeight: { xs: 400, sm: 500, md: 600 }, borderRadius: '50px', px: 2, '&:hover': { borderColor: '#42a5f5', backgroundColor: 'rgba(144,202,249,0.1)' } }} onClick={() => navigate('/update')}>
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={1.2} // gives gap between buttons in column mode
+                justifyContent="center"
+                alignItems="center"
+                sx={{ mt: 2 }}
+              >
+                {/* Edit Profile */}
+                <Button
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    borderColor: '#555',
+                    color: '#fff',
+                    fontWeight: 600,
+                    borderRadius: '10px',
+                    px: 3,
+                    textTransform: 'none',
+                    width: { xs: '100%', sm: 'auto' }, // full width on mobile
+                    '&:hover': { borderColor: '#888', backgroundColor: 'rgba(255,255,255,0.05)' }
+                  }}
+                  onClick={() => navigate('/update')}
+                >
                   Edit Profile
                 </Button>
-                <Button variant="outlined" size="small" sx={{ mt: 1.5, fontWeight: { xs: 400, sm: 500, md: 600 }, borderRadius: '50px', px: 2, bgcolor: '#42a5f5', color: '#000000ff', borderColor: '#42a5f5', '&:hover': { bgcolor: '#42a5f5', color: '#000' } }} onClick={() => navigate('/change-password')}>
+
+                {/* Change Password */}
+                <Button
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    borderColor: '#555',
+                    color: '#fff',
+                    fontWeight: 600,
+                    borderRadius: '10px',
+                    px: 3,
+                    textTransform: 'none',
+                    width: { xs: '100%', sm: 'auto' },
+                    '&:hover': { borderColor: '#888', backgroundColor: 'rgba(255,255,255,0.05)' }
+                  }}
+                  onClick={() => navigate('/change-password')}
+                >
                   Change Password
                 </Button>
+
+                {/* Verify Email */}
                 {loggedInUser.verificationStatus === VerificationStatus.Pending && (
-                  <Button variant="outlined" size="small" sx={{ mt: 1.5, borderColor: 'green', color: 'green', fontWeight: { xs: 400, sm: 500, md: 600 }, borderRadius: '50px', px: 2, '&:hover': { borderColor: 'green', backgroundColor: 'rgba(144,202,249,0.1)' } }} onClick={() => navigate('/email-verification')}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                      borderColor: '#555',
+                      color: '#fff',
+                      fontWeight: 600,
+                      borderRadius: '10px',
+                      px: 3,
+                      textTransform: 'none',
+                      width: { xs: '100%', sm: 'auto' },
+                      '&:hover': { borderColor: '#888', backgroundColor: 'rgba(255,255,255,0.05)' }
+                    }}
+                    onClick={() => navigate('/email-verification')}
+                  >
                     Verify Email
                   </Button>
                 )}
+
+                {/* Share Profile */}
+                <Button
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    borderColor: '#555',
+                    color: '#fff',
+                    fontWeight: 600,
+                    borderRadius: '10px',
+                    px: 3,
+                    textTransform: 'none',
+                    width: { xs: '100%', sm: 'auto' },
+                    '&:hover': { borderColor: '#888', backgroundColor: 'rgba(255,255,255,0.05)' }
+                  }}
+                  onClick={handleShare}
+                >
+                  Share Profile
+                </Button>
               </Stack>
+
             </Box>
           </Stack>
         </Paper>
