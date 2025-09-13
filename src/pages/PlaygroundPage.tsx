@@ -30,7 +30,7 @@ const PlaygroundPage: React.FC = () => {
       try {
         const promptData = await getPromptById(promptId);
         setPrompt(promptData);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Failed to load prompt', err);
         navigate('/'); 
       }
@@ -53,8 +53,8 @@ const PlaygroundPage: React.FC = () => {
 
       setImageUrl(data.imageUrl || '');
       showSnackbar('Prompt executed successfully!', 'success');
-    } catch (err) {
-      showSnackbar('Failed to run prompt. Please check your API key and try again.', 'error');
+    } catch (err: any) {
+      showSnackbar(err?.message || 'Failed to run prompt. Please check your API key and try again.', 'error');
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ const PlaygroundPage: React.FC = () => {
     try {
       await navigator.clipboard.writeText(text);
       showSnackbar('Image URL copied to clipboard!', 'success');
-    } catch (err) {
+    } catch (err: any) {
       showSnackbar('Failed to copy to clipboard', 'error');
     }
   };

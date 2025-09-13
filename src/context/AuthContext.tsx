@@ -71,7 +71,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
 
         return true;
-      } catch (err) {
+      } catch (err: any) {
         throw err;
       } finally {
         setLoading(false);
@@ -88,7 +88,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         await registerUser({ userName, email, password });
 
         return true;
-      } catch (err) {
+      } catch (err: any) {
         throw err;
       }
     },

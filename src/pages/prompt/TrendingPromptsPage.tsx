@@ -24,8 +24,8 @@ const TrendingPromptsPage = () => {
     const fetchTrending = async () => {
       try {
         const data = await getTrendingPrompts(5);
-        setPrompts(data || []); // ✅ defensive check
-      } catch (err) {
+        setPrompts(data || []);
+      } catch (err: any) {
         console.error("Failed to fetch trending prompts:", err);
       }
     };

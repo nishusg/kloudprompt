@@ -44,7 +44,7 @@ const NotificationsPage = () => {
 
       setNotifications((prev) => [...prev, ...newNotifications]);
       setTotalPages(tp);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to fetch notifications:', err);
     }
     setLoading(false);

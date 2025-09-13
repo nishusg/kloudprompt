@@ -2,6 +2,7 @@ import apiClient from './ApiClient';
 import { Prompt, CreatePromptDto, UpdatePromptDto } from '../models/Prompt';
 import { handleApiError } from './UtilsService';
 import { EnhancePromptRequest, EnhancePromptResponse, LeaderboardResponse } from '../models';
+import { ApiError } from '../models/ApiError';
 
 interface GetPromptsParams {
   search?: string;
@@ -28,7 +29,8 @@ export const getPrompts = async (params: GetPromptsParams = {}): Promise<{ promp
     return response.data.data;
   } catch (err) {
     const message = handleApiError(err, 'Failed to fetch prompts');
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -45,7 +47,8 @@ export const getPromptsByCategory = async (
   } catch (err) {
     
     const message = handleApiError(err, "Failed to fetch prompts");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -58,7 +61,8 @@ export const getPromptById = async (id: string): Promise<Prompt> => {
     return promptData;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch prompt");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -68,7 +72,8 @@ export const incrementPromptView = async (id: string): Promise<number> => {
     return response.data.data.prompt.views;
   } catch (err) {
     const message = handleApiError(err, "Failed to increment views");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -78,7 +83,8 @@ export const getTrendingPrompts = async (limit: number = 10): Promise<Prompt[]> 
     return response.data.data.prompts;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch trending prompts");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -88,7 +94,8 @@ export const getLeaderboard = async (limit: number = 10): Promise<LeaderboardRes
     return response.data.data.leaderboards;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch leaderboard prompts");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -98,7 +105,8 @@ export const createPrompt = async (data: CreatePromptDto): Promise<Prompt> => {
     return response.data.data.prompt;
   } catch (err) {
     const message = handleApiError(err, "Failed to create prompt");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -108,7 +116,8 @@ export const updatePrompt = async (id: string, data: UpdatePromptDto): Promise<P
     return response.data.data.prompt;
   } catch (err) {
     const message = handleApiError(err, "Failed to update prompt");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -117,7 +126,8 @@ export const deletePrompt = async (id: string): Promise<void> => {
     await apiClient.delete(`/prompts/${id}`);
   } catch (err) {
     const message = handleApiError(err, "Failed to delete prompt");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -127,11 +137,17 @@ export const toggleBookmarkPrompt = async (id: string): Promise<Prompt> => {
     return response.data.data;
   } catch (err) {
     const message = handleApiError(err, "Failed to toggle bookmark");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
 export const enhancePrompt = async (payload: EnhancePromptRequest): Promise<EnhancePromptResponse> => {
-  const res = await apiClient.post(`/prompts/enhance`, payload  );
-  return res.data.data as EnhancePromptResponse;
+  try {
+    const res = await apiClient.post(`/prompts/enhance`, payload  );
+    return res.data.data as EnhancePromptResponse;
+  } catch (err) {
+    const message = handleApiError(err, "Failed to enhance prompt");
+    throw {message: message};
+  }
 };

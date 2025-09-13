@@ -1,4 +1,5 @@
 // services/OtpService.ts
+import { ApiError } from '../models/ApiError';
 import { OTPPurpose } from '../utils/Enum';
 import apiClient from './ApiClient';
 import { handleApiError } from './UtilsService';
@@ -8,7 +9,8 @@ export const requestOtp = async (email: string, purpose: OTPPurpose): Promise<vo
     await apiClient.post('/otp/request', { email , purpose});
   } catch (err) {
     const message = handleApiError(err, 'Failed to send OTP');
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -17,6 +19,7 @@ export const verifyOtp = async (email: string, code: string, purpose: OTPPurpose
     await apiClient.post('/otp/verify', { email, code, purpose });
   } catch (err) {
     const message = handleApiError(err, 'OTP verification failed');
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };

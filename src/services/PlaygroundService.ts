@@ -1,4 +1,5 @@
 // src/services/PlaygroundService.ts
+import { ApiError } from '../models/ApiError';
 import apiClient from './ApiClient';
 import { handleApiError } from './UtilsService';
 
@@ -25,7 +26,8 @@ export const runPlaygroundPrompt = async (
     return data;
   } catch (err) {
     const message = handleApiError(err, 'Failed to run playground prompt');
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -39,7 +41,8 @@ export const downloadImageBuffer = async (url: string): Promise<Blob | { error: 
     return response.data; // this will be a Blob
   } catch (err) {
     const message = handleApiError(err, 'Failed to download image');
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 

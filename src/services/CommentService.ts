@@ -2,6 +2,7 @@
 import apiClient from "./ApiClient";
 import { PromptComment } from "../models/Comment";
 import { handleApiError } from "./UtilsService";
+import { ApiError } from "../models/ApiError";
 
 // 🔹 Fetch comments with pagination
 export const getComments = async (
@@ -19,7 +20,8 @@ export const getComments = async (
     return { comments, totalCount};
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch comments");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -36,7 +38,8 @@ export const addCommentToPrompt = async (
     return response.data.data.comment;
   } catch (err) {
     const message = handleApiError(err, "Failed to add comment");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -46,6 +49,7 @@ export const deleteComment = async (commentId: string): Promise<void> => {
     await apiClient.delete(`/comments/${commentId}`);
   } catch (err) {
     const message = handleApiError(err, "Failed to delete comment");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };

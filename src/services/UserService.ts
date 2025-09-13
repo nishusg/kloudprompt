@@ -3,6 +3,7 @@ import { User, UpdateUserDto, UserStats } from '../models/User';
 import { Prompt } from '../models/Prompt';
 import { handleApiError } from './UtilsService';
 import { AuthResponse } from '../context/AuthContext';
+import { ApiError } from '../models/ApiError';
 
 export const registerUser = async (data: {
   userName: string;
@@ -14,7 +15,8 @@ export const registerUser = async (data: {
     return response.data.data;
   } catch (err) {
     const message = handleApiError(err, "Failed to register user");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -25,7 +27,8 @@ export const loginUser = async (credentials: { email: string; password: string }
   } catch (err) {
     // Convert backend error to a proper Error
     const message = handleApiError(err, 'Failed to login');
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -35,7 +38,8 @@ export const logoutUser = async (): Promise<void> => {
   } catch (err) {
     // Convert backend error to a proper Error
     const message = handleApiError(err, 'Failed to logout');
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -44,7 +48,8 @@ export const resetPassword = async (email: string, newPassword: string): Promise
     await apiClient.post('/auth/reset-password', { email, newPassword });
   } catch (err) {
     const message = handleApiError(err, 'Failed to reset password');
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -54,7 +59,8 @@ export const getCurrentUser = async (): Promise<User> => {
     return response.data.data.user;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch current user");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -64,7 +70,8 @@ export const changePassword = async (id: string, currentPassword: string, newPas
     return response.data.data.user;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch current user");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -74,7 +81,8 @@ export const getUserById = async (id: string): Promise<User> => {
     return response.data.data.user;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch user");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -84,7 +92,8 @@ export const updateUser = async (id: string, data: UpdateUserDto): Promise<User>
     return response.data.data.user;
   } catch (err) {
     const message = handleApiError(err, "Failed to update user");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -106,7 +115,8 @@ export const getUserPrompts = async (
     };
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch user prompts");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -116,6 +126,7 @@ export const getUserStats = async (userId: string): Promise<UserStats> => {
     return response.data.data.stats;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch user prompts");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };

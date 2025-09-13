@@ -1,3 +1,4 @@
+import { ApiError } from "../models/ApiError";
 import { Notification } from "../models/Notification";
 import apiClient from "./ApiClient";
 import { handleApiError } from "./UtilsService";
@@ -17,7 +18,8 @@ export const getUserNotifications = async (
     return { notifications, page: currentPage, limit: perPage, total, totalPages };
   } catch (err) {
     const message = handleApiError(err, 'Failed to fetch notifications');
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
@@ -31,6 +33,7 @@ export const markNotificationAsRead = async (
     return response.data.data.notification;
   } catch (err) {
     const message = handleApiError(err, "Failed to mark notification as read");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };

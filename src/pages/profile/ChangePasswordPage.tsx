@@ -32,7 +32,7 @@ const ChangePasswordPage: React.FC = () => {
       showSnackbar('Password updated successfully!', 'success');
       setTimeout(() => navigate('/profile/' + loggedInUser._id), 1500);
     } catch (err: any) {
-      showSnackbar(err?.response?.data?.message || 'Failed to change password', 'error');
+      showSnackbar(err?.message || 'Failed to change password', 'error');
     } finally {
       setLoading(false);
     }

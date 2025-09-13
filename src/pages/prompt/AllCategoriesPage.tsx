@@ -37,7 +37,7 @@ const AllCategoriesPage = () => {
         ...prev,
         [category]: data.prompts || [],
       }));
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to fetch prompts:", err);
     } finally {
       setLoading(false);

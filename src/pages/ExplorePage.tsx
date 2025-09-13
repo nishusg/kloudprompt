@@ -77,7 +77,7 @@ const ExplorePage: React.FC = () => {
 
         setPrompts(prompts);
         setTotalPrompts(total);
-      } catch (err) {
+      } catch (err: any) {
         setError('Failed to load prompts. Please try again later.');
       } finally {
         setLoading(false);

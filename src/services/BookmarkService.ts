@@ -1,5 +1,6 @@
 // services/BookmarkService.ts
 import { Prompt } from '../models';
+import { ApiError } from '../models/ApiError';
 import apiClient from './ApiClient';
 import { handleApiError } from './UtilsService';
 
@@ -21,6 +22,7 @@ export const getUserBookmarks = async (
     };
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch user bookmarks");
-    throw new Error(message);
+    const error: ApiError = { message };
+    throw error;
   }
 };

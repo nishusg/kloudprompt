@@ -51,8 +51,8 @@ const UserProfilePage: React.FC = () => {
       setPrompts(userPromptsPage.prompts);
       setTotalPages(userPromptsPage.totalPages || 1);
       setUserStats(stats);
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error(err?.message);
     } finally {
       setLoading(false);
     }
@@ -122,7 +122,7 @@ const UserProfilePage: React.FC = () => {
                   {user.email}
                   {user.verificationStatus && (
                     <Chip
-                      label={user.verificationStatus === VerificationStatus.Verified ? "Verified" : "Pending"}
+                      label={user.verificationStatus === VerificationStatus.Verified ? VerificationStatus.Verified : VerificationStatus.Pending}
                       size="small"
                       color={user.verificationStatus === VerificationStatus.Verified ? "success" : "error"}
                       sx={{ fontSize: '0.60rem' }}

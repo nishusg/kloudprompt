@@ -23,7 +23,7 @@ const LeaderboardPage = () => {
         try {
             const data = await getLeaderboard(10);
             setLeaders(data || []);
-        } catch (err) {
+        } catch (err: any) {
             console.error("Failed to fetch leaderboard:", err);
         }
         };

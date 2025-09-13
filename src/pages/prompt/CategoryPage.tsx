@@ -33,7 +33,7 @@ const CategoryPage = () => {
         const data = await getPromptsByCategory(category, 9, page);
         setPrompts(data.prompts);
         setTotalPages(Number(data.totalPages));
-      } catch (err) {
+      } catch (err: any) {
         console.error("Failed to load prompts:", err);
       } finally {
         setLoading(false);

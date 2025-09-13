@@ -96,8 +96,8 @@ const ProfilePage: React.FC = () => {
       try {
         const stats = await getUserStats(loggedInUser._id);
         setUserStats(stats);
-      } catch (err) {
-        console.error("Failed to fetch stats:", err);
+      } catch (err: any) {
+        showSnackbar(err?.message || "Failed to fetch stats:", "error");
       }
     };
 
@@ -121,9 +121,9 @@ const ProfilePage: React.FC = () => {
       await toggleBookmarkPrompt(promptId);
       setBookmarkedPrompts((prev) => prev.filter((p) => p._id !== promptId));
       showSnackbar("Removed from bookmarks", "success");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to remove bookmark", err);
-      showSnackbar("Failed to remove bookmark", "error");
+      showSnackbar(err?.message || "Failed to remove bookmark", "error");
     }
   };
 
@@ -168,7 +168,7 @@ const ProfilePage: React.FC = () => {
               <Typography component={'div'} variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', display: 'flex', alignItems: 'center', gap: 1 }}>
                 {loggedInUser.email || 'No email provided'}
                 {loggedInUser.verificationStatus && (
-                  <Chip label={loggedInUser.verificationStatus === VerificationStatus.Verified ? "Verified" : "Pending"} size="small" color={loggedInUser.verificationStatus === VerificationStatus.Verified ? "success" : "error"} sx={{ fontSize: '0.60rem' }} />
+                  <Chip label={loggedInUser.verificationStatus === VerificationStatus.Verified ? VerificationStatus.Verified : VerificationStatus.Pending} size="small" color={loggedInUser.verificationStatus === VerificationStatus.Verified ? "success" : "error"} sx={{ fontSize: '0.60rem' }} />
                 )}
               </Typography>
               {loggedInUser.phone && (<Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)' }}>{loggedInUser.phone}</Typography>)}

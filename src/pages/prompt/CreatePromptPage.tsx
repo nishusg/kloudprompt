@@ -37,7 +37,6 @@ const CreatePromptPage: React.FC = () => {
       navigate(`/prompts/${newPrompt._id}`);
       showSnackbar('Prompt created successfully!', 'success');
     } catch (error: any) {
-      console.log(error)
       showSnackbar(error?.message || 'Failed to create prompt', 'error');
     } finally {
       setIsSubmitting(false);

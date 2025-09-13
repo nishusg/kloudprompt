@@ -58,7 +58,7 @@ const PromptDetailPage: React.FC = () => {
           incrementPromptView(id);
           hasIncremented.current = true;
         }
-      } catch (err) {
+      } catch (err: any) {
         setError('Failed to fetch prompt data. Please try again later.');
       } finally {
         setLoading(false);
@@ -78,8 +78,8 @@ const PromptDetailPage: React.FC = () => {
       );
       await toggleBookmarkPrompt(prompt._id);
       showSnackbar(prompt.isBookmarkedByCurrentUser ? 'Removed from bookmark' : 'Bookmark prompt', 'success');
-    } catch (err) {
-      showSnackbar("Failed to toggle bookmark", 'error');
+    } catch (err: any) {
+      showSnackbar(err?.message || "Failed to toggle bookmark", 'error');
       setPrompt(prev =>
         prev
           ? { ...prev, isBookmarkedByCurrentUser: !prev.isBookmarkedByCurrentUser }
@@ -95,8 +95,8 @@ const PromptDetailPage: React.FC = () => {
       const shareUrl = `${window.location.origin}/prompts/${prompt?._id}`;
       await navigator.clipboard.writeText(shareUrl);
       showSnackbar('Link copied to clipboard!', 'success');
-    } catch (err) {
-      showSnackbar('Failed to copy link', 'error');
+    } catch (err: any) {
+      showSnackbar(err?.message || 'Failed to copy link', 'error');
     }
   };
 
@@ -105,8 +105,8 @@ const PromptDetailPage: React.FC = () => {
     try {
       await navigator.clipboard.writeText(content);
       showSnackbar('Prompt content copied!', 'success');
-    } catch (err) {
-      showSnackbar('Failed to copy prompt content', 'error');
+    } catch (err: any) {
+      showSnackbar(err?.message || 'Failed to copy prompt content', 'error');
     }
   };
 
@@ -124,8 +124,8 @@ const PromptDetailPage: React.FC = () => {
       
       setEnhanceDialogOpen(false);
       showSnackbar('Prompt enhanced successfully!', 'success');
-    } catch (err) {
-      showSnackbar('Failed to enhance prompt', 'error');
+    } catch (err: any) {
+      showSnackbar(err?.message || 'Failed to enhance prompt', 'error');
     }finally{
       setEnhanceLoading(false);
     }

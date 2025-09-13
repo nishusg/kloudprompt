@@ -55,7 +55,7 @@ export const CommentList: React.FC<CommentListProps> = ({ promptId, limit = 5 })
         if (commentArray.length < limit) setHasMore(false);
         setComments((prev) => [...prev, ...commentArray]);
         setTotalCount(res.totalCount);
-      } catch (err) {
+      } catch (err: any) {
         console.error("Failed to load comments", err);
       } finally {
         setLoading(false);
@@ -79,7 +79,7 @@ export const CommentList: React.FC<CommentListProps> = ({ promptId, limit = 5 })
       setTotalCount((prev) => prev + 1);
       setNewComment("");
       showSnackbar("Comment added successfully!", "success");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to add comment", err);
       showSnackbar("Failed to add comment", "error");
     } finally {
@@ -93,7 +93,7 @@ export const CommentList: React.FC<CommentListProps> = ({ promptId, limit = 5 })
       setComments((prev) => prev.filter((c) => c._id !== commentId));
       setTotalCount((prev) => prev - 1);
       showSnackbar("Comment deleted successfully!", "success");
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to delete comment", err);
       showSnackbar("Failed to delete comment", "error");
     }

@@ -8,7 +8,7 @@ import axios from "axios";
 export const handleApiError = (err: unknown, defaultMessage: string): string => {
   if (axios.isAxiosError(err)) {
     if (err.response?.data) {
-      const data = err.response.data as { statusCode?: number; message?: string };
+      const data = { statusCode: err.response.status, message: err.response.data.message };
 
       // Backend ApiError message
       if (data?.message) return data.message;
