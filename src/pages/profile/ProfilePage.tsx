@@ -16,11 +16,8 @@ import {
   Stack,
   Chip,
   Pagination,
-  Tooltip,
-  IconButton
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import ShareIcon from '@mui/icons-material/Share';
 import ProfilePromptCard from '../../components/prompts/ProfilePromptCard';
 import PromptActivityGraph from '../../components/prompts/PromptActivityGraph';
 import { DefaultUserName } from '../../utils/Constants';
