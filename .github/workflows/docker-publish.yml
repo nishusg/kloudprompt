@@ -1,4 +1,4 @@
-name: Build and Push Prompt CueSpace UI Docker Image
+name: Build and Push KloudPrompt UI Docker Image
 
 on:
   push:
@@ -34,5 +34,5 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/cuespace-ui:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/cuespace-ui:${{ env.VERSION }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/kloudprompt-ui:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/kloudprompt-ui:${{ env.VERSION }}
