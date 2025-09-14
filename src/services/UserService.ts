@@ -130,3 +130,24 @@ export const getUserStats = async (userId: string): Promise<UserStats> => {
     throw error;
   }
 };
+
+export const searchUsers = async (
+  username: string,
+  page: number = 1,
+  limit: number = 10
+): Promise<{ users: User[]; totalUsers: number; }> => {
+  try {
+    const res = await apiClient.get(`/users/search/${username}`, {
+      params: { page, limit },
+    });
+    const data = res.data.data;
+    return {
+      users: data.users || [],
+      totalUsers: data.totalUsers || 1,
+    };
+  } catch (err) {
+    const message = handleApiError(err, "Failed to fetch users");
+    throw { message };
+  }
+};
+

@@ -29,6 +29,7 @@ import LeaderboardPage from './pages/LeaderboardPage';
 import NotificationsPage from './pages/NotificationsPage';
 import CategoryPage from './pages/prompt/CategoryPage';
 import AllCategoriesPage from './pages/prompt/AllCategoriesPage';
+import UserSearchPage from './pages/UserSearchPage';
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -59,6 +60,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/trending" element={<TrendingPromptsPage />} />
             <Route path="/update" element={<EditProfilePage />} />
             <Route path="/playground/:promptId" element={<PlaygroundPage />} />
+            <Route path="/users/search" element={<UserSearchPage />} />
             <Route path="/users/:userId" element={<UserProfilePage />} />
             <Route path="/change-password" element={<ChangePasswordPage />} />
             <Route path="/email-verification" element={<EmailVerification />} />

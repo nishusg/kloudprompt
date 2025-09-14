@@ -24,6 +24,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import AddCircle from '@mui/icons-material/AddCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import CategoryIcon from '@mui/icons-material/Category';
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 
 const Header: React.FC = () => {
   const { user, logout, loading } = useAuth();
@@ -132,6 +133,12 @@ const Header: React.FC = () => {
                     <ExploreIcon fontSize="small" />
                   </ListItemIcon>
                   Explore
+                </MenuItem>
+                <MenuItem onClick={() => handleNavigate('/users/search')}>
+                  <ListItemIcon>
+                    <PersonSearchIcon fontSize="small" />
+                  </ListItemIcon>
+                  Search User
                 </MenuItem>
                 <MenuItem onClick={() => handleNavigate('/notifications')}>
                   <ListItemIcon>
