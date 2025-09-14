@@ -15,22 +15,24 @@ import { useNavigate } from "react-router-dom";
 import { Prompt } from "../../models/Prompt";
 import { getTrendingPrompts } from "../../services/PromptService";
 import { DefaultUserName } from "../../utils/Constants";
+import { RankingFilterEnum } from "../../utils/Enum";
 
 const TrendingPromptsPage = () => {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const navigate = useNavigate();
+  const [filter, setFilter] = useState<RankingFilterEnum>(RankingFilterEnum.All);
 
   useEffect(() => {
     const fetchTrending = async () => {
       try {
-        const data = await getTrendingPrompts(5);
+        const data = await getTrendingPrompts(10, filter);
         setPrompts(data || []);
       } catch (err: any) {
         console.error("Failed to fetch trending prompts:", err);
       }
     };
     fetchTrending();
-  }, []);
+  }, [filter]);
 
   const handlePromptClick = (id: string) => {
     if (id) navigate(`/prompts/${id}`);
@@ -69,9 +71,34 @@ const TrendingPromptsPage = () => {
               letterSpacing: { xs: 0.5, md: 1 },
             }}
           >
-            Top 5 trending prompts
+            Trending prompt
           </Typography>
         </Box>
+
+        <Stack direction="row" spacing={2} sx={{ mb: 3, flexWrap: "wrap" }}>
+          {Object.values(RankingFilterEnum).map((f) => (
+            <Chip
+              key={f}
+              label={
+                f === RankingFilterEnum.All
+                  ? "All-Time"
+                  : f.charAt(0).toUpperCase() + f.slice(1)
+              }
+              clickable
+              onClick={() => setFilter(f)}
+              sx={{
+                bgcolor: filter === f ? "#42a5f5" : "#1a1a1a",
+                color: filter === f ? "#000" : "#fff",
+                fontWeight: 600,
+                border: "1px solid #42a5f5",
+                "&:hover": {
+                  bgcolor: "#42a5f5",
+                  color: "#000",
+                },
+              }}
+            />
+          ))}
+        </Stack>
 
         <List disablePadding>
         {prompts.length === 0 ? (

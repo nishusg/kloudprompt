@@ -13,22 +13,25 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import { DefaultUserName } from "../utils/Constants";
 import { getLeaderboard } from "../services/PromptService";
 import { LeaderboardResponse } from "../models";
+import { RankingFilterEnum } from "../utils/Enum";
 
 const LeaderboardPage = () => {
     const [leaders, setLeaders] = useState<LeaderboardResponse[]>([]);
     const navigate = useNavigate();
+    const [filter, setFilter] = useState<RankingFilterEnum>(RankingFilterEnum.All);
 
     useEffect(() => {
-        const fetchLeaderboard = async () => {
+      const fetchLeaderboard = async () => {
         try {
-            const data = await getLeaderboard(10);
-            setLeaders(data || []);
+          const data = await getLeaderboard(10, filter);
+          setLeaders(data || []);
         } catch (err: any) {
-            console.error("Failed to fetch leaderboard:", err);
+          console.error("Failed to fetch leaderboard:", err);
         }
-        };
-        fetchLeaderboard();
-    }, []);
+      };
+      fetchLeaderboard();
+    }, [filter]);
+
 
     const handleLeaderboardClick = (id: string) => {
         if (id) navigate(`/users/${id}`);
@@ -67,9 +70,34 @@ const LeaderboardPage = () => {
               letterSpacing: { xs: 0.5, md: 1 },
             }}
           >
-            Top 10 trending users
+            Trending user
           </Typography>
         </Box>
+
+        <Stack direction="row" spacing={2} sx={{ mb: 3, flexWrap: "wrap" }}>
+          {Object.values(RankingFilterEnum).map((f) => (
+            <Chip
+              key={f}
+              label={
+                f === RankingFilterEnum.All
+                  ? "All-Time"
+                  : f.charAt(0).toUpperCase() + f.slice(1)
+              }
+              clickable
+              onClick={() => setFilter(f)}
+              sx={{
+                bgcolor: filter === f ? "#42a5f5" : "#1a1a1a",
+                color: filter === f ? "#000" : "#fff",
+                fontWeight: 600,
+                border: "1px solid #42a5f5",
+                "&:hover": {
+                  bgcolor: "#42a5f5",
+                  color: "#000",
+                },
+              }}
+            />
+          ))}
+        </Stack>
 
         <List disablePadding>
           {leaders.length === 0 ? (

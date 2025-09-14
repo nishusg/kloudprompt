@@ -3,6 +3,7 @@ import { Prompt, CreatePromptDto, UpdatePromptDto } from '../models/Prompt';
 import { handleApiError } from './UtilsService';
 import { EnhancePromptRequest, EnhancePromptResponse, LeaderboardResponse } from '../models';
 import { ApiError } from '../models/ApiError';
+import { RankingFilterEnum } from '../utils/Enum';
 
 interface GetPromptsParams {
   search?: string;
@@ -77,9 +78,9 @@ export const incrementPromptView = async (id: string): Promise<number> => {
   }
 };
 
-export const getTrendingPrompts = async (limit: number = 10): Promise<Prompt[]> => {
+export const getTrendingPrompts = async (limit: number = 10, filter: RankingFilterEnum): Promise<Prompt[]> => {
   try {
-    const response = await apiClient.get(`/prompts/trending?limit=${limit}`);
+    const response = await apiClient.get(`/prompts/trending?limit=${limit}&filter=${filter}`);
     return response.data.data.prompts;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch trending prompts");
@@ -88,9 +89,9 @@ export const getTrendingPrompts = async (limit: number = 10): Promise<Prompt[]> 
   }
 };
 
-export const getLeaderboard = async (limit: number = 10): Promise<LeaderboardResponse[]> => {
+export const getLeaderboard = async (limit: number = 10, filter: RankingFilterEnum): Promise<LeaderboardResponse[]> => {
   try {
-    const response = await apiClient.get(`/prompts/leaderboard?limit=${limit}`);
+    const response = await apiClient.get(`/prompts/leaderboard?limit=${limit}&filter=${filter}`);
     return response.data.data.leaderboards;
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch leaderboard prompts");

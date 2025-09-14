@@ -7,6 +7,12 @@ export enum ProviderTypeEnum {
   TOGETHER = 'Together',
 }
 
+export enum RankingFilterEnum {
+  Weekly = 'Weekly',
+  Monthly = 'Monthly',
+  All = 'All'
+}
+
 export enum GenerationTypeEnum {
   IMAGE = 'Image',
   VIDEO = 'Video',
