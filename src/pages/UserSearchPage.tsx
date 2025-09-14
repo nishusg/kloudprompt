@@ -18,10 +18,12 @@ import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import { DefaultUserName } from "../utils/Constants";
 import { searchUsers } from "../services/UserService";
 import { User } from "../models";
+import { useSnackbar } from "../context/SnackbarContext";
 
 const PAGE_LIMIT = 1;
 
 const UserSearchPage = () => {
+  const { showSnackbar } = useSnackbar();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<User[]>([]);
   const [page, setPage] = useState(1);
@@ -49,7 +51,7 @@ const UserSearchPage = () => {
       }
       setTotalUsers(tp);
     } catch (err: any) {
-      console.error("Failed to search users:", err);
+      showSnackbar(err?.message || "Failed to search users:", "error");
     } finally {
       setLoading(false);
     }

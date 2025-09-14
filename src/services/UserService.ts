@@ -147,7 +147,8 @@ export const searchUsers = async (
     };
   } catch (err) {
     const message = handleApiError(err, "Failed to fetch users");
-    throw { message };
+    const error: ApiError = { message };
+    throw error;
   }
 };
 
