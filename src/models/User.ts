@@ -12,6 +12,8 @@ export interface User {
   readonly updatedAt: Date;
   bookmarkedPrompts?: string[];
   verificationStatus: VerificationStatus;
+  currentStreak?: number;
+  maxStreak?: number;
 }
 
 // DTO for updating user

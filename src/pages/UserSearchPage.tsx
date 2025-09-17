@@ -20,7 +20,7 @@ import { searchUsers } from "../services/UserService";
 import { User } from "../models";
 import { useSnackbar } from "../context/SnackbarContext";
 
-const PAGE_LIMIT = 1;
+const PAGE_LIMIT = 5;
 
 const UserSearchPage = () => {
   const { showSnackbar } = useSnackbar();
@@ -164,11 +164,27 @@ const UserSearchPage = () => {
                     Searching...
                   </Typography>
                 ) : results.length === 0 ? (
-                  <Typography
-                    sx={{ textAlign: "center", py: 2, color: "#bbb" }}
+                  <Paper
+                    elevation={3}
+                    sx={{
+                      p: 4,
+                      textAlign: "center",
+                      borderRadius: 3,
+                      bgcolor: "#1a1a1a",
+                      color: "#bbb",
+                    }}
                   >
-                    No users found 👤
-                  </Typography>
+                    <Typography
+                      variant="h6"
+                      fontWeight="600"
+                      sx={{
+                        color: "#fff",
+                        mb: 1,
+                      }}
+                    >
+                      No users found 👤
+                    </Typography>
+                  </Paper>
                 ) : (
                   results.map((user) => (
                     <Paper
@@ -234,7 +250,7 @@ const UserSearchPage = () => {
             </Paper>
 
             {/* Load More button */}
-            {results.length < totalUsers && (
+            {(results.length > 0 && results.length < totalUsers) && (
               <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
                 <Button
                   variant="contained"

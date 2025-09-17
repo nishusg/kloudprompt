@@ -306,7 +306,7 @@ const ProfilePage: React.FC = () => {
 
         {/* Prompt Activity Graph */}
         {prompts?.length > 0 && (
-          <MemoizedGraph prompts={prompts} />
+          <MemoizedGraph prompts={prompts} currentStreak={loggedInUser.currentStreak || 0} maxStreak={loggedInUser.maxStreak || 0} />
         )}
 
         {/* Toggle Buttons */}
