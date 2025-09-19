@@ -8,7 +8,7 @@ const AllCategorySkeleton: React.FC = () => {
         flex: "0 0 260px",
         p: 2,
         borderRadius: 4,
-        bgcolor: "#1e1e1e",
+        bgcolor: "#0a0a0a",
         color: "#fff",
         border: "1px solid rgba(144,202,249,0.15)",
         boxShadow: "0 4px 16px rgba(0,0,0,0.3)",

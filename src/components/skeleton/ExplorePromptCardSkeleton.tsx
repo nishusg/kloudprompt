@@ -9,7 +9,7 @@ const ExplorePromptCardSkeleton: React.FC = () => {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          backgroundColor: '#121212',
+          backgroundColor: '#0a0a0a',
           border: '1px solid rgba(144,202,249,0.15)',
           borderRadius: 4,
           boxShadow: '0 4px 16px rgba(0,0,0,0.3)',

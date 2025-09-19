@@ -12,7 +12,7 @@ const LeaderboardSkeleton = () => {
             px: { xs: 2, sm: 3 },
             py: { xs: 1.5, sm: 2 },
             borderRadius: 3,
-            bgcolor: "#121212",
+            bgcolor: "#0a0a0a",
           }}
         >
           <Stack
@@ -27,13 +27,13 @@ const LeaderboardSkeleton = () => {
                 variant="rounded"
                 width={40}
                 height={25}
-                sx={{ borderRadius: "8px", bgcolor: "#333" }}
+                sx={{ borderRadius: "8px", bgcolor: "grey.800" }}
               />
               <Skeleton
                 variant="text"
                 width={120}
                 height={24}
-                sx={{ bgcolor: "#333" }}
+                sx={{ bgcolor: "grey.800" }}
               />
             </Stack>
 
@@ -43,13 +43,13 @@ const LeaderboardSkeleton = () => {
                 variant="text"
                 width={70}
                 height={20}
-                sx={{ bgcolor: "#333" }}
+                sx={{ bgcolor: "grey.800" }}
               />
               <Skeleton
                 variant="text"
                 width={70}
                 height={20}
-                sx={{ bgcolor: "#333" }}
+                sx={{ bgcolor: "grey.800" }}
               />
             </Stack>
           </Stack>

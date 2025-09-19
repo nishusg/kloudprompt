@@ -9,7 +9,7 @@ const TrendingPromptSkeleton: React.FC = () => {
         mb: 3,
         p: 2.5,
         borderRadius: 3,
-        bgcolor: "#121212",
+        bgcolor: "#0a0a0a",
       }}
     >
       <Stack spacing={1.5}>

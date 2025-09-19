@@ -6,22 +6,22 @@ const CategorySkeleton = () => {
       <Paper
         sx={{
           p: 2,
-          bgcolor: "#1e1e1e",
+          bgcolor: "#0a0a0a",
           borderRadius: 3,
           border: "1px solid #333",
         }}
       >
         {/* Title Skeleton */}
-        <Skeleton variant="text" width="70%" height={28} sx={{ bgcolor: "#333" }} />
+        <Skeleton variant="text" width="70%" height={28} sx={{ bgcolor: "grey.800" }} />
 
         {/* Subtitle Skeleton */}
-        <Skeleton variant="text" width="90%" sx={{ bgcolor: "#333", mt: 1 }} />
+        <Skeleton variant="text" width="90%" sx={{ bgcolor: "grey.800", mt: 1 }} />
 
         {/* Rectangular Image/Block Skeleton */}
         <Skeleton
           variant="rectangular"
           height={60}
-          sx={{ bgcolor: "#333", mt: 2, borderRadius: 2 }}
+          sx={{ bgcolor: "grey.800", mt: 2, borderRadius: 2 }}
         />
       </Paper>
     </Grid>

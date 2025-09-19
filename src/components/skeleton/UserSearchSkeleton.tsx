@@ -10,7 +10,7 @@ const UserSearchSkeleton: React.FC = () => {
         px: { xs: 2, sm: 3 },
         py: { xs: 1.5, sm: 2 },
         borderRadius: 3,
-        bgcolor: "#121212",
+        bgcolor: "#0a0a0a",
         display: "flex",
         alignItems: "center",
         gap: 2,

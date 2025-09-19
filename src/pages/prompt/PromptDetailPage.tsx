@@ -24,6 +24,7 @@ import { EnhancePromptRequest, EnhancePromptResponse } from "../../models/Enhanc
 import { ProviderTypeEnum } from '../../utils/Enum';
 import { CommentList } from '../../components/comments/CommentList';
 import { useSnackbar } from '../../context/SnackbarContext';
+import PromptDetailSkeleton from '../../components/skeleton/PromptDetailSkeleton';
 
 const formatDate = (date: Date) =>
   new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -137,11 +138,7 @@ const PromptDetailPage: React.FC = () => {
   };
 
   if (loading)
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
-        <CircularProgress />
-      </Box>
-    );
+    return <PromptDetailSkeleton />
 
   if (error)
     return (
