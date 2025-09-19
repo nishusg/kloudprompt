@@ -6,7 +6,6 @@ import {
   Paper,
   Stack,
   Button,
-  Skeleton,
   IconButton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +16,9 @@ import CategoryIcon from '@mui/icons-material/Category';
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { DefaultUserName } from "../../utils/Constants";
+import AllCategorySkeleton from "../../components/skeleton/AllCategorySkeleton";
+
+const PAGE_LIMIT = 6;
 
 const AllCategoriesPage = () => {
   const [categoryPrompts, setCategoryPrompts] = useState<Record<string, Prompt[]>>({});
@@ -32,7 +34,7 @@ const AllCategoriesPage = () => {
   const fetchCategoryData = useCallback(async (category: string) => {
     try {
       setLoading(true);
-      const data = await getPromptsByCategory(category, 6);
+      const data = await getPromptsByCategory(category, PAGE_LIMIT);
       setCategoryPrompts((prev) => ({
         ...prev,
         [category]: data.prompts || [],
@@ -240,18 +242,8 @@ const AllCategoriesPage = () => {
                     </Paper>
                   ))
                 ) : (
-                  [...Array(3)].map((_, i) => (
-                    <Skeleton
-                      key={i}
-                      variant="rectangular"
-                      width={260}
-                      height={120}
-                      sx={{
-                        flex: "0 0 260px",
-                        borderRadius: 3,
-                        bgcolor: "#1e1e1e",
-                      }}
-                    />
+                  [...Array(PAGE_LIMIT)].map((_, i) => (
+                    <AllCategorySkeleton key={i} />
                   ))
                 )}
               </Box>

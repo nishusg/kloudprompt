@@ -26,6 +26,7 @@ import { getPrompts } from '../services/PromptService';
 import { Prompt } from '../models/Prompt';
 import ExplorePromptCard from '../components/prompts/ExplorePromptCard';
 import { GenerationTypeEnum, ProviderTypeEnum, PromptCategoryEnum } from '../utils/Enum';
+import ExplorePromptCardSkeleton from '../components/skeleton/ExplorePromptCardSkeleton';
 
 const ExplorePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -306,10 +307,8 @@ const ExplorePage: React.FC = () => {
         {/* Results */}
         {loading ? (
           <Grid container spacing={4}>
-            {Array.from({ length: 6 }).map((_, idx) => (
-              <Grid item xs={12} sm={6} md={4} key={idx}>
-                <Skeleton variant="rectangular" height={160} sx={{ borderRadius: 3 }} />
-              </Grid>
+            {Array.from({ length: rowsPerPage }).map((_, idx) => (
+              <ExplorePromptCardSkeleton/>
             ))}
           </Grid>
         ) : error ? (
@@ -326,7 +325,7 @@ const ExplorePage: React.FC = () => {
                   <Typography
                     align="center"
                     color="grey.500"
-                    sx={{ mt: 4, fontStyle: 'italic' }}
+                    sx={{ mt: 4, fontStyle: "italic" }}
                   >
                     No prompts found. Try changing your search or filters!
                   </Typography>
@@ -344,10 +343,10 @@ const ExplorePage: React.FC = () => {
                   siblingCount={0}
                   boundaryCount={1}
                   sx={{
-                    '& .MuiPaginationItem-root': { color: '#fff' },
-                    '& .MuiPaginationItem-root.Mui-selected': {
-                      bgcolor: '#42a5f5',
-                      color: '#000',
+                    "& .MuiPaginationItem-root": { color: "#fff" },
+                    "& .MuiPaginationItem-root.Mui-selected": {
+                      bgcolor: "#42a5f5",
+                      color: "#000",
                     },
                   }}
                 />

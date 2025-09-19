@@ -12,7 +12,6 @@ import {
   Avatar,
   Button,
   Grid,
-  CircularProgress,
   Stack,
   Chip,
   Pagination,
@@ -24,6 +23,7 @@ import { DefaultUserName } from '../../utils/Constants';
 import { useSnackbar } from '../../context/SnackbarContext';
 import { VerificationStatus } from '../../utils/Enum';
 import { getUserPrompts, getUserStats } from '../../services/UserService';
+import ProfileSkeleton from '../../components/skeleton/ProfileSkeleton';
 
 const ProfilePage: React.FC = () => {
   const { user: loggedInUser, loading: authLoading } = useAuth();
@@ -42,7 +42,7 @@ const ProfilePage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const MemoizedGraph = React.memo(PromptActivityGraph);
 
-  const limit = 5; // prompts per page
+  const PAGE_LIMIT = 5; // prompts per page
 
   useEffect(() => {
     setSearchParams((prev) => {
@@ -62,13 +62,13 @@ const ProfilePage: React.FC = () => {
         setLoadingData(true);
 
         if (view === "prompts") {
-          const { prompts, totalPages } = await getUserPrompts(loggedInUser._id, currentPage, limit);
+          const { prompts, totalPages } = await getUserPrompts(loggedInUser._id, currentPage, PAGE_LIMIT);
           if (isMounted) {
             setPrompts(prompts);
             setTotalPages(totalPages);
           }
         } else {
-          const { prompts, totalPages } = await getUserBookmarks(loggedInUser._id, currentPage, limit);
+          const { prompts, totalPages } = await getUserBookmarks(loggedInUser._id, currentPage, PAGE_LIMIT);
           if (isMounted) {
             setBookmarkedPrompts(prompts);
             setTotalPages(totalPages);
@@ -138,12 +138,7 @@ const ProfilePage: React.FC = () => {
   };
 
   if (authLoading || loadingData) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'linear-gradient(160deg, #0d0d0d, #1a1a1d)', color: 'white' }}>
-        <CircularProgress color="inherit" />
-        <Typography sx={{ ml: 2 }}>Loading Profile...</Typography>
-      </Box>
-    );
+    return <ProfileSkeleton />;
   }
 
   if (!loggedInUser) {

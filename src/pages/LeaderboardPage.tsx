@@ -14,19 +14,26 @@ import { DefaultUserName } from "../utils/Constants";
 import { getLeaderboard } from "../services/PromptService";
 import { LeaderboardResponse } from "../models";
 import { RankingFilterEnum } from "../utils/Enum";
+import LeaderboardSkeleton from "../components/skeleton/LeaderboardSkeleton";
+
+const PAGE_LIMIT = 10;
 
 const LeaderboardPage = () => {
-    const [leaders, setLeaders] = useState<LeaderboardResponse[]>([]);
     const navigate = useNavigate();
+    const [leaders, setLeaders] = useState<LeaderboardResponse[]>([]);
+    const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<RankingFilterEnum>(RankingFilterEnum.All);
 
     useEffect(() => {
       const fetchLeaderboard = async () => {
         try {
-          const data = await getLeaderboard(10, filter);
+          setLoading(true);
+          const data = await getLeaderboard(PAGE_LIMIT, filter);
           setLeaders(data || []);
         } catch (err: any) {
           console.error("Failed to fetch leaderboard:", err);
+        } finally {
+          setLoading(false);
         }
       };
       fetchLeaderboard();
@@ -100,7 +107,13 @@ const LeaderboardPage = () => {
         </Stack>
 
         <List disablePadding>
-          {leaders.length === 0 ? (
+          {loading ? (
+            <>
+              {Array.from(new Array(PAGE_LIMIT)).map((_, i) => (
+                <LeaderboardSkeleton key={i} />
+              ))}
+            </>
+          ) : leaders.length === 0 ? (
             <Paper
               elevation={3}
               sx={{

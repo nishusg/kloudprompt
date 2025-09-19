@@ -20,6 +20,7 @@ import {
 import { Notification } from "../models/Notification";
 import { DefaultUserName } from "../utils/Constants";
 import { useAuth } from "../context/AuthContext";
+import NotificationSkeleton from "../components/skeleton/NotificationSkeleton";
 
 const PAGE_LIMIT = 10;
 
@@ -109,7 +110,13 @@ const NotificationsPage = () => {
         </Box>
 
         <List disablePadding>
-          {notifications.length === 0 ? (
+          {loading && page === 1 ? (
+            <>
+              {Array.from(new Array(PAGE_LIMIT)).map((_, i) => (
+                <NotificationSkeleton key={i} />
+              ))}
+            </>
+          ) : notifications.length === 0 ? (
             <Paper
               elevation={3}
               sx={{
@@ -194,13 +201,17 @@ const NotificationsPage = () => {
         {/* Load More button */}
         {page < totalPages && (
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                onClick={handleLoadMore} disabled={loading}>
-                {loading ? 'Loading...' : 'Load More'}
-            </Button>
+            {loading && page > 1 ? (
+              <NotificationSkeleton />
+            ) : ( 
+              <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  onClick={handleLoadMore} disabled={loading}>
+                  {loading ? 'Loading...' : 'Load More'}
+              </Button>
+            )}
           </Box>
         )}
       </Container>

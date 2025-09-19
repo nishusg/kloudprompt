@@ -8,12 +8,14 @@ import {
   Grid,
   Paper,
   Pagination,
-  CircularProgress,
   Stack,
 } from "@mui/material";
 import { Prompt } from "../../models";
 import { getPromptsByCategory } from "../../services/PromptService";
 import { DefaultUserName } from "../../utils/Constants";
+import CategorySkeleton from "../../components/skeleton/CategorySkeleton";
+
+const PAGE_LIMIT = 9;
 
 const CategoryPage = () => {
   const { category } = useParams<{ category: string }>();
@@ -30,7 +32,7 @@ const CategoryPage = () => {
     const fetchPrompts = async () => {
       try {
         setLoading(true);
-        const data = await getPromptsByCategory(category, 9, page);
+        const data = await getPromptsByCategory(category, PAGE_LIMIT, page);
         setPrompts(data.prompts);
         setTotalPages(Number(data.totalPages));
       } catch (err: any) {
@@ -81,9 +83,11 @@ const CategoryPage = () => {
         </Box>
 
         {loading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
-            <CircularProgress color="primary" />
-          </Box>
+          <Grid container spacing={3} sx={{ mt: 2 }}>
+            {[...Array(PAGE_LIMIT)].map((_, i) => (
+              <CategorySkeleton key={i} />
+            ))}
+          </Grid>
         ) : prompts.length === 0 ? (
           <Typography variant="h6" sx={{ color: "#bbb", textAlign: "center", mt: 6 }}>
             No prompts found in this category.

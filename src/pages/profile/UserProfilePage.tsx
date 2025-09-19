@@ -6,7 +6,6 @@ import {
   Typography,
   Paper,
   Grid,
-  CircularProgress,
   Avatar,
   Stack,
   Link,
@@ -19,6 +18,7 @@ import { Prompt } from '../../models/Prompt';
 import ProfilePromptCard from '../../components/prompts/ProfilePromptCard';
 import { DefaultUserName } from '../../utils/Constants';
 import { VerificationStatus } from '../../utils/Enum';
+import UserProfileSkeleton from '../../components/skeleton/UserProfileSkeleton';
 
 const UserProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -35,7 +35,7 @@ const UserProfilePage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
 
-  const PROMPTS_PER_PAGE = 5;
+  const PAGE_LIMIT = 5;
 
   const fetchData = async (page = 1) => {
     if (!userId) return;
@@ -43,7 +43,7 @@ const UserProfilePage: React.FC = () => {
     try {
       const [userData, userPromptsPage, stats] = await Promise.all([
         getUserById(userId),
-        getUserPrompts(userId, page, PROMPTS_PER_PAGE),
+        getUserPrompts(userId, page, PAGE_LIMIT),
         getUserStats(userId)
       ]);
 
@@ -68,11 +68,7 @@ const UserProfilePage: React.FC = () => {
   };
 
   if (loading)
-    return (
-      <CircularProgress
-        sx={{ display: 'block', mx: 'auto', mt: 10, color: '#42a5f5' }}
-      />
-    );
+    return <UserProfileSkeleton />;
 
   if (!user)
     return (

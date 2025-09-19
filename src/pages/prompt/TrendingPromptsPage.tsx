@@ -16,19 +16,26 @@ import { Prompt } from "../../models/Prompt";
 import { getTrendingPrompts } from "../../services/PromptService";
 import { DefaultUserName } from "../../utils/Constants";
 import { RankingFilterEnum } from "../../utils/Enum";
+import TrendingPromptSkeleton from "../../components/skeleton/TrendingPromptSkeleton";
+
+const PAGE_LIMIT = 10;
 
 const TrendingPromptsPage = () => {
-  const [prompts, setPrompts] = useState<Prompt[]>([]);
   const navigate = useNavigate();
+  const [prompts, setPrompts] = useState<Prompt[]>([]);
+  const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<RankingFilterEnum>(RankingFilterEnum.All);
 
   useEffect(() => {
     const fetchTrending = async () => {
+      setLoading(true);
       try {
-        const data = await getTrendingPrompts(10, filter);
+        const data = await getTrendingPrompts(PAGE_LIMIT, filter);
         setPrompts(data || []);
       } catch (err: any) {
         console.error("Failed to fetch trending prompts:", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchTrending();
@@ -101,7 +108,13 @@ const TrendingPromptsPage = () => {
         </Stack>
 
         <List disablePadding>
-        {prompts.length === 0 ? (
+        {loading ? (
+          <>
+            {Array.from(new Array(PAGE_LIMIT)).map((_, i) => (
+              <TrendingPromptSkeleton key={i} />
+            ))}
+          </>
+        ) : prompts.length === 0 ? (
           <Paper
             elevation={3}
             sx={{

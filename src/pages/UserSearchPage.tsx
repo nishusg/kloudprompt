@@ -19,6 +19,7 @@ import { DefaultUserName } from "../utils/Constants";
 import { searchUsers } from "../services/UserService";
 import { User } from "../models";
 import { useSnackbar } from "../context/SnackbarContext";
+import UserSearchSkeleton from "../components/skeleton/UserSearchSkeleton";
 
 const PAGE_LIMIT = 5;
 
@@ -158,11 +159,11 @@ const UserSearchPage = () => {
             >
               <List disablePadding>
                 {loading && page === 1 ? (
-                  <Typography
-                    sx={{ textAlign: "center", py: 2, color: "#bbb" }}
-                  >
-                    Searching...
-                  </Typography>
+                  <>
+                    {Array.from(new Array(PAGE_LIMIT)).map((_, i) => (
+                      <UserSearchSkeleton key={i} />
+                    ))}
+                  </>
                 ) : results.length === 0 ? (
                   <Paper
                     elevation={3}
