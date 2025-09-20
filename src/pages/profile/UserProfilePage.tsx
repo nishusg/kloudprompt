@@ -19,6 +19,7 @@ import ProfilePromptCard from '../../components/prompts/ProfilePromptCard';
 import { DefaultUserName } from '../../utils/Constants';
 import { VerificationStatus } from '../../utils/Enum';
 import UserProfileSkeleton from '../../components/skeleton/UserProfileSkeleton';
+import ProfilePromptCardSkeleton from '../../components/skeleton/ProfilePromptCardSkeleton';
 
 const UserProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -30,36 +31,53 @@ const UserProfilePage: React.FC = () => {
 
   const [user, setUser] = useState<User | null>(null);
   const [prompts, setPrompts] = useState<Prompt[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [loadingPrompts, setLoadingPrompts] = useState(true);
   const [userStats, setUserStats] = useState<UserStats>();
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [totalPages, setTotalPages] = useState(1);
 
   const PAGE_LIMIT = 5;
 
-  const fetchData = async (page = 1) => {
+  // Fetch user info and stats once
+  const fetchUserData = async () => {
     if (!userId) return;
-    setLoading(true);
+    setLoadingUser(true);
     try {
-      const [userData, userPromptsPage, stats] = await Promise.all([
+      const [userData, stats] = await Promise.all([
         getUserById(userId),
-        getUserPrompts(userId, page, PAGE_LIMIT),
-        getUserStats(userId)
+        getUserStats(userId),
       ]);
-
       setUser(userData);
-      setPrompts(userPromptsPage.prompts);
-      setTotalPages(userPromptsPage.totalPages || 1);
       setUserStats(stats);
     } catch (err: any) {
       console.error(err?.message);
     } finally {
-      setLoading(false);
+      setLoadingUser(false);
+    }
+  };
+
+  // Fetch prompts whenever page changes
+  const fetchPrompts = async (page = 1) => {
+    if (!userId) return;
+    setLoadingPrompts(true);
+    try {
+      const { prompts, totalPages } = await getUserPrompts(userId, page, PAGE_LIMIT);
+      setPrompts(prompts);
+      setTotalPages(totalPages || 1);
+    } catch (err: any) {
+      console.error(err?.message);
+    } finally {
+      setLoadingPrompts(false);
     }
   };
 
   useEffect(() => {
-    fetchData(currentPage);
+    fetchUserData();
+  }, [userId]);
+
+  useEffect(() => {
+    fetchPrompts(currentPage);
   }, [userId, currentPage]);
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
@@ -67,7 +85,7 @@ const UserProfilePage: React.FC = () => {
     navigate(`/users/${userId}?page=${page}`);
   };
 
-  if (loading)
+  if (loadingUser)
     return <UserProfileSkeleton />;
 
   if (!user)
@@ -208,7 +226,9 @@ const UserProfilePage: React.FC = () => {
           Prompts by {user.userName}
         </Typography>
 
-        {prompts.length === 0 ? (
+        {loadingPrompts
+        ? <ProfilePromptCardSkeleton />
+        : prompts.length === 0 ? (
           <Typography sx={{ color: '#bbb' }}>No prompts found.</Typography>
         ) : (
           <>

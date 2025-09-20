@@ -24,6 +24,7 @@ import { useSnackbar } from '../../context/SnackbarContext';
 import { VerificationStatus } from '../../utils/Enum';
 import { getUserPrompts, getUserStats } from '../../services/UserService';
 import ProfileSkeleton from '../../components/skeleton/ProfileSkeleton';
+import ProfilePromptCardSkeleton from '../../components/skeleton/ProfilePromptCardSkeleton';
 
 const ProfilePage: React.FC = () => {
   const { user: loggedInUser, loading: authLoading } = useAuth();
@@ -34,7 +35,8 @@ const ProfilePage: React.FC = () => {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [bookmarkedPrompts, setBookmarkedPrompts] = useState<Prompt[]>([]);
   const [userStats, setUserStats] = useState<UserStats>();
-  const [loadingData, setLoadingData] = useState(true);
+  const [loadingPrompts, setLoadingPrompts] = useState(false);
+  const [loadingBookmarks, setLoadingBookmarks] = useState(false);
   const [view, setView] = useState<'prompts' | 'bookmarks'>('prompts');
 
   const initialPage = Number(searchParams.get("page")) || 1;
@@ -55,37 +57,40 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     let isMounted = true;
 
-    const fetchData = async () => {
+    const fetchPrompts = async () => {
       if (!loggedInUser?._id) return;
-
       try {
-        setLoadingData(true);
-
-        if (view === "prompts") {
-          const { prompts, totalPages } = await getUserPrompts(loggedInUser._id, currentPage, PAGE_LIMIT);
-          if (isMounted) {
-            setPrompts(prompts);
-            setTotalPages(totalPages);
-          }
-        } else {
-          const { prompts, totalPages } = await getUserBookmarks(loggedInUser._id, currentPage, PAGE_LIMIT);
-          if (isMounted) {
-            setBookmarkedPrompts(prompts);
-            setTotalPages(totalPages);
-          }
+        setLoadingPrompts(true);
+        const { prompts, totalPages } = await getUserPrompts(loggedInUser._id, currentPage, PAGE_LIMIT);
+        if (isMounted) {
+          setPrompts(prompts);
+          setTotalPages(totalPages);
         }
-      } catch (error) {
-        console.error("Failed to fetch profile data:", error);
       } finally {
-        if (isMounted) setLoadingData(false);
+        if (isMounted) setLoadingPrompts(false);
       }
     };
 
-    if (!authLoading) fetchData();
-
-    return () => {
-      isMounted = false;
+    const fetchBookmarks = async () => {
+      if (!loggedInUser?._id) return;
+      try {
+        setLoadingBookmarks(true);
+        const { prompts, totalPages } = await getUserBookmarks(loggedInUser._id, currentPage, PAGE_LIMIT);
+        if (isMounted) {
+          setBookmarkedPrompts(prompts);
+          setTotalPages(totalPages);
+        }
+      } finally {
+        if (isMounted) setLoadingBookmarks(false);
+      }
     };
+
+    if (!authLoading) {
+      if (view === "prompts") fetchPrompts();
+      if (view === "bookmarks") fetchBookmarks();
+    }
+
+    return () => { isMounted = false; };
   }, [loggedInUser, authLoading, currentPage, view]);
 
 
@@ -137,7 +142,7 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  if (authLoading || loadingData) {
+  if (authLoading) {
     return <ProfileSkeleton />;
   }
 
@@ -325,7 +330,9 @@ const ProfilePage: React.FC = () => {
         {/* Animated Content */}
         <AnimatePresence mode="wait">
           {view === 'prompts' && (
-              <motion.div
+            loadingPrompts 
+            ? <ProfilePromptCardSkeleton />
+            : <motion.div
                 key="prompts"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -383,7 +390,9 @@ const ProfilePage: React.FC = () => {
           )}
 
           {view === 'bookmarks' && (
-            <motion.div
+            loadingBookmarks 
+            ? <ProfilePromptCardSkeleton />
+            : <motion.div
               key="bookmarks"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
