@@ -1,21 +1,21 @@
 // src/components/skeletons/PromptDetailSkeleton.tsx
 import React from 'react';
-import { Box, Container, Typography, Stack, Paper, Chip, CircularProgress } from '@mui/material';
+import { Box, Container, Stack, Paper, CircularProgress, Skeleton } from '@mui/material';
 
 const PromptDetailSkeleton: React.FC = () => {
   return (
-    <Box sx={{ bgcolor: '#0a0a0a', color: '#fff', minHeight: '100vh', py: 4 }}>
+    <Paper sx={{ bgcolor: '#0a0a0a', color: '#fff', minHeight: '100vh', py: 4 }}>
       <Container maxWidth="md">
         {/* Header */}
         <Box sx={{ mb: 4, textAlign: 'center' }}>
-          <Box sx={{ height: 32, bgcolor: "grey.800", borderRadius: 1, width: '60%', mx: 'auto', mb: 1 }} />
-          <Box sx={{ height: 24, bgcolor: "grey.800", borderRadius: 1, width: '80%', mx: 'auto', mb: 1 }} />
-          <Box sx={{ height: 20, bgcolor: "grey.800", borderRadius: 1, width: '40%', mx: 'auto' }} />
+          <Skeleton sx={{ height: 32, bgcolor: "grey.800", borderRadius: 1, width: '60%', mx: 'auto', mb: 1 }} />
+          <Skeleton sx={{ height: 24, bgcolor: "grey.800", borderRadius: 1, width: '80%', mx: 'auto', mb: 1 }} />
+          <Skeleton sx={{ height: 20, bgcolor: "grey.800", borderRadius: 1, width: '40%', mx: 'auto' }} />
         </Box>
 
         {/* Stats */}
         <Stack direction="row" spacing={2} justifyContent="center" sx={{ mb: 3 }}>
-          <Box sx={{ width: 80, height: 24, bgcolor: "grey.800", borderRadius: 1 }} />
+          <Skeleton sx={{ width: 80, height: 24, bgcolor: "grey.800", borderRadius: 1 }} />
         </Stack>
 
         {/* Prompt Content */}
@@ -29,13 +29,13 @@ const PromptDetailSkeleton: React.FC = () => {
             minHeight: 120,
           }}
         >
-          <Box sx={{ width: '100%', height: 100, bgcolor: "grey.800", borderRadius: 1 }} />
+          <Skeleton sx={{ width: '100%', height: 100, bgcolor: "grey.800", borderRadius: 1 }} />
         </Paper>
 
         {/* Tags */}
         <Stack direction="row" spacing={1} sx={{ mb: 3, flexWrap: 'wrap' }}>
           {[...Array(3)].map((_, i) => (
-            <Box key={i} sx={{ width: 60, height: 24, bgcolor: "grey.800", borderRadius: 1 }} />
+            <Skeleton key={i} sx={{ width: 60, height: 24, bgcolor: "grey.800", borderRadius: 1 }} />
           ))}
         </Stack>
 
@@ -53,8 +53,8 @@ const PromptDetailSkeleton: React.FC = () => {
               key={i}
               sx={{ bgcolor: '#111', p: 2, borderRadius: 2, border: '1px solid #333', minHeight: 60 }}
             >
-              <Box sx={{ width: '40%', height: 16, bgcolor: "grey.800", borderRadius: 1, mb: 1 }} />
-              <Box sx={{ width: '100%', height: 12, bgcolor: "grey.800", borderRadius: 1 }} />
+              <Skeleton sx={{ width: '40%', height: 16, bgcolor: "grey.800", borderRadius: 1, mb: 1 }} />
+              <Skeleton sx={{ width: '100%', height: 12, bgcolor: "grey.800", borderRadius: 1 }} />
             </Paper>
           ))}
         </Stack>
@@ -64,7 +64,7 @@ const PromptDetailSkeleton: React.FC = () => {
           <CircularProgress color="inherit" />
         </Box>
       </Container>
-    </Box>
+    </Paper>
   );
 };
 

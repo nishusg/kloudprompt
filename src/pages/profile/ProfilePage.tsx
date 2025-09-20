@@ -248,14 +248,14 @@ const ProfilePage: React.FC = () => {
                     variant="outlined"
                     size="small"
                     sx={{
-                      borderColor: '#555',
+                      borderColor: '#ef5350',
                       color: '#fff',
                       fontWeight: 600,
                       borderRadius: '10px',
                       px: 3,
                       textTransform: 'none',
                       width: { xs: '100%', sm: 'auto' },
-                      '&:hover': { borderColor: '#888', backgroundColor: 'rgba(255,255,255,0.05)' }
+                      '&:hover': { borderColor: '#f6685e', backgroundColor: 'rgba(255,255,255,0.05)' }
                     }}
                     onClick={() => navigate('/email-verification')}
                   >

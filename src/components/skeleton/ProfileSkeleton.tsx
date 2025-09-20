@@ -34,16 +34,16 @@ const ProfileSkeleton: React.FC = () => {
         >
           <Stack direction="row" spacing={3} alignItems="center">
             {/* Avatar */}
-            <Skeleton variant="circular">
+            <Skeleton variant="circular" sx={{ bgcolor: "grey.800" }}>
               <Avatar sx={{ width: 100, height: 100 }} />
             </Skeleton>
 
             {/* User Info */}
             <Box sx={{ flexGrow: 1 }}>
-              <Skeleton variant="text" width="40%" height={32} />
-              <Skeleton variant="text" width="25%" />
-              <Skeleton variant="text" width="50%" />
-              <Skeleton variant="text" width="30%" />
+              <Skeleton variant="text" width="40%" height={32} sx={{ bgcolor: "grey.800" }} />
+              <Skeleton variant="text" width="25%" sx={{ bgcolor: "grey.800" }} />
+              <Skeleton variant="text" width="50%" sx={{ bgcolor: "grey.800" }} />
+              <Skeleton variant="text" width="30%" sx={{ bgcolor: "grey.800" }} />
             </Box>
           </Stack>
         </Paper>
@@ -58,8 +58,8 @@ const ProfileSkeleton: React.FC = () => {
               bgcolor: "#121212",
             }}
           >
-            <Skeleton variant="text" width="60%" />
-            <Skeleton variant="text" width="40%" />
+            <Skeleton variant="text" width="60%" sx={{ bgcolor: "grey.800" }} />
+            <Skeleton variant="text" width="40%" sx={{ bgcolor: "grey.800" }} />
           </Paper>
           <Paper
             sx={{
@@ -69,8 +69,8 @@ const ProfileSkeleton: React.FC = () => {
               bgcolor: "#121212",
             }}
           >
-            <Skeleton variant="text" width="60%" />
-            <Skeleton variant="text" width="40%" />
+            <Skeleton variant="text" width="60%" sx={{ bgcolor: "grey.800" }} />
+            <Skeleton variant="text" width="40%" sx={{ bgcolor: "grey.800" }} />
           </Paper>
         </Box>
 
@@ -78,12 +78,47 @@ const ProfileSkeleton: React.FC = () => {
         <Paper
           sx={{
             p: 2,
-            mb: 3,
-            borderRadius: 2,
-            bgcolor: "#121212",
+            mb: 4,
+            borderRadius: "16px",
+            background: "#121212",
           }}
         >
-          <Skeleton variant="rectangular" height={200} />
+          {/* Streak Counter */}
+          <Skeleton
+            variant="text"
+            width={180}
+            height={24}
+            sx={{ bgcolor: "grey.800", mb: 0.5 }}
+          />
+          <Skeleton
+            variant="text"
+            width={140}
+            height={20}
+            sx={{ bgcolor: "grey.800", mb: 2 }}
+          />
+
+          {/* Time Range Selector */}
+          <Stack direction="row" spacing={1} mb={2}>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton
+                key={i}
+                variant="rounded"
+                width={80}
+                height={36}
+                sx={{ borderRadius: "50px", bgcolor: "grey.800" }}
+              />
+            ))}
+          </Stack>
+
+          {/* Chart placeholder */}
+          <Box sx={{ height: 300, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Skeleton
+              variant="rectangular"
+              width="100%"
+              height="100%"
+              sx={{ borderRadius: "12px", bgcolor: "grey.800" }}
+            />
+          </Box>
         </Paper>
 
         {/* Prompts/Bookmarks List Skeleton */}
@@ -97,9 +132,9 @@ const ProfileSkeleton: React.FC = () => {
                   bgcolor: "#121212",
                 }}
               >
-                <Skeleton variant="text" width="50%" height={28} />
-                <Skeleton variant="text" width="80%" />
-                <Skeleton variant="text" width="60%" />
+                <Skeleton variant="text" width="50%" height={28} sx={{ bgcolor: "grey.800" }} />
+                <Skeleton variant="text" width="80%" sx={{ bgcolor: "grey.800" }} />
+                <Skeleton variant="text" width="60%" sx={{ bgcolor: "grey.800" }}  />
               </Paper>
             </Grid>
           ))}
