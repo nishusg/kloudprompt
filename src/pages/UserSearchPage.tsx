@@ -21,8 +21,6 @@ import { User } from "../models";
 import { useSnackbar } from "../context/SnackbarContext";
 import UserSearchSkeleton from "../components/skeleton/UserSearchSkeleton";
 
-const PAGE_LIMIT = 5;
-
 const UserSearchPage = () => {
   const { showSnackbar } = useSnackbar();
   const [query, setQuery] = useState("");
@@ -30,8 +28,8 @@ const UserSearchPage = () => {
   const [page, setPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(1);
   const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
+  const PAGE_LIMIT = 5;
 
   const fetchUsers = async (searchQuery: string, pageNumber: number) => {
     if (!searchQuery.trim()) {

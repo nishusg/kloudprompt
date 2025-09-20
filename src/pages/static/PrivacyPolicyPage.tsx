@@ -121,15 +121,9 @@ const PrivacyPolicyPage: React.FC = () => {
           Your Choices
         </Typography>
         <Typography variant="body1" paragraph>
-          You can update or delete your account at any time. If you have
+          You can update or contact us to delete your account at any time. If you have
           concerns about your privacy, feel free to contact us.
         </Typography>
-
-        <Box mt={4}>
-          <Typography variant="body2" align="center" sx={{ opacity: 0.8 }}>
-            Last updated: {new Date().toLocaleDateString()}
-          </Typography>
-        </Box>
       </Paper>
     </Container>
     </Box>

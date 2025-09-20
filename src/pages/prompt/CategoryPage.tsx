@@ -15,8 +15,6 @@ import { getPromptsByCategory } from "../../services/PromptService";
 import { DefaultUserName } from "../../utils/Constants";
 import CategorySkeleton from "../../components/skeleton/CategorySkeleton";
 
-const PAGE_LIMIT = 9;
-
 const CategoryPage = () => {
   const { category } = useParams<{ category: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -25,6 +23,7 @@ const CategoryPage = () => {
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"));
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
+  const PAGE_LIMIT = 9;
 
   useEffect(() => {
     if (!category) return;

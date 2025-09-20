@@ -18,8 +18,6 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { DefaultUserName } from "../../utils/Constants";
 import AllCategorySkeleton from "../../components/skeleton/AllCategorySkeleton";
 
-const PAGE_LIMIT = 6;
-
 const AllCategoriesPage = () => {
   const [categoryPrompts, setCategoryPrompts] = useState<Record<string, Prompt[]>>({});
   const [visibleCategories, setVisibleCategories] = useState<string[]>([]);
@@ -27,6 +25,7 @@ const AllCategoriesPage = () => {
   const [loading, setLoading] = useState(false);
   const observerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+  const PAGE_LIMIT = 6;
 
   const categories = Object.values(PromptCategoryEnum);
 

@@ -22,14 +22,13 @@ import { DefaultUserName } from "../utils/Constants";
 import { useAuth } from "../context/AuthContext";
 import NotificationSkeleton from "../components/skeleton/NotificationSkeleton";
 
-const PAGE_LIMIT = 10;
-
 const NotificationsPage = () => {
   const { user: loggedInUser } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const PAGE_LIMIT = 10;
 
   const navigate = useNavigate();
 

@@ -18,13 +18,12 @@ import { DefaultUserName } from "../../utils/Constants";
 import { RankingFilterEnum } from "../../utils/Enum";
 import TrendingPromptSkeleton from "../../components/skeleton/TrendingPromptSkeleton";
 
-const PAGE_LIMIT = 10;
-
 const TrendingPromptsPage = () => {
   const navigate = useNavigate();
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<RankingFilterEnum>(RankingFilterEnum.All);
+  const PAGE_LIMIT = 10;
 
   useEffect(() => {
     const fetchTrending = async () => {
