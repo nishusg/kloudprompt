@@ -16,13 +16,13 @@ import { LeaderboardResponse } from "../models";
 import { RankingFilterEnum } from "../utils/Enum";
 import LeaderboardSkeleton from "../components/skeleton/LeaderboardSkeleton";
 
-const PAGE_LIMIT = 10;
 
 const LeaderboardPage = () => {
     const navigate = useNavigate();
     const [leaders, setLeaders] = useState<LeaderboardResponse[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<RankingFilterEnum>(RankingFilterEnum.All);
+    const PAGE_LIMIT = 10;
 
     useEffect(() => {
       const fetchLeaderboard = async () => {
