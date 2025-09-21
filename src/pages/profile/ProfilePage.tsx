@@ -51,7 +51,7 @@ const ProfilePage: React.FC = () => {
       const newParams = new URLSearchParams(prev);
       newParams.set("page", currentPage.toString());
       return newParams;
-    });
+    },{ replace: true });
   }, [currentPage, setSearchParams]);
 
   useEffect(() => {

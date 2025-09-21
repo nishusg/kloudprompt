@@ -5,6 +5,7 @@ export enum ProviderTypeEnum {
   GROK = 'Grok',
   OPENROUTER = 'Openrouter',
   TOGETHER = 'Together',
+  OTHER = 'Other'
 }
 
 export enum RankingFilterEnum {
@@ -18,6 +19,7 @@ export enum GenerationTypeEnum {
   VIDEO = 'Video',
   TEXT = 'Text',
   AUDIO = 'Audio',
+  OTHER = 'Other'
 }
 
 export enum VerificationStatus {
@@ -99,5 +101,7 @@ export enum PromptCategoryEnum {
   Medical = "Medical",
   Finance = "Finance",
   RealEstate = "RealEstate",
-  Science = "Science"
+  Science = "Science",
+
+  OTHER = 'Other',
 }

@@ -51,7 +51,7 @@ const ExplorePage: React.FC = () => {
       const newParams = new URLSearchParams(prev);
       newParams.set("page", page.toString());
       return newParams;
-    });
+    },{ replace: true });
   }, [page, setSearchParams]);
 
   // Debounced search
