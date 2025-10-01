@@ -116,10 +116,6 @@ const AllCategoriesPage = () => {
             Explore by categories
           </Typography>
         </Box>
-        
-        <Typography variant="body2" sx={{ color: "#888", textAlign: "center", mt: 2 }}>
-          Loaded {currentIndex} of {categories.length} categories
-        </Typography>
 
         {/* Category Sections */}
         {visibleCategories.map((category) => (
@@ -251,22 +247,17 @@ const AllCategoriesPage = () => {
                             borderRadius: 4,
                             bgcolor: "#1e1e1e",
                             color: "#fff",
-                            cursor: "pointer",
+                            cursor: "disabled",
                             transition: 'all 0.3s ease',
-                            boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
-                            '&:hover': {
-                              boxShadow: '0 8px 24px rgba(144,202,249,0.3)',
-                              borderColor: '#42a5f5',
-                            },
                             border: "1px dashed rgba(144,202,249,0.3)",
                             opacity: 0.6
                           }}
                       >
-                        <Typography variant="body1" sx={{ fontWeight: 500, color: "#fff" }}>
-                          No prompts found for this category.
+                        <Typography variant="body1" sx={{ fontWeight: 600, color: "#fff" }}>
+                          Nothing here yet.
                         </Typography>
                         <Typography variant="body2" sx={{ color: "#aaa" }}>
-                          Be the first to create a prompt and inspire others with your ideas!
+                          Add the first {category} prompt!
                         </Typography>
                       </Paper>
                     ))

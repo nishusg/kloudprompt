@@ -223,13 +223,35 @@ const UserProfilePage: React.FC = () => {
 
         {/* User Prompts */}
         <Typography variant="h6" sx={{ mb: 2, color: '#90caf9' }}>
-          Prompts by {user.userName}
+          Top {PAGE_LIMIT} prompts
         </Typography>
 
         {loadingPrompts
         ? <ProfilePromptCardSkeleton />
         : prompts.length === 0 ? (
-          <Typography sx={{ color: '#bbb' }}>No prompts found.</Typography>
+          <Paper
+            elevation={3}
+            sx={{
+              p: 4,
+              textAlign: "center",
+              borderRadius: 3,
+              bgcolor: "#121212",
+              color: "#bbb",
+              border: "1px dashed rgba(144,202,249,0.3)",
+              opacity: 0.6
+            }}
+          >
+            <Typography
+            variant="h6"
+            fontWeight="600"
+            sx={{ color: "#fff", mb: 1 }}
+            >
+              No prompts created yet.
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#aaa' }}>
+              You haven't created any prompts yet.
+            </Typography>
+          </Paper>
         ) : (
           <>
             <Grid container spacing={3}>

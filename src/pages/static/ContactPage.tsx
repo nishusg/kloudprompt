@@ -39,9 +39,9 @@ const ContactPage: React.FC = () => {
                 +91 87919 41719
               </Link>
             </Typography>
-            <Typography>
+            {/* <Typography>
               🏢 Location: Regus, 5th Floor, Tower C, Green Boulevard, Block-B, Sector 62, Noida (UP) India - 201309
-            </Typography>
+            </Typography> */}
           </Stack>
         </Paper>
       </Container>

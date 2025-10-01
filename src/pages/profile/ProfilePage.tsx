@@ -354,11 +354,13 @@ const ProfilePage: React.FC = () => {
                   <Paper
                     elevation={3}
                     sx={{
-                    p: 4,
-                    textAlign: "center",
-                    borderRadius: 3,
-                    bgcolor: "#121212",
-                    color: "#bbb",
+                      p: 4,
+                      textAlign: "center",
+                      borderRadius: 3,
+                      bgcolor: "#121212",
+                      color: "#bbb",
+                      border: "1px dashed rgba(144,202,249,0.3)",
+                      opacity: 0.6
                     }}
                   >
                     <Typography
@@ -428,11 +430,13 @@ const ProfilePage: React.FC = () => {
                 <Paper
                   elevation={3}
                   sx={{
-                  p: 4,
-                  textAlign: "center",
-                  borderRadius: 3,
-                  bgcolor: "#121212",
-                  color: "#bbb",
+                    p: 4,
+                    textAlign: "center",
+                    borderRadius: 3,
+                    bgcolor: "#121212",
+                    color: "#bbb",
+                    border: "1px dashed rgba(144,202,249,0.3)",
+                    opacity: 0.6
                   }}
                 >
                   <Typography
