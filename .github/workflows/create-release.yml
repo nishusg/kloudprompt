@@ -60,11 +60,3 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Trigger Docker Build Workflow
-        uses: peter-evans/workflow-dispatch@v2
-        with:
-          workflow: "Build and Push KloudPrompt UI Docker Image"
-          ref: main
-          inputs:
-            version: ${{ env.new_tag }}

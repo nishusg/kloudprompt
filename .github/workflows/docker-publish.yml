@@ -1,12 +1,11 @@
 name: Build and Push KloudPrompt UI Docker Image
 
 on:
+  workflow_run:
+    workflows: ["Create Release"]
+    types:
+      - completed
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Version to build"
-        required: true
-        type: string
 
 jobs:
   build:
@@ -25,6 +24,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Fetch latest tag
+        run: |
+          git fetch --tags
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "VERSION=$latest_tag" >> $GITHUB_ENV
+
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
@@ -33,4 +38,4 @@ jobs:
           platforms: linux/amd64
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/kloudprompt-ui:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/kloudprompt-ui:${{ github.event.inputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/kloudprompt-ui:${{ env.VERSION }}
