@@ -88,9 +88,29 @@ const CategoryPage = () => {
             ))}
           </Grid>
         ) : prompts.length === 0 ? (
-          <Typography variant="h6" sx={{ color: "#bbb", textAlign: "center", mt: 6 }}>
-            No prompts found in this category.
-          </Typography>
+          <Paper
+            elevation={3}
+            sx={{
+              p: 4,
+              textAlign: "center",
+              borderRadius: 3,
+              bgcolor: "#121212",
+              color: "#bbb",
+              border: "1px dashed rgba(144,202,249,0.3)",
+              opacity: 0.6
+            }}
+          >
+            <Typography
+              variant="h6"
+              fontWeight="600"
+              sx={{ color: "#fff", mb: 1 }}
+            >
+              No prompts found in this category.
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#aaa' }}>
+              Be the first to create a prompt and inspire others with your ideas!
+            </Typography>
+          </Paper>
         ) : (
           <>
             <Grid container spacing={3}>

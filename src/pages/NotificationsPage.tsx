@@ -124,6 +124,8 @@ const NotificationsPage = () => {
                 borderRadius: 3,
                 bgcolor: "#121212",
                 color: "#bbb",
+                border: "1px dashed rgba(144,202,249,0.3)",
+                opacity: 0.6
               }}
             >
               <Typography
@@ -131,7 +133,7 @@ const NotificationsPage = () => {
                 fontWeight="600"
                 sx={{ color: "#fff", mb: 1 }}
               >
-                No notifications yet 🔔
+                No notifications yet
               </Typography>
               <Typography variant="body2" sx={{ color: '#aaa' }}>
                 Engage with posts and your notifications will appear here!

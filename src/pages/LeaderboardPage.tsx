@@ -122,6 +122,8 @@ const LeaderboardPage = () => {
                 borderRadius: 3,
                 bgcolor: "#1a1a1a",
                 color: "#bbb",
+                border: "1px dashed rgba(144,202,249,0.3)",
+                opacity: 0.6
               }}
             >
               <Typography
@@ -129,7 +131,7 @@ const LeaderboardPage = () => {
                 fontWeight="600"
                 sx={{ color: "#fff", mb: 1 }}
               >
-                No leaderboard data yet 🏆
+                No leaderboard data yet
               </Typography>
               <Typography variant="body2" sx={{ color: "#aaa" }}>
                 Start creating prompts to climb the ranks!

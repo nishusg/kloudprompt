@@ -61,7 +61,7 @@ const UserSearchPage = () => {
     const timer = setTimeout(() => {
       setPage(1);
       fetchUsers(query, 1);
-    }, 400);
+    }, 1000);
     return () => clearTimeout(timer);
   }, [query]);
 
@@ -171,6 +171,8 @@ const UserSearchPage = () => {
                       borderRadius: 3,
                       bgcolor: "#1a1a1a",
                       color: "#bbb",
+                      border: "1px dashed rgba(144,202,249,0.3)",
+                      opacity: 0.6
                     }}
                   >
                     <Typography
@@ -181,7 +183,7 @@ const UserSearchPage = () => {
                         mb: 1,
                       }}
                     >
-                      No users found 👤
+                      No users found
                     </Typography>
                   </Paper>
                 ) : (

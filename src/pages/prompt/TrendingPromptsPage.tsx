@@ -122,6 +122,8 @@ const TrendingPromptsPage = () => {
               borderRadius: 3,
               bgcolor: "#1a1a1a",
               color: "#bbb",
+              border: "1px dashed rgba(144,202,249,0.3)",
+              opacity: 0.6
             }}
           >
             <Typography
@@ -132,7 +134,7 @@ const TrendingPromptsPage = () => {
                 mb: 1,
               }}
             >
-              No trending prompts yet 🚀
+              No trending prompts yet
             </Typography>
             <Typography variant="body2" sx={{ color: "#aaa" }}>
               Be the first one to create and explore prompts!

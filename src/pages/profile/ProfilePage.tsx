@@ -338,27 +338,41 @@ const ProfilePage: React.FC = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-              <Grid container spacing={3}>
                 {prompts.length > 0 ? (
-                  prompts.map((prompt) => (
-                    <Grid item xs={12} key={prompt._id}>
-                      <ProfilePromptCard
-                        prompt={prompt}
-                        onView={() => navigate(`/prompts/${prompt._id}`)}
-                        onDelete={() => handleDeletePrompt(prompt._id)}
-                      />
-                    </Grid>
-                  ))
-                ) : (
-                  <Grid item xs={12}>
-                    <Box sx={{ textAlign: "center", mt: 0 }}>
-                      <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.6)" }}>
-                        You haven't created any prompts yet.
-                      </Typography>
-                    </Box>
+                  <Grid container spacing={3}>
+                    {prompts.map((prompt) => (
+                      <Grid item xs={12} key={prompt._id}>
+                        <ProfilePromptCard
+                          prompt={prompt}
+                          onView={() => navigate(`/prompts/${prompt._id}`)}
+                          onDelete={() => handleDeletePrompt(prompt._id)}
+                        />
+                      </Grid>
+                    ))}
                   </Grid>
+                ) : (
+                  <Paper
+                    elevation={3}
+                    sx={{
+                    p: 4,
+                    textAlign: "center",
+                    borderRadius: 3,
+                    bgcolor: "#121212",
+                    color: "#bbb",
+                    }}
+                  >
+                    <Typography
+                    variant="h6"
+                    fontWeight="600"
+                    sx={{ color: "#fff", mb: 1 }}
+                    >
+                      No prompts created yet.
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: '#aaa' }}>
+                      You haven't created any prompts yet.
+                    </Typography>
+                  </Paper>
                 )}
-              </Grid>
 
               {/* Pagination */}
               {totalPages > 1 && (
@@ -398,27 +412,41 @@ const ProfilePage: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <Grid container spacing={3}>
-                {bookmarkedPrompts.length > 0 ? (
-                  bookmarkedPrompts.map((prompt) => (
-                    <Grid item xs={12} key={prompt._id}>
-                      <ProfilePromptCard
-                        prompt={prompt}
-                        onView={() => navigate(`/prompts/${prompt._id}`)}
-                        onRemoved={() => handleBookmarkRemoved(prompt._id)}
-                      />
-                    </Grid>
-                  ))
-                ) : (
-                  <Grid item xs={12}>
-                    <Box sx={{ textAlign: "center", mt: 0 }}>
-                      <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.6)" }}>
-                        You haven't bookmarked any prompts yet.
-                      </Typography>
-                    </Box>
+              {bookmarkedPrompts.length > 0 ? (
+                <Grid container spacing={3}>
+                {bookmarkedPrompts.map((prompt) => (
+                  <Grid item xs={12} key={prompt._id}>
+                    <ProfilePromptCard
+                      prompt={prompt}
+                      onView={() => navigate(`/prompts/${prompt._id}`)}
+                      onRemoved={() => handleBookmarkRemoved(prompt._id)}
+                    />
                   </Grid>
-                )}
-              </Grid>
+                ))}
+                </Grid>
+              ) : (
+                <Paper
+                  elevation={3}
+                  sx={{
+                  p: 4,
+                  textAlign: "center",
+                  borderRadius: 3,
+                  bgcolor: "#121212",
+                  color: "#bbb",
+                  }}
+                >
+                  <Typography
+                  variant="h6"
+                  fontWeight="600"
+                  sx={{ color: "#fff", mb: 1 }}
+                  >
+                    No prompts saved yet.
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: '#aaa' }}>
+                    You haven't bookmarked any prompts yet.
+                  </Typography>
+                </Paper>
+              )}
 
               {/* Pagination */}
               {totalPages > 1 && (

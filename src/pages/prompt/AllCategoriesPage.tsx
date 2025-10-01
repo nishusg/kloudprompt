@@ -175,71 +175,102 @@ const AllCategoriesPage = () => {
                 }}
               >
                 {categoryPrompts[category] ? (
-                  categoryPrompts[category].map((p) => (
-                    <Paper
-                      key={p._id}
-                      onClick={() => handleCardClick(p._id)}
-                      sx={{
-                        flex: "0 0 260px",
-                        p: 2,
-                        borderRadius: 4,
-                        bgcolor: "#1e1e1e",
-                        color: "#fff",
-                        cursor: "pointer",
-                        transition: 'all 0.3s ease',
-                        border: '1px solid rgba(144,202,249,0.15)',
-                        boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
-                        '&:hover': {
-                          boxShadow: '0 8px 24px rgba(144,202,249,0.3)',
-                          borderColor: '#42a5f5',
-                        },
-                      }}
-                    >
-                      <Typography
-                        variant="subtitle1"
-                        fontWeight="600"
-                        sx={{ mb: 1 }}
-                      >
-                        {p.title}
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: "#bbb", mb: 1 }}>
-                        {p.description.length > 60
-                          ? `${p.description.slice(0, 60)}...`
-                          : p.description}
-                      </Typography>
-                      <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing={1.5}
-                        sx={{ mt: 0.5 }}
+                  categoryPrompts[category].length > 0 ? (
+                    categoryPrompts[category].map((p) => (
+                      <Paper
+                        key={p._id}
+                        onClick={() => handleCardClick(p._id)}
+                        sx={{
+                          flex: "0 0 260px",
+                          p: 2,
+                          borderRadius: 4,
+                          bgcolor: "#1e1e1e",
+                          color: "#fff",
+                          cursor: "pointer",
+                          transition: 'all 0.3s ease',
+                          border: '1px solid rgba(144,202,249,0.15)',
+                          boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+                          '&:hover': {
+                            boxShadow: '0 8px 24px rgba(144,202,249,0.3)',
+                            borderColor: '#42a5f5',
+                          },
+                        }}
                       >
                         <Typography
-                          variant="caption"
-                          component="span"
-                          sx={{ color: "#aaa" }}
-                          onClick={(e) => {
-                            if(p.author?._id){
-                              e.stopPropagation();
-                              navigate(`/users/${p.author?._id}`);
-                            }
-                          }}
+                          variant="subtitle1"
+                          fontWeight="600"
+                          sx={{ mb: 1 }}
                         >
-                          By {" "}
-                          <Box component="span" sx={{ color: p.author?._id ? "#42a5f5" : "#aaa" }}>
-                            {p.author?.userName || DefaultUserName}
-                          </Box>
+                          {p.title}
                         </Typography>
+                        <Typography variant="body2" sx={{ color: "#bbb", mb: 1 }}>
+                          {p.description.length > 60
+                            ? `${p.description.slice(0, 60)}...`
+                            : p.description}
+                        </Typography>
+                        <Stack
+                          direction="row"
+                          alignItems="center"
+                          spacing={1.5}
+                          sx={{ mt: 0.5 }}
+                        >
+                          <Typography
+                            variant="caption"
+                            component="span"
+                            sx={{ color: "#aaa" }}
+                            onClick={(e) => {
+                              if(p.author?._id){
+                                e.stopPropagation();
+                                navigate(`/users/${p.author?._id}`);
+                              }
+                            }}
+                          >
+                            By {" "}
+                            <Box component="span" sx={{ color: p.author?._id ? "#42a5f5" : "#aaa" }}>
+                              {p.author?.userName || DefaultUserName}
+                            </Box>
+                          </Typography>
 
-                        <Typography
-                          variant="caption"
-                          component="span"
-                          sx={{ color: "#888", ml: "auto" }}
-                        >
-                          👁 {p.views ?? 0} views
+                          <Typography
+                            variant="caption"
+                            component="span"
+                            sx={{ color: "#888", ml: "auto" }}
+                          >
+                            👁 {p.views ?? 0} views
+                          </Typography>
+                        </Stack>
+                      </Paper>
+                    ))
+                  ) : (
+                    [...Array(3)].map((_, i) => (
+                      <Paper
+                        key={i}
+                        sx={{
+                            flex: "0 0 260px",
+                            p: 2,
+                            borderRadius: 4,
+                            bgcolor: "#1e1e1e",
+                            color: "#fff",
+                            cursor: "pointer",
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+                            '&:hover': {
+                              boxShadow: '0 8px 24px rgba(144,202,249,0.3)',
+                              borderColor: '#42a5f5',
+                            },
+                            border: "1px dashed rgba(144,202,249,0.3)",
+                            opacity: 0.6
+                          }}
+                      >
+                        <Typography variant="body1" sx={{ fontWeight: 500, color: "#fff" }}>
+                          No prompts found for this category.
                         </Typography>
-                      </Stack>
-                    </Paper>
-                  ))
+                        <Typography variant="body2" sx={{ color: "#aaa" }}>
+                          Be the first to create a prompt and inspire others with your ideas!
+                        </Typography>
+                      </Paper>
+                    ))
+                  )
                 ) : (
                   [...Array(PAGE_LIMIT)].map((_, i) => (
                     <AllCategorySkeleton key={i} />

@@ -15,8 +15,7 @@ import {
   FormControl,
   InputLabel,
   Pagination,
-  Button,
-  Skeleton
+  Button
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ExploreIcon from "@mui/icons-material/Explore";
@@ -315,23 +314,40 @@ const ExplorePage: React.FC = () => {
           <Alert severity="error">{error}</Alert>
         ) : (
           <>
-            <Grid container spacing={4}>
-              {prompts.length > 0 ? (
-                prompts.map((prompt) => (
-                  <ExplorePromptCard key={prompt._id} prompt={prompt} />
-                ))
-              ) : (
-                <Grid item xs={12}>
-                  <Typography
-                    align="center"
-                    color="grey.500"
-                    sx={{ mt: 4, fontStyle: "italic" }}
-                  >
-                    No prompts found. Try changing your search or filters!
-                  </Typography>
-                </Grid>
-              )}
-            </Grid>
+            {prompts.length > 0 ? (
+              <Grid container spacing={4}>
+                {prompts.map((prompt) => (
+                    <ExplorePromptCard prompt={prompt} />
+                ))}
+              </Grid>
+            ) : (
+              <Paper
+                elevation={3}
+                sx={{
+                  p: 4,
+                  textAlign: "center",
+                  borderRadius: 3,
+                  bgcolor: "#1a1a1a",
+                  color: "#bbb",
+                  border: "1px dashed rgba(144,202,249,0.3)",
+                  opacity: 0.6
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  fontWeight="600"
+                  sx={{
+                    color: "#fff",
+                    mb: 1,
+                  }}
+                >
+                  No prompts found
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#aaa" }}>
+                  Try changing your search or filters!
+                </Typography>
+              </Paper>
+            )}
 
             {/* Pagination */}
             {totalPrompts > rowsPerPage && (
