@@ -115,7 +115,7 @@ const CategoryPage = () => {
           <>
             <Grid container spacing={3}>
               {prompts.map((prompt) => (
-                <Grid item xs={12} sm={6} md={4} key={prompt._id}>
+                <Grid item xs={12} sm={12} md={12} key={prompt._id}>
                   <Paper
                     sx={{
                       p: 2,
