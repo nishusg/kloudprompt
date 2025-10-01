@@ -10,7 +10,7 @@ import { DefaultUserName } from '../../utils/Constants';
 
 const ExplorePromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
   return (
-    <Grid item xs={12} sm={6} md={4}>
+    <Grid item>
       <Card
         component={RouterLink}
         to={`/prompts/${prompt._id}`}

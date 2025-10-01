@@ -3,7 +3,7 @@ import { Grid, Card, CardContent, Skeleton } from '@mui/material';
 
 const ExplorePromptCardSkeleton: React.FC = () => {
   return (
-    <Grid item xs={12} sm={6} md={4}>
+    <Grid item xs={12} sm={12} md={12}>
       <Card
         sx={{
           height: '100%',

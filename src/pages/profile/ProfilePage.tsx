@@ -386,16 +386,12 @@ const ProfilePage: React.FC = () => {
                     siblingCount={0}
                     boundaryCount={1}
                     sx={{
-                      '& .MuiPaginationItem-root': {
-                        color: '#fff',           // default page color
-                        borderColor: '#555',     // border for outlined items
+                      "& .MuiPaginationItem-root": {
+                        color: "#fff",
                       },
-                      '& .MuiPaginationItem-root.Mui-selected': {
-                        bgcolor: '#42a5f5',     // selected page background
-                        color: '#000',           // selected page text
-                      },
-                      '& .MuiPaginationItem-root:hover': {
-                        bgcolor: 'rgba(66,165,245,0.2)', // hover background
+                      "& .Mui-selected": {
+                        bgcolor: "#42a5f5 !important",
+                        color: "#000",
                       },
                     }}
                   />
@@ -462,19 +458,12 @@ const ProfilePage: React.FC = () => {
                     siblingCount={0}
                     boundaryCount={1}
                     sx={{
-                      '& .MuiPaginationItem-root': {
-                        color: '#e0e0e0', // light grey for normal pages
-                        borderColor: 'rgba(255,255,255,0.1)', // subtle border
+                      "& .MuiPaginationItem-root": {
+                        color: "#fff",
                       },
-                      '& .MuiPaginationItem-root.Mui-selected': {
-                        bgcolor: '#42a5f5', // blue selected background
-                        color: '#000',       // black text on selected
-                      },
-                      '& .MuiPaginationItem-root:hover': {
-                        bgcolor: 'rgba(66,165,245,0.2)', // subtle blue hover
-                      },
-                      '& .MuiPaginationItem-ellipsis': {
-                        color: '#aaa', // ellipsis color
+                      "& .Mui-selected": {
+                        bgcolor: "#42a5f5 !important",
+                        color: "#000",
                       },
                     }}
                   />

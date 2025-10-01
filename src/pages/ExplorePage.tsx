@@ -359,9 +359,11 @@ const ExplorePage: React.FC = () => {
                   siblingCount={0}
                   boundaryCount={1}
                   sx={{
-                    "& .MuiPaginationItem-root": { color: "#fff" },
-                    "& .MuiPaginationItem-root.Mui-selected": {
-                      bgcolor: "#42a5f5",
+                    "& .MuiPaginationItem-root": {
+                      color: "#fff",
+                    },
+                    "& .Mui-selected": {
+                      bgcolor: "#42a5f5 !important",
                       color: "#000",
                     },
                   }}

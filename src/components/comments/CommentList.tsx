@@ -174,7 +174,29 @@ export const CommentList: React.FC<CommentListProps> = ({ promptId, limit = 5 })
             />
           ))
         ) : (
-          <Typography color="inherit">Be the first to comment!</Typography>
+          <Paper
+            elevation={3}
+            sx={{
+              p: 4,
+              textAlign: "center",
+              borderRadius: 3,
+              bgcolor: "#1a1a1a",
+              color: "#bbb",
+              border: "1px dashed rgba(144,202,249,0.3)",
+              opacity: 0.6
+            }}
+          >
+            <Typography
+              variant="body1"
+              fontWeight="400"
+              sx={{
+                color: "#fff",
+                mb: 1,
+              }}
+            >
+              Be the first to comment
+            </Typography>
+          </Paper>
         )}
       </Stack>
 
