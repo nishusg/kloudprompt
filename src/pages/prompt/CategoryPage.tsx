@@ -174,7 +174,7 @@ const CategoryPage = () => {
                           component="span"
                           sx={{ color: "#888", ml: "auto" }}
                         >
-                          👁 {prompt.views ?? 0} views
+                          {prompt.views ?? 0} views
                         </Typography>
                       </Stack>
                   </Paper>

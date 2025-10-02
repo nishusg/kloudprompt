@@ -221,7 +221,7 @@ const LeaderboardPage = () => {
                     }}
                 >
                     <Typography variant="body2">{user.promptCount} prompts</Typography>
-                    <Typography variant="body2">👁 {user.totalViews} views</Typography>
+                    <Typography variant="body2">{user.totalViews} views</Typography>
                 </Stack>
             </Paper>
             ))

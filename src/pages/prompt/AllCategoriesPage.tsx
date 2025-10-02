@@ -232,7 +232,7 @@ const AllCategoriesPage = () => {
                             component="span"
                             sx={{ color: "#888", ml: "auto" }}
                           >
-                            👁 {p.views ?? 0} views
+                            {p.views ?? 0} views
                           </Typography>
                         </Stack>
                       </Paper>
