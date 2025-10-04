@@ -29,16 +29,16 @@ const ContactPage: React.FC = () => {
           <Stack spacing={2} sx={{ mt: 2 }}>
             <Typography>
               📧 Email:{" "}
-              <Link href="mailto:nishantsg218@gmail.com" underline="hover" color="#42a5f5">
-                nishantsg218@gmail.com
+              <Link href="mailto:kloudprompt@gmail.com" underline="hover" color="#42a5f5">
+                kloudprompt@gmail.com
               </Link>
             </Typography>
-            <Typography>
+            {/* <Typography>
               📞 Phone:{" "}
               <Link href="tel:+918791941719" underline="hover" color="#42a5f5">
                 +91 87919 41719
               </Link>
-            </Typography>
+            </Typography> */}
             {/* <Typography>
               🏢 Location: Regus, 5th Floor, Tower C, Green Boulevard, Block-B, Sector 62, Noida (UP) India - 201309
             </Typography> */}
