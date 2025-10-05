@@ -111,6 +111,21 @@ export const createPrompt = async (data: CreatePromptDto): Promise<Prompt> => {
   }
 };
 
+export const uploadPromptImage = async (data: FormData): Promise<string> => {
+  try {
+    const response = await apiClient.post("/prompts/upload", data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data.data.promptUrl;
+  } catch (err) {
+    const message = handleApiError(err, "Failed to create prompt");
+    const error: ApiError = { message };
+    throw error;
+  }
+};
+
 export const updatePrompt = async (id: string, data: UpdatePromptDto): Promise<Prompt> => {
   try {
     const response = await apiClient.patch(`/prompts/${id}`, data);

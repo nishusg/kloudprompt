@@ -5,12 +5,14 @@ import {
   Box,
   Container,
   Typography,
-  Grid,
   Paper,
-  Pagination,
   Stack,
+  List,
+  ListItem,
+  ListItemText,
+  Chip,
 } from "@mui/material";
-import { Prompt } from "../../models";
+import { Prompt } from "../../models/Prompt";
 import { getPromptsByCategory } from "../../services/PromptService";
 import { DefaultUserName } from "../../utils/Constants";
 import CategorySkeleton from "../../components/skeleton/CategorySkeleton";
@@ -21,19 +23,17 @@ const CategoryPage = () => {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"));
-  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
-  const PAGE_LIMIT = 9;
+  const PAGE_LIMIT = 10;
 
   useEffect(() => {
     if (!category) return;
 
     const fetchPrompts = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
         const data = await getPromptsByCategory(category, PAGE_LIMIT, page);
         setPrompts(data.prompts);
-        setTotalPages(Number(data.totalPages));
       } catch (err: any) {
         console.error("Failed to load prompts:", err);
       } finally {
@@ -44,167 +44,153 @@ const CategoryPage = () => {
     fetchPrompts();
   }, [category, page]);
 
-  const handleCategoryClick = (id: string) => {
-    if (id) navigate(`/prompts/${id}`);
-  };
-
-  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
-    setSearchParams({ page: String(value) });
+  const handlePromptClick = (id: string) => {
+    navigate(`/prompts/${id}`);
   };
 
   return (
     <Box sx={{ minHeight: "80vh", bgcolor: "#0a0a0a", py: 4 }}>
       <Container maxWidth="md">
-        <Box
+        <Typography
+          variant="h3"
+          fontWeight="bold"
+          component="h1"
           sx={{
-            display: "flex",
-            alignItems: "center",
             mb: 3,
-            gap: { xs: 1.5, sm: 2 },
-            flexWrap: "wrap",
+            fontSize: { xs: "1.6rem", sm: "2rem", md: "2.5rem" },
+            background: "#fff",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            letterSpacing: { xs: 0.5, md: 1 },
           }}
         >
-          <Typography
-            variant="h3"
-            fontWeight="bold"
-            component="h1"
-            sx={{
-              fontSize: { xs: "1.6rem", sm: "2rem", md: "2.5rem" },
-              background: "#fff",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              letterSpacing: { xs: 0.5, md: 1 },
-            }}
-          >
-            Category: {category}
-          </Typography>
-        </Box>
+          Category: {category}
+        </Typography>
 
-        {loading ? (
-          <Grid container spacing={3} sx={{ mt: 2 }}>
-            {[...Array(PAGE_LIMIT)].map((_, i) => (
-              <CategorySkeleton key={i} />
-            ))}
-          </Grid>
-        ) : prompts.length === 0 ? (
-          <Paper
-            elevation={3}
-            sx={{
-              p: 4,
-              textAlign: "center",
-              borderRadius: 3,
-              bgcolor: "#121212",
-              color: "#bbb",
-              border: "1px dashed rgba(144,202,249,0.3)",
-              opacity: 0.6
-            }}
-          >
-            <Typography
-              variant="h6"
-              fontWeight="600"
-              sx={{ color: "#fff", mb: 1 }}
-            >
-              No prompts found in this category.
-            </Typography>
-            <Typography variant="body2" sx={{ color: '#aaa' }}>
-              Be the first to create a prompt and inspire others with your ideas!
-            </Typography>
-          </Paper>
-        ) : (
-          <>
-            <Grid container spacing={3}>
-              {prompts.map((prompt) => (
-                <Grid item xs={12} sm={12} md={12} key={prompt._id}>
-                  <Paper
-                    sx={{
-                      p: 2,
-                      bgcolor: "#1e1e1e",
-                      cursor: "pointer",
-                      borderRadius: 3,
-                      border: "1px solid #333",
-                      transition: "0.3s",
-                      "&:hover": { border: "1px solid #42a5f5" },
-                    }}
-                    onClick={() => handleCategoryClick(prompt._id)}
-                  >
-                    <Typography
-                      variant="h6"
-                      fontWeight={600}
-                      sx={{
-                        color: "#fff",
-                        textDecoration: "none",
-                        "&:hover": { color: "#90caf9" },
-                      }}
-                    >
-                      {prompt.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#bbb", mt: 1 }}
-                      noWrap
-                    >
-                      {prompt.description}
-                    </Typography>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing={1.5}
-                        sx={{ mt: 0.5 }}
-                      >
-                        <Typography
-                          variant="caption"
-                          component="span"
-                          sx={{ color: "#aaa" }}
-                          onClick={(e) => {
-                            if(prompt.author?._id){
-                              e.stopPropagation();
-                              navigate(`/users/${prompt.author?._id}`);
-                            }
-                          }}
-                        >
-                          By {" "}
-                          <Box component="span" sx={{ color: prompt.author?._id ? "#42a5f5" : "#aaa" }}>
-                            {prompt.author?.userName || DefaultUserName}
-                          </Box>
-                        </Typography>
-
-                        <Typography
-                          variant="caption"
-                          component="span"
-                          sx={{ color: "#888", ml: "auto" }}
-                        >
-                          {prompt.views ?? 0} views
-                        </Typography>
-                      </Stack>
-                  </Paper>
-                </Grid>
-              ))}
-            </Grid>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-                <Pagination
-                  count={totalPages}
-                  page={page}
-                  onChange={handlePageChange}
-                  siblingCount={0}
-                  boundaryCount={1}
+        <List disablePadding>
+          {loading
+            ? Array.from(new Array(PAGE_LIMIT)).map((_, i) => <CategorySkeleton key={i} />)
+            : prompts.length === 0 ? (
+                <Paper
+                  elevation={3}
                   sx={{
-                    "& .MuiPaginationItem-root": {
-                      color: "#fff",
-                    },
-                    "& .Mui-selected": {
-                      bgcolor: "#42a5f5 !important",
-                      color: "#000",
-                    },
+                    p: 4,
+                    textAlign: "center",
+                    borderRadius: 3,
+                    bgcolor: "#1a1a1a",
+                    color: "#bbb",
+                    border: "1px dashed rgba(144,202,249,0.3)",
+                    opacity: 0.6,
                   }}
-                />
-              </Box>
-            )}
-          </>
-        )}
+                >
+                  <Typography variant="h6" fontWeight={600} sx={{ color: "#fff", mb: 1 }}>
+                    No prompts found in this category.
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "#aaa" }}>
+                    Be the first to create a prompt!
+                  </Typography>
+                </Paper>
+              ) : (
+                prompts.map((prompt, index) => (
+                  <Paper
+                    key={prompt._id}
+                    elevation={4}
+                    sx={{
+                      mb: 3,
+                      p: 2.5,
+                      borderRadius: 3,
+                      cursor: "pointer",
+                      bgcolor: "#121212",
+                      color: "#e0e0e0",
+                      display: "flex",
+                      alignItems: "stretch",
+                      transition: "0.3s",
+                      border: "1px solid transparent",
+                      "&:hover": {
+                        boxShadow: "0 8px 24px rgba(144,202,249,0.3)",
+                        borderColor: "#42a5f5",
+                      },
+                    }}
+                    onClick={() => handlePromptClick(prompt._id)}
+                  >
+                    {/* Left - Image */}
+                    <Box
+                      component="img"
+                      src={prompt.promptUrl || "/default-thumbnail.jpg"}
+                      alt={prompt.title}
+                      sx={{
+                        width: 120,
+                        height: 120,
+                        objectFit: "cover",
+                        borderRadius: 2,
+                        mr: 2.5,
+                        border: "1px solid rgba(255,255,255,0.1)",
+                      }}
+                    />
+
+                    {/* Right - Content */}
+                    <ListItem alignItems="flex-start" disableGutters sx={{ flex: 1 }}>
+                      <ListItemText
+                        primary={
+                          <Stack direction="row" alignItems="center" spacing={1}>
+                            <Typography
+                              variant="subtitle1"
+                              fontWeight={600}
+                              color="#fff"
+                              component="span"
+                            >
+                              {prompt.title}
+                            </Typography>
+                          </Stack>
+                        }
+                        secondary={
+                          <Stack spacing={1.2}>
+                            <Typography
+                              variant="body2"
+                              sx={{ display: "block", color: "#b0b0b0" }}
+                            >
+                              {prompt.description && prompt.description.length > 80
+                                ? `${prompt.description.slice(0, 80)}...`
+                                : prompt.description}
+                            </Typography>
+
+                            <Stack direction="row" alignItems="center" spacing={1.5}>
+                              <Typography
+                                variant="caption"
+                                component="span"
+                                sx={{ color: "#aaa" }}
+                                onClick={(e) => {
+                                  if (prompt.author?._id) {
+                                    e.stopPropagation();
+                                    navigate(`/users/${prompt.author._id}`);
+                                  }
+                                }}
+                              >
+                                By{" "}
+                                <Box
+                                  component="span"
+                                  sx={{ color: prompt.author?._id ? "#42a5f5" : "#aaa" }}
+                                >
+                                  {prompt.author?.userName || DefaultUserName}
+                                </Box>
+                              </Typography>
+
+                              <Typography
+                                variant="caption"
+                                component="span"
+                                sx={{ color: "#888", ml: "auto" }}
+                              >
+                                {prompt.views ?? 0} views
+                              </Typography>
+                            </Stack>
+                          </Stack>
+                        }
+                      />
+                    </ListItem>
+                  </Paper>
+                ))
+              )}
+        </List>
       </Container>
     </Box>
   );

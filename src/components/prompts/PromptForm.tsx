@@ -19,7 +19,7 @@ import InfoIcon from '@mui/icons-material/Info';
 
 interface PromptFormProps {
   initialData?: CreatePromptDto;
-  onSubmit: (data: CreatePromptDto) => Promise<void>;
+  onSubmit: (data: CreatePromptDto, fd: FormData) => Promise<void>;
   isLoading?: boolean;
 }
 
@@ -32,6 +32,8 @@ const PromptForm: React.FC<PromptFormProps> = ({
     generationType: GenerationTypeEnum.IMAGE,
     category: PromptCategoryEnum.Productivity,
     tags: [],
+    promptUrl: "",
+    promptImage: {} as File,
   },
   onSubmit,
   isLoading = false,
@@ -83,7 +85,9 @@ const PromptForm: React.FC<PromptFormProps> = ({
         return;
       }
       setErrors({});
-      await onSubmit(formData);
+      const fd = new FormData();
+      fd.append('promptImage', formData.promptImage);
+      await onSubmit(formData, fd);
     },
     [formData, onSubmit]
   );
@@ -281,6 +285,38 @@ const PromptForm: React.FC<PromptFormProps> = ({
             }}
             InputLabelProps={{ sx: { color: "#ccc" } }}
           />
+
+          {/* Image Upload */}
+          <Box>
+            <Typography variant="body2" sx={{ color: "#ccc", mb: 1 }}>
+              Upload Prompt Image
+            </Typography>
+            <Button
+              variant="contained"
+              component="label"
+              sx={{ mb: 1 }}
+            >
+              Choose Image
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      promptImage: e.target.files![0],
+                    }));
+                  }
+                }}
+              />
+            </Button>
+            {formData.promptImage && (
+              <Typography variant="body2" sx={{ color: "#90caf9" }}>
+                Selected file: {formData.promptImage.name}
+              </Typography>
+            )}
+          </Box>
 
           {/* Tags */}
           <Box>

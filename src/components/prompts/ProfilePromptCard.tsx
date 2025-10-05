@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Button, Card, CardContent, CardActions } from '@mui/material';
+import { Box, Typography, Stack, Chip } from '@mui/material';
 import { Prompt } from '../../models';
 
 const ProfilePromptCard: React.FC<{
@@ -8,85 +8,90 @@ const ProfilePromptCard: React.FC<{
   onRemoved?: () => void;
   onView: () => void;
 }> = ({ prompt, onDelete, onRemoved, onView }) => (
-  <Card
-    variant="outlined"
+  <Box
+    onClick={onView}
     sx={{
-      height: '100%',
       display: 'flex',
-      flexDirection: 'column',
+      alignItems: 'flex-start',
+      p: 2,
+      borderRadius: 2,
       bgcolor: '#121212',
-      backdropFilter: 'blur(6px)',
-      border: '1px solid rgba(144,202,249,0.15)',
-      borderRadius: 4,
-      transition: 'all 0.3s ease',
+      border: '1px solid rgba(144,202,249,0.2)',
       cursor: 'pointer',
-      boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+      transition: '0.3s',
       '&:hover': {
-        boxShadow: '0 8px 24px rgba(144,202,249,0.3)',
-        borderColor: '#90caf9',
+        borderColor: '#42a5f5',
       },
     }}
-    onClick={onView}
   >
-    <CardContent sx={{ flexGrow: 1 }}>
-      <Typography
-        variant="h6"
-        gutterBottom
-        sx={{ color: '#fff', fontWeight: 600, letterSpacing: 0.3 }}
-      >
-        {prompt.title}
-      </Typography>
-      <Typography
-        variant="body2"
-        sx={{
-          color: 'rgba(255,255,255,0.7)',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical',
-        }}
-      >
-        {prompt.content}
-      </Typography>
-    </CardContent>
+    {/* Left: Image */}
+    <Box
+      component="img"
+      src={prompt.promptUrl || '/default-thumbnail.jpg'}
+      alt={prompt.title}
+      sx={{
+        width: 100,
+        height: 100,
+        objectFit: 'cover',
+        borderRadius: 2,
+        mr: 2,
+      }}
+    />
 
-    {onDelete && (
-      <CardActions sx={{ pl: 2, pb: 2, justifyContent: 'flex-start' }}>
-        <Button
-          size="small"
+    {/* Right: Details */}
+    <Box sx={{ flex: 1 }}>
+      <Stack spacing={1}>
+        <Typography variant="subtitle1" fontWeight={600} color="#fff">
+          {prompt.title}
+        </Typography>
+        <Typography
+          variant="body2"
           sx={{
-            color: '#ef5350',
-            '&:hover': { color: '#f6685e' },
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete();
+            color: '#bbb',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
           }}
         >
-          Delete
-        </Button>
-      </CardActions>
-    )}
+          {prompt.description || prompt.content}
+        </Typography>
 
-    {onRemoved && (
-      <CardActions sx={{ pl: 2, pb: 2, justifyContent: 'flex-start' }}>
-        <Button
-          size="small"
-          sx={{
-            color: '#ef5350',
-            '&:hover': { color: '#f6685e' },
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemoved();
-          }}
-        >
-          Removed
-        </Button>
-      </CardActions>
-    )}
-  </Card>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Typography variant="caption" sx={{ color: '#888', ml: 'auto' }}>
+            {prompt.views ?? 0} views
+          </Typography>
+
+          {onDelete && (
+            <Typography
+              variant="caption"
+              sx={{ color: '#ef5350', ml: 2, cursor: 'pointer' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+            >
+              Delete
+            </Typography>
+          )}
+
+          {onRemoved && (
+            <Typography
+              variant="caption"
+              sx={{ color: '#ef5350', ml: 2, cursor: 'pointer' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemoved();
+              }}
+            >
+              Remove
+            </Typography>
+          )}
+        </Stack>
+      </Stack>
+    </Box>
+  </Box>
 );
 
 export default ProfilePromptCard;

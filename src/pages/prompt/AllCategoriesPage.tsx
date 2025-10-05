@@ -7,6 +7,9 @@ import {
   Stack,
   Button,
   IconButton,
+  Card,
+  CardContent,
+  CardMedia,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getPromptsByCategory } from "../../services/PromptService";
@@ -173,69 +176,72 @@ const AllCategoriesPage = () => {
                 {categoryPrompts[category] ? (
                   categoryPrompts[category].length > 0 ? (
                     categoryPrompts[category].map((p) => (
-                      <Paper
+                      <Card
                         key={p._id}
                         onClick={() => handleCardClick(p._id)}
                         sx={{
                           flex: "0 0 260px",
-                          p: 2,
-                          borderRadius: 4,
-                          bgcolor: "#1e1e1e",
+                          display: "flex",
+                          flexDirection: "column",
+                          bgcolor: "#121212",
                           color: "#fff",
+                          borderRadius: 4,
+                          overflow: "hidden",
                           cursor: "pointer",
-                          transition: 'all 0.3s ease',
-                          border: '1px solid rgba(144,202,249,0.15)',
-                          boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
-                          '&:hover': {
-                            boxShadow: '0 8px 24px rgba(144,202,249,0.3)',
-                            borderColor: '#42a5f5',
+                          border: "1px solid rgba(144,202,249,0.15)",
+                          boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
+                          transition: "all 0.3s ease",
+                          "&:hover": {
+                            boxShadow: "0 8px 24px rgba(144,202,249,0.3)",
+                            borderColor: "#42a5f5",
                           },
                         }}
                       >
-                        <Typography
-                          variant="subtitle1"
-                          fontWeight="600"
-                          sx={{ mb: 1 }}
-                        >
-                          {p.title}
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: "#bbb", mb: 1 }}>
-                          {p.description.length > 60
-                            ? `${p.description.slice(0, 60)}...`
-                            : p.description}
-                        </Typography>
-                        <Stack
-                          direction="row"
-                          alignItems="center"
-                          spacing={1.5}
-                          sx={{ mt: 0.5 }}
-                        >
-                          <Typography
-                            variant="caption"
-                            component="span"
-                            sx={{ color: "#aaa" }}
-                            onClick={(e) => {
-                              if(p.author?._id){
-                                e.stopPropagation();
-                                navigate(`/users/${p.author?._id}`);
-                              }
+                        {/* Top Image */}
+                        {p.promptUrl && (
+                          <CardMedia
+                            component="img"
+                            height="180"
+                            image={p.promptUrl}
+                            alt={p.title}
+                            sx={{
+                              objectFit: "cover",
+                              transition: "transform 0.4s ease",
+                              "&:hover": { transform: "scale(1.05)" },
                             }}
+                          />
+                        )}
+
+                        {/* Bottom Content */}
+                        <CardContent sx={{ flexGrow: 1 }}>
+                          <Typography
+                            variant="subtitle1"
+                            fontWeight="bold"
+                            gutterBottom
+                            noWrap
                           >
-                            By {" "}
-                            <Box component="span" sx={{ color: p.author?._id ? "#42a5f5" : "#aaa" }}>
-                              {p.author?.userName || DefaultUserName}
-                            </Box>
+                            {p.title}
                           </Typography>
 
                           <Typography
-                            variant="caption"
-                            component="span"
-                            sx={{ color: "#888", ml: "auto" }}
+                            variant="body2"
+                            color="grey.400"
+                            sx={{
+                              display: "-webkit-box",
+                              WebkitLineClamp: 3,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                              mb: 1,
+                            }}
                           >
-                            {p.views ?? 0} views
+                            {p.description}
                           </Typography>
-                        </Stack>
-                      </Paper>
+
+                          <Typography variant="caption" color="grey.500">
+                            By @{p.author?.userName || DefaultUserName}
+                          </Typography>
+                        </CardContent>
+                      </Card>
                     ))
                   ) : (
                     [...Array(3)].map((_, i) => (

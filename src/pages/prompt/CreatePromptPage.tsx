@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import PromptForm from '../../components/prompts/PromptForm';
-import { createPrompt } from '../../services/PromptService';
+import { createPrompt, uploadPromptImage } from '../../services/PromptService';
 import { useAuth } from '../../context/AuthContext';
 import { CreatePromptDto } from '../../models/Prompt';
 import { useSnackbar } from '../../context/SnackbarContext';
@@ -29,10 +29,13 @@ const CreatePromptPage: React.FC = () => {
     }
   }, [isAuthenticated, authLoading, navigate]);
 
-  const handleSubmit = async (data: CreatePromptDto) => {
+  const handleSubmit = async (data: CreatePromptDto, fd: FormData) => {
     setIsSubmitting(true);
 
     try {
+      const promptUrl = await uploadPromptImage(fd);
+      data.promptUrl = promptUrl;
+
       const newPrompt = await createPrompt(data);
       navigate(`/prompts/${newPrompt._id}`);
       showSnackbar('Prompt created successfully!', 'success');

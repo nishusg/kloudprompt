@@ -11,6 +11,7 @@ export interface Prompt {
   generationType: GenerationTypeEnum;
   category: PromptCategoryEnum;
   tags: string[];
+  promptUrl: string;
   readonly author: User;
   readonly views: number;
   readonly createdAt: Date;
@@ -29,6 +30,8 @@ export interface CreatePromptDto {
   modelType: ProviderTypeEnum;
   generationType: GenerationTypeEnum;
   category: PromptCategoryEnum;
+  promptUrl: string;
+  promptImage: File;
 }
 
 export interface UpdatePromptDto extends Partial<CreatePromptDto> {}

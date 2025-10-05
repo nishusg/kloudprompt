@@ -1,16 +1,19 @@
-import React, {  } from 'react';
+import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Typography,
   Grid,
   Card,
-  CardContent} from '@mui/material';
+  CardContent,
+  CardMedia,
+  Box,
+} from '@mui/material';
 import { Prompt } from '../../models/Prompt';
 import { DefaultUserName } from '../../utils/Constants';
 
 const ExplorePromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
   return (
-    <Grid item xs={12} sm={12} md={12}>
+    <Grid item xs={12} sm={6} md={4}>
       <Card
         component={RouterLink}
         to={`/prompts/${prompt._id}`}
@@ -24,6 +27,7 @@ const ExplorePromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
           color: '#fff',
           border: '1px solid rgba(144,202,249,0.15)',
           borderRadius: 4,
+          overflow: 'hidden',
           transition: 'all 0.3s ease',
           cursor: 'pointer',
           boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
@@ -33,6 +37,26 @@ const ExplorePromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
           },
         }}
       >
+        {/* Image Section */}
+        {prompt.promptUrl && (
+          <Box sx={{ position: 'relative', height: 200, overflow: 'hidden' }}>
+            <CardMedia
+              component="img"
+              height="200"
+              image={prompt.promptUrl}
+              alt={prompt.title}
+              sx={{
+                objectFit: 'cover',
+                transition: 'transform 0.4s ease',
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                },
+              }}
+            />
+          </Box>
+        )}
+
+        {/* Content Section */}
         <CardContent sx={{ flexGrow: 1 }}>
           <Typography variant="h6" fontWeight="bold" gutterBottom noWrap>
             {prompt.title}

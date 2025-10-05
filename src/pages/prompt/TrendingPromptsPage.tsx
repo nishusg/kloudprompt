@@ -154,6 +154,8 @@ const TrendingPromptsPage = () => {
                 color: "#e0e0e0",
                 transition: "0.3s",
                 border: "1px solid transparent",
+                display: "flex",
+                alignItems: "stretch",
                 "&:hover": {
                   boxShadow: "0 8px 24px rgba(144,202,249,0.3)",
                   borderColor: "#42a5f5",
@@ -161,7 +163,23 @@ const TrendingPromptsPage = () => {
               }}
               onClick={() => handlePromptClick(prompt._id)}
             >
-              <ListItem alignItems="flex-start" disableGutters>
+              {/* Left side - Image */}
+              <Box
+                component="img"
+                src={prompt.promptUrl}
+                alt={prompt.title}
+                sx={{
+                  width: 120,
+                  height: 120,
+                  objectFit: "cover",
+                  borderRadius: 2,
+                  mr: 2.5,
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
+              />
+
+              {/* Right side - Content */}
+              <ListItem alignItems="flex-start" disableGutters sx={{ flex: 1 }}>
                 <ListItemText
                   primary={
                     <Stack direction="row" alignItems="center" spacing={1}>
@@ -186,10 +204,8 @@ const TrendingPromptsPage = () => {
                       </Typography>
                     </Stack>
                   }
-                  primaryTypographyProps={{ component: "span" }}
                   secondary={
                     <Stack spacing={1.2}>
-                      {/* Description */}
                       <Typography
                         variant="body2"
                         component="span"
@@ -200,7 +216,6 @@ const TrendingPromptsPage = () => {
                           : prompt.description}
                       </Typography>
 
-                      {/* Author + Views row */}
                       <Stack
                         direction="row"
                         alignItems="center"
@@ -212,14 +227,19 @@ const TrendingPromptsPage = () => {
                           component="span"
                           sx={{ color: "#aaa" }}
                           onClick={(e) => {
-                            if(prompt.author?._id){
+                            if (prompt.author?._id) {
                               e.stopPropagation();
-                              navigate(`/users/${prompt.author?._id}`);
+                              navigate(`/users/${prompt.author._id}`);
                             }
                           }}
                         >
-                          By {" "}
-                          <Box component="span" sx={{ color: prompt.author?._id ? "#42a5f5" : "#aaa" }}>
+                          By{" "}
+                          <Box
+                            component="span"
+                            sx={{
+                              color: prompt.author?._id ? "#42a5f5" : "#aaa",
+                            }}
+                          >
                             {prompt.author?.userName || DefaultUserName}
                           </Box>
                         </Typography>
@@ -234,7 +254,6 @@ const TrendingPromptsPage = () => {
                       </Stack>
                     </Stack>
                   }
-                  secondaryTypographyProps={{ component: "span" }}
                 />
               </ListItem>
             </Paper>
