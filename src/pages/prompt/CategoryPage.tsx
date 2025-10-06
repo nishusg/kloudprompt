@@ -1,4 +1,3 @@
-// src/pages/CategoryPage.tsx
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import {
@@ -10,7 +9,7 @@ import {
   List,
   ListItem,
   ListItemText,
-  Chip,
+  Pagination,
 } from "@mui/material";
 import { Prompt } from "../../models/Prompt";
 import { getPromptsByCategory } from "../../services/PromptService";
@@ -23,8 +22,9 @@ const CategoryPage = () => {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"));
+  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
-  const PAGE_LIMIT = 10;
+  const PAGE_LIMIT = 9;
 
   useEffect(() => {
     if (!category) return;
@@ -34,6 +34,7 @@ const CategoryPage = () => {
       try {
         const data = await getPromptsByCategory(category, PAGE_LIMIT, page);
         setPrompts(data.prompts);
+        setTotalPages(Number(data.totalPages));
       } catch (err: any) {
         console.error("Failed to load prompts:", err);
       } finally {
@@ -46,6 +47,11 @@ const CategoryPage = () => {
 
   const handlePromptClick = (id: string) => {
     navigate(`/prompts/${id}`);
+  };
+
+  const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+    setSearchParams({ page: String(value) });
   };
 
   return (
@@ -91,7 +97,7 @@ const CategoryPage = () => {
                   </Typography>
                 </Paper>
               ) : (
-                prompts.map((prompt, index) => (
+                prompts.map((prompt) => (
                   <Paper
                     key={prompt._id}
                     elevation={4}
@@ -113,10 +119,9 @@ const CategoryPage = () => {
                     }}
                     onClick={() => handlePromptClick(prompt._id)}
                   >
-                    {/* Left - Image */}
                     <Box
                       component="img"
-                      src={prompt.promptUrl || "/default-image.jpg"}
+                      src={prompt.promptUrl || "/default-image.png"}
                       alt={prompt.title}
                       sx={{
                         width: 120,
@@ -128,7 +133,6 @@ const CategoryPage = () => {
                       }}
                     />
 
-                    {/* Right - Content */}
                     <ListItem alignItems="flex-start" disableGutters sx={{ flex: 1 }}>
                       <ListItemText
                         primary={
@@ -191,6 +195,28 @@ const CategoryPage = () => {
                 ))
               )}
         </List>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+              siblingCount={0}
+              boundaryCount={1}
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  color: "#fff",
+                },
+                "& .Mui-selected": {
+                  bgcolor: "#42a5f5 !important",
+                  color: "#000",
+                },
+              }}
+            />
+          </Box>
+        )}
       </Container>
     </Box>
   );

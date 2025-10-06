@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent, CardMedia, Skeleton, Box, Stack } from "@mui/material";
+import { Card, CardContent, Skeleton, Stack } from "@mui/material";
 
 const AllCategorySkeleton: React.FC = () => {
   return (

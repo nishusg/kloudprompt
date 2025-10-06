@@ -42,7 +42,7 @@ const ExplorePromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
           <CardMedia
             component="img"
             height="200"
-            image={prompt.promptUrl || '/default-image.jpg'}
+            image={prompt.promptUrl || '/default-image.png'}
             alt={prompt.title}
             sx={{
               objectFit: 'cover',

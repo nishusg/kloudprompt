@@ -200,7 +200,7 @@ const AllCategoriesPage = () => {
                         <CardMedia
                           component="img"
                           height="180"
-                          image={p.promptUrl || '/default-image.jpg'}
+                          image={p.promptUrl || '/default-image.png'}
                           alt={p.title}
                           sx={{
                             objectFit: "cover",

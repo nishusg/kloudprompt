@@ -14,7 +14,6 @@ import WhatshotIcon from "@mui/icons-material/Whatshot";
 import { useNavigate } from "react-router-dom";
 import { Prompt } from "../../models/Prompt";
 import { getTrendingPrompts } from "../../services/PromptService";
-import { DefaultUserName } from "../../utils/Constants";
 import { RankingFilterEnum } from "../../utils/Enum";
 import TrendingPromptSkeleton from "../../components/skeleton/TrendingPromptSkeleton";
 
@@ -166,7 +165,7 @@ const TrendingPromptsPage = () => {
               {/* Left side - Image */}
               <Box
                 component="img"
-                src={prompt.promptUrl || '/default-image.jpg'}
+                src={prompt.promptUrl || '/default-image.png'}
                 alt={prompt.title}
                 sx={{
                   width: 120,

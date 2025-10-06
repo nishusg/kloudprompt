@@ -200,7 +200,7 @@ const PromptDetailPage: React.FC = () => {
           }}
         >
           <img
-            src={prompt.promptUrl || '/default-image.jpg'}
+            src={prompt.promptUrl || '/default-image.png'}
             alt={prompt.title}
             style={{
               width: '100%',

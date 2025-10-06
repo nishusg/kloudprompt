@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Stack, Chip } from '@mui/material';
+import { Box, Typography, Stack } from '@mui/material';
 import { Prompt } from '../../models';
 
 const ProfilePromptCard: React.FC<{
@@ -27,7 +27,7 @@ const ProfilePromptCard: React.FC<{
     {/* Left: Image */}
     <Box
       component="img"
-      src={prompt.promptUrl || '/default-image.jpg'}
+      src={prompt.promptUrl || '/default-image.png'}
       alt={prompt.title}
       sx={{
         width: 100,
