@@ -38,23 +38,18 @@ const ExplorePromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
         }}
       >
         {/* Image Section */}
-        {prompt.promptUrl && (
-          <Box sx={{ position: 'relative', height: 200, overflow: 'hidden' }}>
-            <CardMedia
-              component="img"
-              height="200"
-              image={prompt.promptUrl}
-              alt={prompt.title}
-              sx={{
-                objectFit: 'cover',
-                transition: 'transform 0.4s ease',
-                '&:hover': {
-                  transform: 'scale(1.05)',
-                },
-              }}
-            />
-          </Box>
-        )}
+        <Box sx={{ position: 'relative', height: 200, overflow: 'hidden' }}>
+          <CardMedia
+            component="img"
+            height="200"
+            image={prompt.promptUrl || '/default-image.jpg'}
+            alt={prompt.title}
+            sx={{
+              objectFit: 'cover',
+              transition: 'transform 0.4s ease',
+            }}
+          />
+        </Box>
 
         {/* Content Section */}
         <CardContent sx={{ flexGrow: 1 }}>

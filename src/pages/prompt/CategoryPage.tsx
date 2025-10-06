@@ -116,7 +116,7 @@ const CategoryPage = () => {
                     {/* Left - Image */}
                     <Box
                       component="img"
-                      src={prompt.promptUrl || "/default-thumbnail.jpg"}
+                      src={prompt.promptUrl || "/default-image.jpg"}
                       alt={prompt.title}
                       sx={{
                         width: 120,

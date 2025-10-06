@@ -189,31 +189,28 @@ const PromptDetailPage: React.FC = () => {
         </Stack>
 
         {/* Image Section */}
-        {prompt.promptUrl && (
-          <Box
-            sx={{
-              mb: 3,
-              borderRadius: 2,
-              overflow: 'hidden',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.4)',
-              transition: 'transform 0.3s ease',
-              '&:hover': { transform: 'scale(1.01)' },
+        <Box
+          sx={{
+            mb: 3,
+            borderRadius: 2,
+            overflow: 'hidden',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.4)',
+            transition: 'transform 0.3s ease',
+            '&:hover': { transform: 'scale(1.01)' },
+          }}
+        >
+          <img
+            src={prompt.promptUrl || '/default-image.jpg'}
+            alt={prompt.title}
+            style={{
+              width: '100%',
+              height: 'auto',
+              display: 'block',
+              borderRadius: '8px',
+              objectFit: 'cover',
             }}
-          >
-            <img
-              src={prompt.promptUrl}
-              alt={prompt.title}
-              style={{
-                width: '100%',
-                height: 'auto',
-                display: 'block',
-                borderRadius: '8px',
-                objectFit: 'cover',
-              }}
-            />
-          </Box>
-        )}
-
+          />
+        </Box>
 
         {/* Prompt Content */}
         <Paper

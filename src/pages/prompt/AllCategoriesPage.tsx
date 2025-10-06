@@ -18,7 +18,6 @@ import { Prompt } from "../../models/Prompt";
 import CategoryIcon from '@mui/icons-material/Category';
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { DefaultUserName } from "../../utils/Constants";
 import AllCategorySkeleton from "../../components/skeleton/AllCategorySkeleton";
 
 const AllCategoriesPage = () => {
@@ -198,19 +197,16 @@ const AllCategoriesPage = () => {
                         }}
                       >
                         {/* Top Image */}
-                        {p.promptUrl && (
-                          <CardMedia
-                            component="img"
-                            height="180"
-                            image={p.promptUrl}
-                            alt={p.title}
-                            sx={{
-                              objectFit: "cover",
-                              transition: "transform 0.4s ease",
-                              "&:hover": { transform: "scale(1.05)" },
-                            }}
-                          />
-                        )}
+                        <CardMedia
+                          component="img"
+                          height="180"
+                          image={p.promptUrl || '/default-image.jpg'}
+                          alt={p.title}
+                          sx={{
+                            objectFit: "cover",
+                            transition: "transform 0.4s ease",
+                          }}
+                        />
 
                         {/* Bottom Content */}
                         <CardContent sx={{ flexGrow: 1 }}>
@@ -237,8 +233,12 @@ const AllCategoriesPage = () => {
                             {p.description}
                           </Typography>
 
-                          <Typography variant="caption" color="grey.500">
-                            By @{p.author?.userName || DefaultUserName}
+                          <Typography
+                            variant="caption"
+                            component="span"
+                            sx={{ color: "#888", ml: "auto" }}
+                          >
+                            {p.views ?? 0} views
                           </Typography>
                         </CardContent>
                       </Card>

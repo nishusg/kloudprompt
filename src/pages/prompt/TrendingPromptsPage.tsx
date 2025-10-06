@@ -166,7 +166,7 @@ const TrendingPromptsPage = () => {
               {/* Left side - Image */}
               <Box
                 component="img"
-                src={prompt.promptUrl}
+                src={prompt.promptUrl || '/default-image.jpg'}
                 alt={prompt.title}
                 sx={{
                   width: 120,
@@ -222,28 +222,6 @@ const TrendingPromptsPage = () => {
                         spacing={1.5}
                         sx={{ mt: 0.5 }}
                       >
-                        <Typography
-                          variant="caption"
-                          component="span"
-                          sx={{ color: "#aaa" }}
-                          onClick={(e) => {
-                            if (prompt.author?._id) {
-                              e.stopPropagation();
-                              navigate(`/users/${prompt.author._id}`);
-                            }
-                          }}
-                        >
-                          By{" "}
-                          <Box
-                            component="span"
-                            sx={{
-                              color: prompt.author?._id ? "#42a5f5" : "#aaa",
-                            }}
-                          >
-                            {prompt.author?.userName || DefaultUserName}
-                          </Box>
-                        </Typography>
-
                         <Typography
                           variant="caption"
                           component="span"

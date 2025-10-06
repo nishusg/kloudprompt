@@ -27,7 +27,7 @@ const ProfilePromptCard: React.FC<{
     {/* Left: Image */}
     <Box
       component="img"
-      src={prompt.promptUrl || '/default-thumbnail.jpg'}
+      src={prompt.promptUrl || '/default-image.jpg'}
       alt={prompt.title}
       sx={{
         width: 100,
@@ -59,10 +59,6 @@ const ProfilePromptCard: React.FC<{
         </Typography>
 
         <Stack direction="row" spacing={1} alignItems="center">
-          <Typography variant="caption" sx={{ color: '#888', ml: 'auto' }}>
-            {prompt.views ?? 0} views
-          </Typography>
-
           {onDelete && (
             <Typography
               variant="caption"
