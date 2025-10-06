@@ -13,9 +13,14 @@ import {
 } from "@mui/material";
 import { CreatePromptDto } from "../../models/Prompt";
 import { validatePrompt } from "../../utils/Validators";
-import { GenerationTypeEnum, ProviderTypeEnum, VerificationStatus, PromptCategoryEnum } from "../../utils/Enum"; // ✅ import PromptCategory
+import {
+  GenerationTypeEnum,
+  ProviderTypeEnum,
+  VerificationStatus,
+  PromptCategoryEnum,
+} from "../../utils/Enum";
 import { useAuth } from "../../context/AuthContext";
-import InfoIcon from '@mui/icons-material/Info';
+import InfoIcon from "@mui/icons-material/Info";
 
 interface PromptFormProps {
   initialData?: CreatePromptDto;
@@ -42,6 +47,7 @@ const PromptForm: React.FC<PromptFormProps> = ({
   const [formData, setFormData] = useState<CreatePromptDto>(initialData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [tagInput, setTagInput] = useState("");
+  const [imageError, setImageError] = useState("");
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -85,8 +91,15 @@ const PromptForm: React.FC<PromptFormProps> = ({
         return;
       }
       setErrors({});
+
       const fd = new FormData();
-      fd.append('promptImage', formData.promptImage);
+      if (
+        formData.generationType === GenerationTypeEnum.IMAGE &&
+        formData.promptImage
+      ) {
+        fd.append("promptImage", formData.promptImage);
+      }
+
       await onSubmit(formData, fd);
     },
     [formData, onSubmit]
@@ -96,15 +109,24 @@ const PromptForm: React.FC<PromptFormProps> = ({
     <>
       {/* Info message if user not verified */}
       {user?.verificationStatus !== VerificationStatus.Verified && (
-        <Paper 
-          sx={{ p: 2, bgcolor: '#121212', mb: 3, borderRadius: 2, display: 'flex', alignItems: 'center', gap: 1 }}
+        <Paper
+          sx={{
+            p: 2,
+            bgcolor: "#121212",
+            mb: 3,
+            borderRadius: 2,
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
         >
-          <InfoIcon sx={{ color: '#90caf9' }} />
-          <Typography variant="body2" sx={{ color: '#ccc' }}>
+          <InfoIcon sx={{ color: "#90caf9" }} />
+          <Typography variant="body2" sx={{ color: "#ccc" }}>
             You cannot create a new prompt until you verify your email.
           </Typography>
         </Paper>
       )}
+
       <Paper
         sx={{
           p: 4,
@@ -287,36 +309,49 @@ const PromptForm: React.FC<PromptFormProps> = ({
           />
 
           {/* Image Upload */}
-          <Box>
-            <Typography variant="body2" sx={{ color: "#ccc", mb: 1 }}>
-              Upload Prompt Image
-            </Typography>
-            <Button
-              variant="contained"
-              component="label"
-              sx={{ mb: 1 }}
-            >
-              Choose Image
-              <input
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    setFormData((prev) => ({
-                      ...prev,
-                      promptImage: e.target.files![0],
-                    }));
-                  }
-                }}
-              />
-            </Button>
-            {formData.promptImage && (
-              <Typography variant="body2" sx={{ color: "#90caf9" }}>
-                Selected file: {formData.promptImage.name}
+          {formData.generationType === GenerationTypeEnum.IMAGE && (
+            <Box>
+              <Typography variant="body2" sx={{ color: "#ccc", mb: 1 }}>
+                Upload Prompt Image (Max 2MB)
               </Typography>
-            )}
-          </Box>
+              <Button variant="contained" component="label" sx={{ mb: 1 }}>
+                Choose Image
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const maxSize = 2 * 1024 * 1024; // 2MB
+                      if (file.size > maxSize) {
+                        setImageError("Image size must be less than 2MB.");
+                        e.target.value = "";
+                        return;
+                      }
+                      setImageError("");
+                      setFormData((prev) => ({
+                        ...prev,
+                        promptImage: file,
+                      }));
+                    }
+                  }}
+                />
+              </Button>
+
+              {formData.promptImage && (
+                <Typography variant="body2" sx={{ color: "#90caf9" }}>
+                  Selected file: {formData.promptImage.name}
+                </Typography>
+              )}
+
+              {imageError && (
+                <Typography variant="body2" sx={{ color: "red", mt: 1 }}>
+                  {imageError}
+                </Typography>
+              )}
+            </Box>
+          )}
 
           {/* Tags */}
           <Box>
@@ -368,7 +403,8 @@ const PromptForm: React.FC<PromptFormProps> = ({
               variant="contained"
               color="primary"
               disabled={
-                isLoading || user?.verificationStatus !== VerificationStatus.Verified
+                isLoading ||
+                user?.verificationStatus !== VerificationStatus.Verified
               }
               sx={{
                 "&.Mui-disabled": {

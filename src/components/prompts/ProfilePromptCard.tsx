@@ -12,7 +12,7 @@ const ProfilePromptCard: React.FC<{
     onClick={onView}
     sx={{
       display: 'flex',
-      alignItems: 'flex-start',
+      alignItems: 'center',
       p: 2,
       borderRadius: 2,
       bgcolor: '#121212',

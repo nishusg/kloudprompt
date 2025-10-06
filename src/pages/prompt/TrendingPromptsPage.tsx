@@ -154,7 +154,7 @@ const TrendingPromptsPage = () => {
                 transition: "0.3s",
                 border: "1px solid transparent",
                 display: "flex",
-                alignItems: "stretch",
+                alignItems: "center",
                 "&:hover": {
                   boxShadow: "0 8px 24px rgba(144,202,249,0.3)",
                   borderColor: "#42a5f5",

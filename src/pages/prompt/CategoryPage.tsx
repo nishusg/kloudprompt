@@ -109,7 +109,7 @@ const CategoryPage = () => {
                       bgcolor: "#121212",
                       color: "#e0e0e0",
                       display: "flex",
-                      alignItems: "stretch",
+                      alignItems: "center",
                       transition: "0.3s",
                       border: "1px solid transparent",
                       "&:hover": {

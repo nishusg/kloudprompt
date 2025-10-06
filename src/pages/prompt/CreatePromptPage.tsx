@@ -15,6 +15,7 @@ import { createPrompt, uploadPromptImage } from '../../services/PromptService';
 import { useAuth } from '../../context/AuthContext';
 import { CreatePromptDto } from '../../models/Prompt';
 import { useSnackbar } from '../../context/SnackbarContext';
+import { GenerationTypeEnum } from '../../utils/Enum';
 
 const CreatePromptPage: React.FC = () => {
   const navigate = useNavigate();
@@ -33,7 +34,11 @@ const CreatePromptPage: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const promptUrl = await uploadPromptImage(fd);
+      let promptUrl = "";
+
+      if (data.generationType === GenerationTypeEnum.IMAGE && fd.get("promptImage")) {
+        promptUrl = await uploadPromptImage(fd);
+      }
       data.promptUrl = promptUrl;
 
       const newPrompt = await createPrompt(data);
