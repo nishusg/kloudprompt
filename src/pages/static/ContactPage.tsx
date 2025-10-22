@@ -29,8 +29,8 @@ const ContactPage: React.FC = () => {
           <Stack spacing={2} sx={{ mt: 2 }}>
             <Typography>
               📧 Email:{" "}
-              <Link href="mailto:kloudprompt@gmail.com" underline="hover" color="#42a5f5">
-                kloudprompt@gmail.com
+              <Link href="mailto:support@kloudprompt.com" underline="hover" color="#42a5f5">
+                support@kloudprompt.com
               </Link>
             </Typography>
             {/* <Typography>
