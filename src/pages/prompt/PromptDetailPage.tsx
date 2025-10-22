@@ -247,9 +247,31 @@ const PromptDetailPage: React.FC = () => {
                 size="small"
                 onClick={() => setEnhanceDialogOpen(true)}
                 sx={{
-                  bgcolor: '#222',
-                  color: '#4cafef',
-                  '&:hover': { bgcolor: '#333' }
+                  position: "relative",
+                  bgcolor: "#1b0a2a",
+                  color: "#4cafef",
+                  borderRadius: "50%",
+                  overflow: "visible",
+                  boxShadow: "0 0 10px rgba(179,123,255,0.5)",
+                  "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    borderRadius: "50%",
+                    width: "100%",
+                    height: "100%",
+                    top: 0,
+                    left: 0,
+                    boxShadow: "0 0 20px 5px rgba(179,123,255,0.4)",
+                    animation: "pulse 2s infinite ease-out",
+                  },
+                  "@keyframes pulse": {
+                    "0%": { transform: "scale(1)", opacity: 0.7 },
+                    "70%": { transform: "scale(1.8)", opacity: 0 },
+                    "100%": { opacity: 0 },
+                  },
+                  "&:hover": {
+                    boxShadow: "0 0 25px rgba(179,123,255,0.8)",
+                  },
                 }}
               >
                 <AutoFixHighIcon fontSize="small" />
