@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Container, Typography, Divider, Stack } from "@mui/material";
+import { Box, Container, Typography, Stack } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
 const Footer: React.FC = () => {
@@ -9,13 +9,29 @@ const Footer: React.FC = () => {
       sx={{
         px: 2,
         mt: "auto",
-        backgroundColor: "#000", // Black background
-        color: "#fff", // White text
+        py: 4,
+        position: "relative",
+        zIndex: 1,
+        background: "rgba(20,20,30,0.65)", // Glass effect
+        backdropFilter: "blur(20px)",
+        borderTop: "1px solid rgba(255,255,255,0.08)",
+        boxShadow: "0 0 30px rgba(0,0,0,0.5)",
+        color: "#fff",
       }}
     >
-      <Container maxWidth="lg">
-        {/* Divider for separation */}
-        <Divider sx={{ bgcolor: "rgba(255,255,255,0.2)", mb: 3 }} />
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: '-10%',
+          right: '-10%',
+          width: { xs: '300px', md: '400px' },
+          height: { xs: '300px', md: '400px' },
+          background: 'radial-gradient(circle, rgba(0,204,255,0.25), transparent 70%)',
+          filter: 'blur(100px)',
+          zIndex: 0,
+        }}
+      />
+      <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
 
         {/* Navigation Links */}
         <Stack
@@ -37,8 +53,12 @@ const Footer: React.FC = () => {
                 fontWeight: 500,
                 textDecoration: "none",
                 color: "inherit",
-                transition: "color 0.3s",
-                "&:hover": { color: "#42a5f5" }, // Hover effect
+                position: "relative",
+                transition: "color 0.3s, transform 0.3s",
+                "&:hover": {
+                  color: "#42a5f5",
+                  transform: "translateY(-2px)",
+                },
               }}
             >
               {link.text}
@@ -47,8 +67,17 @@ const Footer: React.FC = () => {
         </Stack>
 
         {/* Copyright */}
-        <Typography variant="body2" align="center" sx={{ opacity: 0.8 }}>
-          © {new Date().getFullYear()} {(window as any)._env_?.REACT_APP_Website_Title || process.env.REACT_APP_Website_Title}. All rights reserved.
+        <Typography
+          variant="body2"
+          align="center"
+          sx={{
+            opacity: 0.8,
+            color: "#888888",
+            fontSize: "0.875rem",
+          }}
+        >
+          © {new Date().getFullYear()}{" "}
+          {(window as any)._env_?.REACT_APP_Website_Title || process.env.REACT_APP_Website_Title}. All rights reserved.
         </Typography>
       </Container>
     </Box>

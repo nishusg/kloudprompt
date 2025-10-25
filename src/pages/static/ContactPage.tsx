@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Paper, Typography, Box, Stack, Link } from "@mui/material";
+import { Container, Paper, Typography, Box, Stack, Link, Divider } from "@mui/material";
 
 const ContactPage: React.FC = () => {
   return (
@@ -21,6 +21,8 @@ const ContactPage: React.FC = () => {
           >
             Contact Us
           </Typography>
+
+          <Divider sx={{ bgcolor: "#2a2a2a", mb: 3 }} />
 
           <Typography variant="body1" align="center" sx={{ mb: 3, opacity: 0.8 }}>
             We'd love to hear from you! Reach out to us through any of the following:

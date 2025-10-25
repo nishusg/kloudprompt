@@ -6,6 +6,9 @@ import Header from './Header';
 import Footer from './Footer';
 import { ErrorBoundary } from './ErrorBoundary';
 
+const HEADER_HEIGHT = 64; // px, match Header height
+const FOOTER_HEIGHT = 100; // px, match Footer height
+
 const MainLayout: React.FC = () => {
   return (
     <Box
@@ -14,10 +17,11 @@ const MainLayout: React.FC = () => {
         flexDirection: 'column',
         minHeight: '100vh',
         bgcolor: '#0a0a0a',
+        position: 'relative',
       }}
     >
       {/* Fixed Header */}
-      <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1200 }}>
+      <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1200, height: HEADER_HEIGHT }}>
         <Header />
       </Box>
 
@@ -26,8 +30,8 @@ const MainLayout: React.FC = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          pt: '70px', // adjust to header height
-          pb: '60px', // adjust to footer height
+          pt: `${HEADER_HEIGHT}px`, // padding to avoid header
+          pb: `${FOOTER_HEIGHT}px`, // padding to avoid footer
           width: '100%',
           overflowX: 'hidden',
         }}
@@ -45,6 +49,7 @@ const MainLayout: React.FC = () => {
           left: 0,
           right: 0,
           zIndex: 1100,
+          height: FOOTER_HEIGHT,
         }}
       >
         <Footer />

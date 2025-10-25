@@ -7,6 +7,7 @@ import {
   ListItem,
   ListItemText,
   Box,
+  Divider,
 } from "@mui/material";
 
 const AboutPage: React.FC = () => {
@@ -32,13 +33,18 @@ const AboutPage: React.FC = () => {
               fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.5rem", lg: "3rem" },
             }}
           >
-            About Prompt Sharing Platform
+            About Kloudprompt
           </Typography>
 
+          <Divider sx={{ mb: 3, bgcolor: "#A37E2C40" }} />
+
           <Typography variant="body1" paragraph>
-            <strong>Prompt Sharing Platform</strong> is a community-driven space
-            where creativity meets collaboration. It allows people to share,
-            discover, and get inspired by creative prompts from around the world.
+            <strong>
+              KloudPrompt
+            </strong>{" "}
+            is a community-driven platform where creativity meets collaboration. It
+            allows people to share, discover, and get inspired by creative
+            prompts from around the world.
           </Typography>
 
           <Typography variant="body1" paragraph>
@@ -60,18 +66,29 @@ const AboutPage: React.FC = () => {
           </Typography>
 
           <List>
-            <ListItem>
-              <ListItemText primary="📌 Share your creative prompts with the community" />
-            </ListItem>
-            <ListItem>
-              <ListItemText primary="🔥 Discover trending prompts from others" />
-            </ListItem>
-            <ListItem>
-              <ListItemText primary="⭐ Bookmark and organize prompts you love" />
-            </ListItem>
-            <ListItem>
-              <ListItemText primary="🤝 Connect with like-minded creators" />
-            </ListItem>
+            {[
+              "📌 Share your creative prompts with the community",
+              "🔥 Discover trending prompts from others",
+              "⭐ Bookmark and organize prompts you love",
+              "🤝 Connect with like-minded creators",
+            ].map((text, index) => (
+              <ListItem
+                key={index}
+                sx={{
+                  "&:hover": {
+                    bgcolor: "#00603915",
+                    transition: "0.3s",
+                  },
+                }}
+              >
+                <ListItemText
+                  primaryTypographyProps={{
+                    sx: { color: "#F5F5F5", fontSize: "1rem" },
+                  }}
+                  primary={text}
+                />
+              </ListItem>
+            ))}
           </List>
 
           <Box mt={4}>

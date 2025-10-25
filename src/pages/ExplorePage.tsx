@@ -307,7 +307,7 @@ const ExplorePage: React.FC = () => {
         {loading ? (
           <Grid container spacing={4}>
             {Array.from({ length: rowsPerPage }).map((_, idx) => (
-              <ExplorePromptCardSkeleton/>
+              <ExplorePromptCardSkeleton key={idx}/>
             ))}
           </Grid>
         ) : error ? (
@@ -316,8 +316,8 @@ const ExplorePage: React.FC = () => {
           <>
             {prompts.length > 0 ? (
               <Grid container spacing={4}>
-                {prompts.map((prompt) => (
-                    <ExplorePromptCard prompt={prompt} />
+                {prompts.map((prompt, idx) => (
+                    <ExplorePromptCard prompt={prompt} key={idx} />
                 ))}
               </Grid>
             ) : (

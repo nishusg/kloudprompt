@@ -52,22 +52,6 @@ const HomePage: React.FC = () => {
           width: '100%',
         }}
       >
-        {/* Title */}
-        <Typography
-          component="h1"
-          sx={{
-            fontWeight: "bold",
-            fontSize: { xs: "2rem", sm: "3rem", md: "4rem" },
-            lineHeight: 1.2,
-            textAlign: "center", 
-            color: "#42a5f5",
-            letterSpacing: { xs: 0.5, md: 1 },
-            px: { xs: 1, sm: 0 },
-          }}
-        >
-          Prompt Collection
-        </Typography>
-
         {/* Typing tagline */}
         <Box
           sx={{

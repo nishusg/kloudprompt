@@ -29,7 +29,7 @@ export const CommentItem: React.FC<CommentItemProps> = ({
       variant="outlined"
     >
       <Stack direction="row" spacing={2} alignItems="flex-start">
-        <Avatar sx={{ bgcolor: "#3080cfff", color: "#fff" }}>
+        <Avatar sx={{ bgcolor: "#42a5f5", color: "#fff" }}>
           {(comment.userId?.userName || DefaultUserName).charAt(0).toUpperCase() || "A"}
         </Avatar>
         <Stack spacing={0.5} sx={{ flexGrow: 1 }}>

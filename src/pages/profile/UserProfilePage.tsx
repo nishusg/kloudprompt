@@ -266,24 +266,26 @@ const UserProfilePage: React.FC = () => {
             </Grid>
 
             {/* Pagination */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-              <Pagination
-                count={totalPages}
-                page={currentPage}
-                onChange={handlePageChange}
-                siblingCount={0}
-                boundaryCount={1}
-                sx={{
-                  "& .MuiPaginationItem-root": {
-                    color: "#fff",
-                  },
-                  "& .Mui-selected": {
-                    bgcolor: "#42a5f5 !important",
-                    color: "#000",
-                  },
-                }}
-              />
-            </Box>
+            {totalPages > 1 && 
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                <Pagination
+                  count={totalPages}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                  siblingCount={0}
+                  boundaryCount={1}
+                  sx={{
+                    "& .MuiPaginationItem-root": {
+                      color: "#fff",
+                    },
+                    "& .Mui-selected": {
+                      bgcolor: "#42a5f5 !important",
+                      color: "#000",
+                    },
+                  }}
+                />
+              </Box>
+            }
           </>
         )}
       </Container>

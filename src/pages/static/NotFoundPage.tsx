@@ -1,130 +1,58 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
-import {
-  Box,
-  Typography,
-  Button,
-  Stack,
-  Divider,
-  Link,
-  Paper,
-} from "@mui/material";
-import SearchOffIcon from "@mui/icons-material/SearchOff";
+import { Container, Paper, Typography, Box, Button, Divider } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const NotFoundPage: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #000, #333)",
-        color: "#fff",
-        p: { xs: 2, sm: 3 },
-      }}
-    >
-      <Paper
-        elevation={4}
-        sx={{
-          p: { xs: 3, sm: 5 },
-          textAlign: "center",
-          maxWidth: 500,
-          width: "100%",
-          backgroundColor: "rgba(255,255,255,0.05)",
-          borderRadius: 3,
-          backdropFilter: "blur(6px)",
-        }}
-      >
-        {/* Icon */}
-        <SearchOffIcon
+    <Box sx={{ minHeight: "80vh", bgcolor: "#0a0a0a", py: 6 }}>
+      <Container maxWidth="md">
+        <Paper
+          elevation={4}
           sx={{
-            fontSize: { xs: 60, sm: 80 },
-            color: "primary.main",
-            mb: 2,
-          }}
-        />
-
-        {/* 404 Title */}
-        <Typography
-          variant="h1"
-          fontWeight="bold"
-          sx={{
-            fontSize: { xs: "6rem", sm: "8rem" },
-            color: "primary.main",
-            lineHeight: 1,
+            p: { xs: 3, md: 5 },
+            borderRadius: 3,
+            bgcolor: "#121212",
+            color: "white",
+            textAlign: "center",
           }}
         >
-          404
-        </Typography>
-
-        {/* Subtitle */}
-        <Typography
-          variant="h5"
-          component="h1"
-          fontWeight="bold"
-          gutterBottom
-          sx={{ mt: 1, fontSize: { xs: "1.4rem", sm: "1.8rem" } }}
-        >
-          Page Not Found
-        </Typography>
-
-        {/* Description */}
-        <Typography
-          variant="body1"
-          color="grey.300"
-          sx={{ mb: 4, fontSize: { xs: "0.9rem", sm: "1rem" } }}
-        >
-          Oops! The page you’re looking for doesn’t exist or has been moved.
-        </Typography>
-
-        {/* Buttons */}
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={2}
-          justifyContent="center"
-          sx={{ mb: 3 }}
-        >
-          <Button
-            component={RouterLink}
-            to="/"
-            variant="contained"
-            size="large"
-            sx={{ fontWeight: "bold", width: { xs: "100%", sm: "auto" } }}
-          >
-            Go to Homepage
-          </Button>
-          <Button
-            component={RouterLink}
-            to="/explore"
-            variant="outlined"
-            size="large"
+          <Typography
+            variant="h3"
+            gutterBottom
             sx={{
-              color: "#fff",
-              borderColor: "#fff",
-              width: { xs: "100%", sm: "auto" },
+              fontWeight: "bold",
+              color: "#42a5f5",
+              fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.5rem", lg: "3rem" },
             }}
           >
-            Browse Prompts
-          </Button>
-        </Stack>
+            404 - Page Not Found
+          </Typography>
 
-        <Divider sx={{ my: 3, borderColor: "rgba(255,255,255,0.2)" }} />
+          <Divider sx={{ bgcolor: "#2a2a2a", mb: 3 }} />
 
-        {/* Contact link */}
-        <Typography variant="body2" color="grey.400" sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}>
-          Need help?{" "}
-          <Link
-            component={RouterLink}
-            to="/contact"
-            underline="hover"
-            sx={{ color: "primary.main", fontWeight: "bold" }}
+          <Typography variant="body1" sx={{ mb: 3, opacity: 0.8 }}>
+            Oops! The page you're looking for doesn’t exist or has been moved.
+          </Typography>
+
+          <Button
+            variant="contained"
+            sx={{
+              mt: 2,
+              bgcolor: "#42a5f5",
+              borderRadius: 2,
+              px: 4,
+              py: 1,
+              textTransform: "none",
+              fontWeight: "bold",
+            }}
+            onClick={() => navigate("/")}
           >
-            Contact support
-          </Link>
-        </Typography>
-      </Paper>
+            Go Back Home
+          </Button>
+        </Paper>
+      </Container>
     </Box>
   );
 };

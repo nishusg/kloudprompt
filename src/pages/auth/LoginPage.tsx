@@ -3,7 +3,7 @@ import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { validateEmail } from '../../utils/Validators';
 import {
-  Container, Box, Card, CardContent, Typography, TextField, Button,
+  Container, Box, Typography, TextField, Button,
   CircularProgress, Link, Alert, IconButton, InputAdornment
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -18,7 +18,6 @@ const LoginPage: React.FC = () => {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
 
-  // redirect if logged in
   useEffect(() => {
     if (isAuthenticated) navigate('/', { replace: true });
   }, [isAuthenticated, navigate]);
@@ -33,7 +32,7 @@ const LoginPage: React.FC = () => {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    if (!validateEmail(formData.email)) newErrors.email = 'Please enter a valid email address';
+    if (!validateEmail(formData.email)) newErrors.email = 'Please enter a valid email';
     if (!formData.password.trim()) newErrors.password = 'Password is required';
     setFieldErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -53,81 +52,202 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center', py: 4 }}>
-      <Container component="main" maxWidth="xs">
-        <Card sx={{ bgcolor: '#121212', color: '#fff', borderRadius: 3 }}>
-          <CardContent sx={{ p: 4 }}>
-            <Typography component="h1" variant="h5" align="center" gutterBottom sx={{ fontWeight: 'bold' }}>
-              Sign in to your account
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        minHeight: '100vh',
+        background: 'radial-gradient(circle at top left, #0a0f1a 0%, #000 100%)',
+        color: '#fff',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* floating blue glow effects */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '-10%',
+          left: '-10%',
+          width: { xs: '300px', md: '400px' },
+          height: { xs: '300px', md: '400px' },
+          background: 'radial-gradient(circle, rgba(0,115,255,0.35), transparent 70%)',
+          filter: 'blur(100px)',
+          zIndex: 0,
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: '-10%',
+          right: '-10%',
+          width: { xs: '300px', md: '400px' },
+          height: { xs: '300px', md: '400px' },
+          background: 'radial-gradient(circle, rgba(0,204,255,0.25), transparent 70%)',
+          filter: 'blur(100px)',
+          zIndex: 0,
+        }}
+      />
+
+      {/* LEFT SIDE (branding) */}
+      <Box
+        sx={{
+          flex: 1,
+          display: { xs: 'none', md: 'flex' },
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          p: { xs: 3, md: 5 },
+          mb: { xs: 4, md: 0 },
+          zIndex: 1,
+        }}
+      >
+        <Typography
+          sx={{
+            fontWeight: 800,
+            letterSpacing: '-0.02em',
+            mb: 2,
+            fontSize: { xs: '2rem', md: '3rem' },
+            background: 'linear-gradient(90deg, #00aaff, #007bff)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          KloudPrompt
+        </Typography>
+
+        <Typography
+          variant="body1"
+          sx={{
+            color: '#b0c4de',
+            maxWidth: 420,
+            lineHeight: 1.6,
+          }}
+        >
+          The creative hub for sharing and enhancing prompts — sleek, simple, and smart.
+        </Typography>
+      </Box>
+
+      {/* RIGHT SIDE (glass form) */}
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: { xs: 2, md: 4 },
+          zIndex: 2,
+        }}
+      >
+        <Container maxWidth="xs">
+          <Box
+            sx={{
+              background: 'rgba(15, 25, 45, 0.8)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(0,150,255,0.15)',
+              borderRadius: 4,
+              boxShadow: '0 0 40px rgba(0,80,255,0.2)',
+              p: { xs: 3, md: 5 },
+            }}
+          >
+            <Typography variant="h5" fontWeight="bold" align="center" sx={{ mb: 1 }}>
+              Welcome Back
+            </Typography>
+            <Typography variant="body2" align="center" sx={{ mb: 3, color: '#9db6d6' }}>
+              Sign in to continue your journey
             </Typography>
 
             {authError && <Alert severity="error" sx={{ mb: 2 }}>{authError}</Alert>}
 
             <Box component="form" onSubmit={handleSubmit} noValidate>
               <TextField
-                margin="normal"
-                required
                 fullWidth
-                type="email"
-                id="email"
-                label="Email Address"
+                required
+                margin="normal"
                 name="email"
-                autoComplete="email"
-                autoFocus
+                label="Email"
+                type="email"
                 value={formData.email}
                 onChange={handleChange}
                 error={!!fieldErrors.email}
                 helperText={fieldErrors.email}
-                disabled={loading}
-                variant="outlined"
-                InputProps={{ style: { color: '#fff', backgroundColor: '#121212' } }}
-                InputLabelProps={{ style: { color: '#bbb' } }}
+                InputLabelProps={{ style: { color: '#9db6d6' } }}
+                InputProps={{
+                  style: {
+                    color: '#e6f1ff',
+                    backgroundColor: 'rgba(255,255,255,0.05)',
+                    borderRadius: 10,
+                  },
+                }}
               />
 
               <TextField
-                margin="normal"
-                required
                 fullWidth
+                required
+                margin="normal"
                 name="password"
                 label="Password"
                 type={showPassword ? 'text' : 'password'}
-                id="password"
-                autoComplete="current-password"
                 value={formData.password}
                 onChange={handleChange}
                 error={!!fieldErrors.password}
                 helperText={fieldErrors.password}
-                disabled={loading}
-                InputLabelProps={{ style: { color: '#bbb' } }}
+                InputLabelProps={{ style: { color: '#9db6d6' } }}
                 InputProps={{
-                  style: { color: '#fff', backgroundColor: '#121212' },
+                  style: {
+                    color: '#e6f1ff',
+                    backgroundColor: 'rgba(255,255,255,0.05)',
+                    borderRadius: 10,
+                  },
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={() => setShowPassword(prev => !prev)} edge="end" sx={{ color: '#ccc' }} type="button">
+                      <IconButton onClick={() => setShowPassword(!showPassword)} sx={{ color: '#9db6d6' }}>
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
-                  )
+                  ),
                 }}
               />
 
-              <Button type="submit" fullWidth variant="contained" disabled={loading}
-                sx={{ py: 1.5, bgcolor: '#1976d2', '&:hover': { bgcolor: '#1565c0' }, fontWeight: 'bold', mt: 2 }}>
-                {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                disabled={loading}
+                sx={{
+                  mt: 3,
+                  py: 1.3,
+                  borderRadius: 10,
+                  background: 'linear-gradient(90deg, #009dff, #005ce6)',
+                  fontWeight: 'bold',
+                  textTransform: 'none',
+                  fontSize: '1rem',
+                  boxShadow: '0 0 15px rgba(0,120,255,0.5)',
+                  '&:hover': {
+                    background: 'linear-gradient(90deg, #00b3ff, #003db8)',
+                  },
+                }}
+              >
+                {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
               </Button>
+
+              <Typography align="center" sx={{ mt: 3, color: '#9db6d6' }}>
+                Don’t have an account?{' '}
+                <Link component={RouterLink} to="/register" sx={{ color: '#00aaff', fontWeight: 500 }}>
+                  Sign Up
+                </Link>
+              </Typography>
+
+              <Typography align="center" sx={{ mt: 1 }}>
+                <Link component={RouterLink} to="/forgotPassword" sx={{ color: '#00aaff' }}>
+                  Forgot Password?
+                </Link>
+              </Typography>
             </Box>
-
-            <Typography variant="body2" align="center" sx={{ mt: 3, color: '#ccc' }}>
-              Don&apos;t have an account?{' '}
-              <Link component={RouterLink} to="/register" variant="body2" sx={{ color: '#90caf9' }}>Register here</Link>
-            </Typography>
-
-            <Typography variant="body2" align="center" sx={{ mt: 1 }}>
-              <Link component={RouterLink} to="/forgotPassword" variant="body2" sx={{ color: '#90caf9' }}>Forgot password?</Link>
-            </Typography>
-          </CardContent>
-        </Card>
-      </Container>
+          </Box>
+        </Container>
+      </Box>
     </Box>
   );
 };

@@ -68,12 +68,12 @@ const AppRoutes: React.FC = () => {
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/categories" element={<AllCategoriesPage />} />
             <Route path="/categories/:category" element={<CategoryPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
 
           {/* Redirect auth users away from login/register */}
           <Route path="/login" element={<Navigate to="/" replace />} />
           <Route path="/register" element={<Navigate to="/" replace />} />
-          <Route path="*" element={<NotFoundPage />} />
         </>
       ) : (
         /* --- Routes for UNAUTHENTICATED users --- */

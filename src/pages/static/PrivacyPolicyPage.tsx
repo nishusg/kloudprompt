@@ -7,6 +7,7 @@ import {
   ListItem,
   ListItemText,
   Box,
+  Divider,
 } from "@mui/material";
 
 const PrivacyPolicyPage: React.FC = () => {
@@ -34,6 +35,8 @@ const PrivacyPolicyPage: React.FC = () => {
         >
           Privacy Policy
         </Typography>
+
+        <Divider sx={{ bgcolor: "#2a2a2a", mb: 3 }} />
 
         <Typography variant="body1" paragraph>
           Your privacy is important to us. This Privacy Policy explains how{" "}
