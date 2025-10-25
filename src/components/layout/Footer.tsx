@@ -19,18 +19,6 @@ const Footer: React.FC = () => {
         color: "#fff",
       }}
     >
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: '-10%',
-          right: '-10%',
-          width: { xs: '300px', md: '400px' },
-          height: { xs: '300px', md: '400px' },
-          background: 'radial-gradient(circle, rgba(0,204,255,0.25), transparent 70%)',
-          filter: 'blur(100px)',
-          zIndex: 0,
-        }}
-      />
       <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
 
         {/* Navigation Links */}

@@ -53,20 +53,6 @@ const Header: React.FC = () => {
 
   return (
     <Box sx={{ position: 'relative', zIndex: 1200 }}>
-      {/* Radial glow behind header */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '-50px',
-          left: '-50px',
-          width: '400px',
-          height: '400px',
-          background: 'radial-gradient(circle, rgba(0,115,255,0.35), transparent 70%)',
-          filter: 'blur(120px)',
-          zIndex: 0,
-        }}
-      />
-
       <AppBar
         position="fixed"
         sx={{
