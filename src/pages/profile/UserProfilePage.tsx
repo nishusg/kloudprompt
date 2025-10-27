@@ -99,7 +99,7 @@ const UserProfilePage: React.FC = () => {
     <Box sx={{ bgcolor: '#0a0a0a', color: '#fff', minHeight: '100vh', py: 4 }}>
       <Container maxWidth="md">
         {/* User Info */}
-        <Paper sx={{ p: 3, mb: 4, bgcolor: '#111', borderRadius: 2 }}>
+        <Paper elevation={6} sx={{ p: { xs: 2, md: 4 }, mb: 4, borderRadius: '24px', background: '#121212', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
           <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems="center">
             <Avatar
               alt={user.userName || DefaultUserName}
@@ -113,8 +113,8 @@ const UserProfilePage: React.FC = () => {
             >
               {(user.userName || DefaultUserName).charAt(0).toUpperCase()}
             </Avatar>
-            <Box>
-              <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#fff' }}>
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography variant="h5" fontWeight="bold" sx={{ color: '#fff', fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' } }}>
                 {user.userName}
               </Typography>
               <Typography variant="body2" sx={{ color: '#bbb' }}>
@@ -223,7 +223,7 @@ const UserProfilePage: React.FC = () => {
 
         {/* User Prompts */}
         <Typography variant="h6" sx={{ mb: 2, color: '#90caf9' }}>
-          Top {PAGE_LIMIT} prompts
+          Top Prompts
         </Typography>
 
         {loadingPrompts

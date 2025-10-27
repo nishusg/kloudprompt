@@ -1,190 +1,404 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
   Box,
-  Divider,
+  List,
+  ListItem,
   ListItemIcon,
-  CircularProgress,
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import ExploreIcon from '@mui/icons-material/Explore';
-import WhatshotIcon from '@mui/icons-material/Whatshot';
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import LoginIcon from '@mui/icons-material/Login';
-import LogoutIcon from '@mui/icons-material/Logout';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import AddCircle from '@mui/icons-material/AddCircle';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import CategoryIcon from '@mui/icons-material/Category';
+  ListItemText,
+  Drawer,
+  IconButton,
+  Typography,
+  Divider,
+  Avatar,
+  Popover,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import ExploreIcon from "@mui/icons-material/Explore";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import WhatshotIcon from "@mui/icons-material/Whatshot";
+import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import CategoryIcon from "@mui/icons-material/Category";
+import AddCircle from "@mui/icons-material/AddCircle";
+import LogoutIcon from "@mui/icons-material/Logout";
+import LoginIcon from "@mui/icons-material/Login";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import InfoIcon from "@mui/icons-material/Info";
+import ContactMailIcon from "@mui/icons-material/ContactMail";
+import PolicyIcon from "@mui/icons-material/Policy";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
-const Header: React.FC = () => {
-  const { user, logout, loading } = useAuth();
+interface HeaderProps {
+  isMobile: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ isMobile }) => {
+  const { user, logout } = useAuth();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const navigate = useNavigate();
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+  const location = useLocation();
 
   const handleNavigate = (path: string) => {
-    handleMenuClose();
+    if (isMobile) setDrawerOpen(false);
     navigate(path);
   };
 
   const handleLogout = () => {
-    handleMenuClose();
     logout();
     navigate("/login", { replace: true });
   };
 
-  return (
-    <Box sx={{ position: 'relative', zIndex: 1200 }}>
-      <AppBar
-        position="fixed"
+  const handleUserClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+
+  const mainMenu = [
+    { text: "Explore", icon: <ExploreIcon />, path: "/explore" },
+    { text: "Search User", icon: <PersonSearchIcon />, path: "/users/search" },
+    { text: "Notifications", icon: <NotificationsIcon />, path: "/notifications" },
+    { text: "Trending", icon: <WhatshotIcon />, path: "/trending" },
+    { text: "Leaderboard", icon: <LeaderboardIcon />, path: "/leaderboard" },
+    { text: "Categories", icon: <CategoryIcon />, path: "/categories" },
+  ];
+
+  const userMenu = [
+    {
+      text: "Account Settings",
+      icon: <AccountCircle />,
+      path: "/profile" + (user ? `/${user._id}` : ""),
+    },
+    { text: "About", icon: <InfoIcon />, path: "/about" },
+    { text: "Contact", icon: <ContactMailIcon />, path: "/contact" },
+    { text: "Privacy Policy", icon: <PolicyIcon />, path: "/privacy" },
+    { text: "Logout", icon: <LogoutIcon />, onClick: handleLogout },
+  ];
+
+  const isActive = (path: string) => location.pathname === path;
+
+  const sidebarContent = (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        color: "#fff",
+        p: 2,
+        background: "rgba(10, 10, 10, 0.75)",
+        backdropFilter: "blur(20px) saturate(180%)",
+        WebkitBackdropFilter: "blur(20px) saturate(180%)",
+        borderRight: "1px solid rgba(255,255,255,0.08)",
+        overflow: "hidden",
+      }}
+    >
+      {/* Logo / Title */}
+      <Box
         sx={{
-          width: '100%',
-          background: 'rgba(20,20,30,0.6)',
-          backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: '0 4px 30px rgba(0,0,0,0.5)',
-          zIndex: theme => theme.zIndex.drawer + 1,
+          display: "flex",
+          alignItems: "center",
+          gap: 1.2,
+          mb: 2,
+          cursor: "pointer",
+        }}
+        onClick={() => handleNavigate("/")}
+      >
+        <Box
+          component="img"
+          src="/icon.png"
+          alt="Logo"
+          sx={{ height: 36, width: 36, objectFit: "contain" }}
+        />
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 700,
+            fontSize: "1rem",
+            letterSpacing: 0.3,
+          }}
+        >
+          {(window as any)._env_?.REACT_APP_Website_Title ||
+            process.env.REACT_APP_Website_Title}
+        </Typography>
+      </Box>
+
+      {/* Scrollable menu area */}
+      <Box
+        sx={{
+          flexGrow: 1,
+          overflowY: "auto",
+          pr: 1,
+          "&::-webkit-scrollbar": { width: "6px" },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "rgba(255,255,255,0.15)",
+            borderRadius: "10px",
+          },
         }}
       >
-        <Toolbar sx={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between' }}>
-          {/* Logo + Title Centered */}
-          <Box
+        {/* Create Prompt */}
+        {user && (
+          <ListItem
+            onClick={() => handleNavigate("/create")}
             sx={{
-              position: 'absolute',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1, // spacing between logo and title
-              cursor: 'pointer',
+              mb: 1.5,
+              mt: 1,
+              borderRadius: 2,
+              bgcolor: "rgba(255,255,255,0.06)",
+              transition: "0.2s",
+              "&:hover": {
+                bgcolor: "rgba(255,255,255,0.12)",
+                transform: "scale(1.02)",
+              },
             }}
-            onClick={() => navigate('/')}
           >
-            <Box
-              component="img"
-              src="/icon.png" // replace with your logo path
-              alt="Logo"
-              sx={{ height: 35, width: 35, objectFit: 'contain' }}
+            <ListItemIcon sx={{ color: "#7db4ff", minWidth: 40 }}>
+              <AddCircle />
+            </ListItemIcon>
+            <ListItemText
+              primary="Create Prompt"
+              primaryTypographyProps={{ fontWeight: 600 }}
             />
-            <Typography
-              variant="body1"
-              sx={{ color: '#fff', fontWeight: 'bold', userSelect: 'none' }}
+          </ListItem>
+        )}
+
+        <Divider sx={{ bgcolor: "rgba(255,255,255,0.1)", my: 1.5 }} />
+
+        {/* Main Navigation */}
+        <List>
+          {mainMenu.map((item, i) => (
+            <ListItem
+              key={i}
+              onClick={() => handleNavigate(item.path)}
+              sx={{
+                borderRadius: 2,
+                my: 0.3,
+                px: 2,
+                transition: "0.25s",
+                bgcolor: isActive(item.path)
+                  ? "rgba(255,255,255,0.08)"
+                  : "transparent",
+                "&:hover": {
+                  bgcolor: "rgba(255,255,255,0.08)",
+                  transform: "translateX(4px)",
+                },
+              }}
             >
-              {(window as any)._env_?.REACT_APP_Website_Title || process.env.REACT_APP_Website_Title}
-            </Typography>
-          </Box>
+              <ListItemIcon sx={{ color: "#7db4ff", minWidth: 40 }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={item.text}
+                primaryTypographyProps={{
+                  fontWeight: isActive(item.path) ? 600 : 400,
+                  color: isActive(item.path) ? "#7db4ff" : "#fff",
+                }}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Box>
 
-          {/* Hamburger Menu */}
-          <Box sx={{ marginLeft: 'auto' }}>
-            {loading ? (
-              <CircularProgress size={24} sx={{ color: '#fff' }} />
-            ) : (
-              <>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="menu"
-                  onClick={handleMenuOpen}
-                  sx={{
-                    color: '#fff',
-                    borderRadius: 2,
-                  }}
-                >
-                  <MenuIcon />
-                </IconButton>
+      {/* Bottom User Section */}
+      <Box
+        sx={{
+          mt: "auto",
+          borderTop: "1px solid rgba(255,255,255,0.08)",
+          pt: { xs: 1, sm: 1.5 },
+          pb: { xs: 1, sm: 2.5 }
+        }}
+      >
+        {user ? (
+          <ListItem
+            onClick={handleUserClick}
+            sx={{
+              borderRadius: 2,
+              "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
+              cursor: "pointer",
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 40 }}>
+              <Avatar
+                sx={{
+                  width: 36,
+                  height: 36,
+                  bgcolor: "#7db4ff",
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: "0.9rem",
+                }}
+              >
+                {user?.userName?.[0]?.toUpperCase() || "U"}
+              </Avatar>
+            </ListItemIcon>
+            <ListItemText
+              primary={user.userName || "User"}
+              secondary={user.email || ""}
+              primaryTypographyProps={{ fontWeight: 600 }}
+              secondaryTypographyProps={{
+                color: "rgba(255,255,255,0.5)",
+                fontSize: "0.8rem",
+              }}
+            />
+          </ListItem>
+        ) : (
+          <List>
+            <ListItem
+              onClick={() => handleNavigate("/login")}
+              sx={{
+                borderRadius: 2,
+                "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
+              }}
+            >
+              <ListItemIcon sx={{ color: "#7db4ff" }}>
+                <LoginIcon />
+              </ListItemIcon>
+              <ListItemText primary="Login" />
+            </ListItem>
+            <ListItem
+              onClick={() => handleNavigate("/register")}
+              sx={{
+                borderRadius: 2,
+                "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
+              }}
+            >
+              <ListItemIcon sx={{ color: "#7db4ff" }}>
+                <PersonAddIcon />
+              </ListItemIcon>
+              <ListItemText primary="Register" />
+            </ListItem>
+          </List>
+        )}
+      </Box>
 
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleMenuClose}
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                  disableScrollLock
-                  PaperProps={{
-                    sx: {
-                    bgcolor: '#121212',
-                      color: '#fff',
-                      borderRadius: 2,
-                      border: '1px solid #333',
-                      boxShadow: '0px 4px 20px rgba(0,0,0,0.6)',
-                      '& .MuiMenuItem-root': {
-                      '&:hover': {
-                        bgcolor: '#333',
-                      },
-                      },
-                      '& .MuiListItemIcon-root': {
-                        color: '#42a5f5',
-                      },
-                    },
-                  }}
-                >
-                  {/* Explore Section */}
-                  <MenuItem onClick={() => handleNavigate('/explore')}>
-                    <ListItemIcon><ExploreIcon fontSize="small" /></ListItemIcon>Explore
-                  </MenuItem>
-                  <MenuItem onClick={() => handleNavigate('/users/search')}>
-                    <ListItemIcon><PersonSearchIcon fontSize="small" /></ListItemIcon>Search User
-                  </MenuItem>
-                  <MenuItem onClick={() => handleNavigate('/notifications')}>
-                    <ListItemIcon><NotificationsIcon fontSize="small" /></ListItemIcon>Notification
-                  </MenuItem>
-                  <MenuItem onClick={() => handleNavigate('/trending')}>
-                    <ListItemIcon><WhatshotIcon fontSize="small" /></ListItemIcon>Trending
-                  </MenuItem>
-                  <MenuItem onClick={() => handleNavigate('/leaderboard')}>
-                    <ListItemIcon><LeaderboardIcon fontSize="small" /></ListItemIcon>Leaderboard
-                  </MenuItem>
-                  <MenuItem onClick={() => handleNavigate('/categories')}>
-                    <ListItemIcon><CategoryIcon fontSize="small" /></ListItemIcon>Categories
-                  </MenuItem>
-
-                  {/* Account Section */}
-                  {user
-                    ? [
-                      <MenuItem key="create" onClick={() => handleNavigate('/create')}>
-                        <ListItemIcon><AddCircle fontSize="small" /></ListItemIcon>Create Prompt
-                      </MenuItem>,
-                      <MenuItem key="profile" onClick={() => handleNavigate('/profile/' + user._id)}>
-                        <ListItemIcon><AccountCircle fontSize="small" /></ListItemIcon>Account Settings
-                      </MenuItem>,
-                      <MenuItem key="logout" onClick={handleLogout}>
-                        <ListItemIcon><LogoutIcon fontSize="small" /></ListItemIcon>Logout
-                      </MenuItem>,
-                    ]
-                  : [
-                      <MenuItem key="login" onClick={() => handleNavigate('/login')}>
-                        <ListItemIcon><LoginIcon fontSize="small" /></ListItemIcon>Login
-                      </MenuItem>,
-                      <MenuItem key="register" onClick={() => handleNavigate('/register')}>
-                        <ListItemIcon><PersonAddIcon fontSize="small" /></ListItemIcon>Register
-                      </MenuItem>,
-                    ]}
-                </Menu>
-              </>
-            )}
-          </Box>
-        </Toolbar>
-        <Divider sx={{ bgcolor: 'rgba(255,255,255,0.2)' }} />
-      </AppBar>
+      {/* User Popover */}
+      <Popover
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handlePopoverClose}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        PaperProps={{
+          sx: {
+            bgcolor: "rgba(10,10,10,0.95)",
+            backdropFilter: "blur(18px) saturate(180%)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            mt: -1,
+            color: "#fff",
+            minWidth: 220,
+            borderRadius: 2,
+            boxShadow: "0 8px 30px rgba(0,0,0,0.7)",
+          },
+        }}
+      >
+        <List dense>
+          {userMenu.map((item, i) => (
+            <ListItem
+              key={i}
+              onClick={() => {
+                handlePopoverClose();
+                item.onClick ? item.onClick() : handleNavigate(item.path!);
+              }}
+              sx={{
+                borderRadius: 1,
+                "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
+              }}
+            >
+              <ListItemIcon sx={{ color: "#7db4ff", minWidth: 36 }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          ))}
+        </List>
+      </Popover>
     </Box>
+  );
+
+  return (
+    <>
+      {/* Mobile Header */}
+      {isMobile ? (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            height: 60,
+            px: 2,
+            color: "#fff",
+            bgcolor: "rgba(10,10,10,0.75)",
+            backdropFilter: "blur(18px) saturate(180%)",
+            borderBottom: "1px solid rgba(255,255,255,0.05)",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1300,
+          }}
+        >
+          <IconButton onClick={() => setDrawerOpen(true)} sx={{ color: "#fff" }}>
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              fontSize: "1.05rem",
+              textAlign: "center",
+              flexGrow: 1,
+              letterSpacing: 0.3,
+            }}
+          >
+            {(window as any)._env_?.REACT_APP_Website_Title ||
+              process.env.REACT_APP_Website_Title}
+          </Typography>
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            width: 260,
+            height: "100vh",
+            position: "sticky",
+            top: 0,
+            borderRight: "1px solid rgba(255,255,255,0.05)",
+          }}
+        >
+          {sidebarContent}
+        </Box>
+      )}
+
+      {/* Drawer for Mobile */}
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        PaperProps={{
+          sx: {
+            width: 260,
+            color: "#fff",
+            background: "rgba(10,10,10,0.8)",
+            backdropFilter: "blur(25px) saturate(180%)",
+            WebkitBackdropFilter: "blur(25px) saturate(180%)",
+            borderRight: "1px solid rgba(255,255,255,0.08)",
+          },
+        }}
+      >
+        {sidebarContent}
+      </Drawer>
+    </>
   );
 };
 
