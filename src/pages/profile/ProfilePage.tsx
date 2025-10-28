@@ -162,8 +162,8 @@ const ProfilePage: React.FC = () => {
   const socialLinks = loggedInUser.socialLinks || {};
 
   return (
-    <Box sx={{ minHeight: '100vh', color: 'white', py: 4, background: '#0a0a0a' }}>
-      <Container maxWidth="md">
+    <Box sx={{  minHeight: '80vh', background: '#0a0a0a', py: 4 }}>
+      <Container maxWidth="lg">
         {/* Profile Header */}
         <Paper elevation={6} sx={{ p: { xs: 2, md: 4 }, mb: 4, borderRadius: '24px', background: '#121212', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
           <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems="center">

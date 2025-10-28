@@ -83,8 +83,8 @@ const AllCategoriesPage = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: "#0a0a0a", minHeight: "100vh", py: 4 }}>
-      <Container maxWidth="md">
+    <Box sx={{ minHeight: "80vh", bgcolor: "#0a0a0a", py: 4 }}>
+      <Container maxWidth="lg">
         {/* Header */}
         <Box
           sx={{

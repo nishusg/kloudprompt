@@ -14,7 +14,7 @@ const PAGE_LIMIT = 5;
 const UserProfileSkeleton: React.FC = () => {
   return (
     <Box sx={{ bgcolor: "#0a0a0a", color: "#fff", minHeight: "100vh", py: 4 }}>
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         {/* User Info Skeleton */}
         <Paper sx={{ p: 3, mb: 4, bgcolor: "#111", borderRadius: 2 }}>
           <Stack direction="row" spacing={{ xs: 2, md: 3 }} alignItems="center">

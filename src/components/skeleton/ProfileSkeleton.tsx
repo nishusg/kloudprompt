@@ -21,7 +21,7 @@ const ProfileSkeleton: React.FC = () => {
         background: "#0a0a0a",
       }}
     >
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         {/* Profile Header Skeleton */}
         <Paper
           sx={{

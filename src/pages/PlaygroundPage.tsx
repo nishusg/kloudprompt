@@ -93,8 +93,8 @@ const PlaygroundPage: React.FC = () => {
   if (!prompt) return <CircularProgress sx={{ display: 'block', mx: 'auto', mt: 10 }} />;
 
   return (
-    <Box sx={{ bgcolor: '#0d0d0d', color: '#fff', minHeight: '100vh', py: 6 }}>
-      <Container maxWidth="md">
+    <Box sx={{ minHeight: '80vh', bgcolor: '#0a0a0a', py: 4 }}>
+      <Container maxWidth="lg">
         {/* Info Notice */}
         <Paper 
           sx={{ p: 2, bgcolor: '#121212', mb: 3, borderRadius: 2, display: 'flex', alignItems: 'center', gap: 1 }}

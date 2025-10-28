@@ -45,7 +45,7 @@ const TrendingPromptsPage = () => {
 
   return (
     <Box sx={{ minHeight: "80vh", bgcolor: "#0a0a0a", py: 4 }}>
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         {/* Page Header */}
         <Box
           sx={{
@@ -180,6 +180,8 @@ const TrendingPromptsPage = () => {
               {/* Right side - Content */}
               <ListItem alignItems="flex-start" disableGutters sx={{ flex: 1 }}>
                 <ListItemText
+                  primaryTypographyProps={{ component: "span" }}
+                  secondaryTypographyProps={{ component: "span" }}
                   primary={
                     <Stack direction="row" alignItems="center" spacing={1}>
                       <Chip

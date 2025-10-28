@@ -71,11 +71,7 @@ const Header: React.FC<HeaderProps> = ({ isMobile }) => {
   ];
 
   const userMenu = [
-    {
-      text: "Account Settings",
-      icon: <AccountCircle />,
-      path: "/profile" + (user ? `/${user._id}` : ""),
-    },
+    { text: "Account Settings", icon: <AccountCircle />, path: "/profile" + (user ? `/${user._id}` : ""),},
     { text: "About", icon: <InfoIcon />, path: "/about" },
     { text: "Contact", icon: <ContactMailIcon />, path: "/contact" },
     { text: "Privacy Policy", icon: <PolicyIcon />, path: "/privacy" },
@@ -120,7 +116,7 @@ const Header: React.FC<HeaderProps> = ({ isMobile }) => {
           variant="h6"
           sx={{
             fontWeight: 700,
-            fontSize: "1rem",
+            fontSize: "1.3rem",
             letterSpacing: 0.3,
           }}
         >

@@ -88,7 +88,7 @@ const ExplorePage: React.FC = () => {
 
   return (
     <Box sx={{ minHeight: "80vh", bgcolor: "#0a0a0a", py: 4 }}>
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         {/* Header */}
         <Box
           sx={{

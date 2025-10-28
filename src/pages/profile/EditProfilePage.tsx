@@ -83,7 +83,7 @@ const EditProfilePage: React.FC = () => {
         py: 4,
       }}
     >
-      <Container maxWidth="sm">
+      <Container maxWidth="md">
         <Paper
           elevation={6}
           sx={{
