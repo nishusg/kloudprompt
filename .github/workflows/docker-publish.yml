@@ -24,6 +24,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -49,12 +52,13 @@ jobs:
           context: .
           push: true
 
-          # Support both AMD64 and ARM64 servers
+          # Build for both AMD64 and ARM64
           platforms: linux/amd64,linux/arm64
 
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/kloudprompt-ui:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/kloudprompt-ui:${{ env.VERSION }}
 
+          # GitHub Actions cache
           cache-from: type=gha
           cache-to: type=gha,mode=max
