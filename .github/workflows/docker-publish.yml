@@ -6,7 +6,6 @@ on:
     types:
       - completed
 
-
   workflow_dispatch:
 
 jobs:
@@ -39,7 +38,6 @@ jobs:
 
       - name: Fetch latest tag
         shell: bash
-        shell: bash
         run: |
           git fetch --tags
 
@@ -48,13 +46,7 @@ jobs:
           echo "VERSION=$latest_tag" >> "$GITHUB_ENV"
           echo "Latest tag: $latest_tag"
 
-          latest_tag=$(git describe --tags "$(git rev-list --tags --max-count=1)" 2>/dev/null || echo "latest")
-
-          echo "VERSION=$latest_tag" >> "$GITHUB_ENV"
-          echo "Latest tag: $latest_tag"
-
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v6
         uses: docker/build-push-action@v6
         with:
           context: .
